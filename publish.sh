@@ -12,4 +12,3 @@ if [ "$TRAVIS_BRANCH" != "dev" ]; then
     y
     EOF
 fi
-
