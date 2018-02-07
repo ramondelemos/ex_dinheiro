@@ -22,3 +22,9 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 dinheiro-*.tar
 
+# Ignore mix.lock file.
+mix.lock
+
+# Ignore beam fiels.
+*.beam
+
