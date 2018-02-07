@@ -1,13 +1,21 @@
 defmodule Dinheiro.MixProject do
   use Mix.Project
 
+  @version "0.1.0"
+  @github_url "https://github.com/ramondelemos/ex_dinheiro"
+
   def project do
     [
-      app: :dinheiro,
-      version: "0.1.0",
+      app: :ex_dinheiro,
+      name: "Dinheiro",
+      version: @version,
       elixir: "~> 1.6",
+      build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
+      description: description(),
+      package: package(),
       deps: deps(),
+      docs: docs(),
       test_coverage: [tool: ExCoveralls]
     ]
   end
@@ -22,7 +30,33 @@ defmodule Dinheiro.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:excoveralls, github: "parroty/excoveralls"}
+      {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
+      {:ex_doc, "~> 0.18", only: [:dev, :docs]},
+    ]
+  end
+
+  defp description do
+    """
+    Biblioteca elixir para manipulação de dinheiro.
+    """
+  end
+
+  defp package do
+    [
+      files: ["lib", "mix.exs", "README*", "LICENSE*"],
+      maintainers: ["Ramon de Lemos"],
+      contributors: ["Ramon de Lemos"],
+      licenses: ["MIT"],
+      links: %{"GitHub" => @github_url}
+    ]
+  end
+
+  def docs do
+    [
+      source_ref: "v#{@version}",
+      source_url: @github_url,
+      main: "Dinheiro",
+      extras: ["README.md"]
     ]
   end
 end

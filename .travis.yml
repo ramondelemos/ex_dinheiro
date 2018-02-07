@@ -5,8 +5,10 @@ otp_release:
   - '20.2.2'
 before_install:
   - chmod +x travis_merge_script.sh
+  - chmod +x publish.sh
 script:
-  - mix test && MIX_ENV=test mix coveralls.travis
+  - mix test && MIX_ENV=test mix coveralls.travis && mix docs
 after_success:
   - mix format mix.exs "lib/**/*.{ex,exs}" "test/**/*.{ex,exs}" "lib/*.{ex,exs}" "test/*.{ex,exs}"
   - ./travis_merge_script.sh
+  - ./publish.sh
