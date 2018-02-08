@@ -1,8 +1,8 @@
 # ex_dinheiro
 
- - master: [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=master)](https://travis-ci.org/ramondelemos/ex_dinheiro)[![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/ex_dinheiro)
+ - master: [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=master)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=master)[![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=master)
 
- - dev: [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=dev)](https://travis-ci.org/ramondelemos/ex_dinheiro)[![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=dev)](https://coveralls.io/github/ramondelemos/ex_dinheiro)
+ - dev: [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=dev)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=dev)[![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=dev)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=dev)
 
 Biblioteca elixir para manipulação de dinheiro.
 
