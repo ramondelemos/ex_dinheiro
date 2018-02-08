@@ -4,4 +4,6 @@ fi
 
 mix hex.config username ramondelemos
 mix hex.config key $HEX_KEY
-mix hex.publish
+mix hex.publish <<EOF
+y
+EOF
