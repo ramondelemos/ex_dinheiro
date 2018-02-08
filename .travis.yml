@@ -9,8 +9,6 @@ before_install:
   - mix local.rebar --force
   - mix local.hex --force
   - mix deps.get
-install:
-  - wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
 script:
   - mix test && MIX_ENV=test mix coveralls.travis && mix docs
 after_success:
