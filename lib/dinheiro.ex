@@ -11,7 +11,7 @@ defmodule Dinheiro do
   """
   @type t :: %Dinheiro{ quantia: integer, moeda: atom }
 
-  @spec new(integer) :: t
+  @spec new(integer | float) :: t
   @doc """
   Create a new `Dinheiro` struct using a default value of Moeda.
   The default currency can be set in the system Mix config.
@@ -19,9 +19,11 @@ defmodule Dinheiro do
       config :ex_dinheiro, default_moeda: :BRL
   ## Example:
       Dinheiro.new(12345)
+      %Dinheiro{ quantia: 1234500, moeda: :BRL }
+      Dinheiro.new(123.45)
       %Dinheiro{ quantia: 12345, moeda: :BRL }
   """
-  def new(quantia) when is_integer(quantia) do
+  def new(quantia) do
     moeda = Application.get_env(:ex_dinheiro, :default_moeda)
     if moeda do
       new(quantia, moeda)
@@ -30,21 +32,25 @@ defmodule Dinheiro do
     end
   end
 
-  @spec new(integer, atom | String.t) :: t
+  @spec new(integer | float, atom | String.t) :: t
   @doc """
   Create a new `Dinheiro` struct.
   
   ## Example:
       Dinheiro.new(12345, :BRL)
-      %Dinheiro{ quantia: 12345, moeda: :BRL }
+      %Dinheiro{ quantia: 1234500, moeda: :BRL }
       Dinheiro.new(12345, "BRL")
+      %Dinheiro{ quantia: 1234500, moeda: :BRL }
+      Dinheiro.new(123.45, :BRL)
+      %Dinheiro{ quantia: 12345, moeda: :BRL }
+      Dinheiro.new(123.45, "BRL")
       %Dinheiro{ quantia: 12345, moeda: :BRL }
 
   """
-  def new(quantia, moeda) when is_integer(quantia) do
-    v_moeda = Moeda.get_atom(moeda);
+  def new(quantia, moeda) when is_integer(quantia) or is_float(quantia) do
+    v_moeda = Moeda.find(moeda);
     if v_moeda do
-      newp(quantia, v_moeda)
+      newp(round(quantia * :math.pow(10, v_moeda.expoente)), Moeda.get_atom(v_moeda.codigo))
     else
       raise ArgumentError, "to use Dinheiro.new/2 you must set a valid value to moeda."
     end
