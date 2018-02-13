@@ -160,6 +160,26 @@ defmodule Dinheiro do
     new(float_value * b, m)
   end
 
+  @spec divide(t, integer | [integer | float]) :: [t]
+  @doc """
+  Divide a `Dinheiro` struct by a positive integer value
+
+  ## Example:
+      iex> Dinheiro.divide(Dinheiro.new(100, :BRL), 2)
+      [%Dinheiro{quantia: 5000, moeda: :BRL}, %Dinheiro{quantia: 5000, moeda: :BRL}]
+      iex> Dinheiro.divide(Dinheiro.new(101, :BRL), 2)
+      [%Dinheiro{quantia: 5050, moeda: :BRL}, %Dinheiro{quantia: 5050, moeda: :BRL}]
+
+  Divide a `Dinheiro` struct by an list of values that represents a division ratio.
+
+  ## Example:
+      iex> Dinheiro.divide(Dinheiro.new(0.05, :BRL), [3, 7])
+      [%Dinheiro{quantia: 2, moeda: :BRL}, %Dinheiro{quantia: 3, moeda: :BRL}]
+
+  """
+  def divide(%Dinheiro{moeda: m} = a, b) do
+  end
+
   @spec to_float(t) :: float
   @doc """
   Return a float value from a `Dinheiro` structs.
