@@ -34,7 +34,7 @@ defmodule DinheiroTest do
     end
   end
 
-  test "new/1 with float value" do
+  test "new/1 with float value" do 
     
     try do
       Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
@@ -45,6 +45,7 @@ defmodule DinheiroTest do
   end
 
   test "new/1 with an invalid value" do
+
     try do
       Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
       assert_raise FunctionClauseError, fn ->
@@ -62,6 +63,15 @@ defmodule DinheiroTest do
   test "new/2 with an invalid value" do
     assert_raise FunctionClauseError, fn ->
       Dinheiro.new("12345", :BRL)
+    end
+  end
+
+  test "compare/1" do
+    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{ quantia: 12345, moeda: :BRL }) == 0
+    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{ quantia: 12346, moeda: :BRL }) == -1
+    assert Dinheiro.compare(Dinheiro.new(123.46, :BRL), %Dinheiro{ quantia: 12345, moeda: :BRL }) == 1
+    assert_raise ArgumentError, fn ->
+      Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{ quantia: 12345, moeda: :USD }) == 0
     end
   end
 end
