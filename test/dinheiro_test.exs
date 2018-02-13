@@ -121,7 +121,7 @@ defmodule DinheiroTest do
 
   test "divide/2" do
     assert Dinheiro.divide(%Dinheiro{ quantia: 600, moeda: :BRL }, 2) == [%Dinheiro{quantia: 300, moeda: :BRL}, %Dinheiro{quantia: 300, moeda: :BRL}]
-    assert Dinheiro.divide(%Dinheiro{ quantia: 625, moeda: :BRL }, 2) == [%Dinheiro{quantia: 312, moeda: :BRL}, %Dinheiro{quantia: 313, moeda: :BRL}]
+    assert Dinheiro.divide(%Dinheiro{ quantia: 625, moeda: :BRL }, 2) == [%Dinheiro{quantia: 313, moeda: :BRL}, %Dinheiro{quantia: 312, moeda: :BRL}]
     assert Dinheiro.divide(Dinheiro.new(0.05, :BRL), [3, 7]) == [%Dinheiro{quantia: 2, moeda: :BRL}, %Dinheiro{quantia: 3, moeda: :BRL}]
     assert_raise ArgumentError, fn ->
       Dinheiro.divide(%Dinheiro{ quantia: 600, moeda: :BRL }, 0)
@@ -133,7 +133,10 @@ defmodule DinheiroTest do
       Dinheiro.divide(%Dinheiro{ quantia: 600, moeda: :BRL }, [-1])
     end
     assert_raise ArgumentError, fn ->
-      Dinheiro.divide(%Dinheiro{ quantia: 600, moeda: :BRL }, ["", -1])
+      Dinheiro.divide(%Dinheiro{ quantia: 600, moeda: :BRL }, [""])
+    end
+    assert_raise ArgumentError, fn ->
+      Dinheiro.divide(%Dinheiro{ quantia: 600, moeda: :BRL }, [1.0])
     end
     assert_raise FunctionClauseError, fn ->
       Dinheiro.divide(%Dinheiro{ quantia: 600, moeda: :BRL }, 1.0)
@@ -141,7 +144,7 @@ defmodule DinheiroTest do
     assert_raise FunctionClauseError, fn ->
       Dinheiro.divide(%{ quantia: 600, moeda: :BRL }, 2)
     end
-    assert_raise FunctionClauseError, fn ->
+    assert_raise ArgumentError, fn ->
       Dinheiro.divide(123)
     end
   end

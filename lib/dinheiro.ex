@@ -160,7 +160,7 @@ defmodule Dinheiro do
     new(float_value * b, m)
   end
 
-  @spec divide(t, integer | [integer | float]) :: [t]
+  @spec divide(t, integer | [integer]) :: [t]
   @doc """
   Divide a `Dinheiro` struct by a positive integer value
 
@@ -177,8 +177,57 @@ defmodule Dinheiro do
       [%Dinheiro{quantia: 2, moeda: :BRL}, %Dinheiro{quantia: 3, moeda: :BRL}]
 
   """
-  def divide(%Dinheiro{moeda: m} = a, b) do
+  def divide(%Dinheiro{moeda: m} = a, b) when is_integer(b) do
+    assert_if_ratios_are_valid([b])
+    division = div(a.quantia, b)
+    remainder = rem(a.quantia, b)
+    to_alocate(division, remainder, m, b)
   end
+
+  def divide(%Dinheiro{moeda: m} = a, b) when is_list(b) do
+    assert_if_ratios_are_valid(b)
+    ratio = sum_values(b)
+    division = calculate_ratio(b, ratio, a.quantia)
+    remainder = a.quantia - sum_values(division)
+    to_alocate(division, remainder, m)
+  end
+
+  def divide(a) do
+    raise ArgumentError, message: "Value must be a `Dinheiro`."
+  end
+
+  defp calculate_ratio(ratios, ratio, value) do
+    ratios |> Enum.map(&(
+      div((value * &1), ratio)
+    ))
+  end
+
+  defp to_alocate([], remainder, moeda) do
+    []
+  end
+
+  defp to_alocate([head | tail], remainder, moeda) do
+    if head do
+      if remainder > 0 do
+        [ newp(head + 1, moeda) | to_alocate(tail, remainder - 1, moeda) ]
+      else
+        [ newp(head, moeda) | to_alocate(tail, remainder, moeda) ]
+      end
+    else
+      []
+    end
+  end
+
+  defp to_alocate(division, remainder, moeda, position) do
+    if position > 0 do
+      [ newp(division + remainder, moeda) | to_alocate(division, 0, moeda, position - 1) ]
+    else
+      []
+    end
+  end
+
+  defp sum_values([]), do: 0
+  defp sum_values([head | tail]), do: head + sum_values(tail)
 
   @spec to_float(t) :: float
   @doc """
@@ -200,5 +249,31 @@ defmodule Dinheiro do
 
   defp raise_moeda_must_be_the_same(a, b) do
     raise ArgumentError, message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
+  end
+
+  defp assert_if_value_is_positive(value) when is_integer(value) do
+    if value < 0 do
+      raise ArgumentError, message: "Value #{value} must be positive."
+    end
+  end
+
+  defp assert_if_greater_than_zero(value) when is_integer(value) do
+    if value == 0 do
+      raise ArgumentError, message: "Value must be greater than zero."
+    end
+  end
+
+  defp assert_if_ratios_are_valid([]) do
+  end
+
+  defp assert_if_ratios_are_valid([head | tail]) do
+    if head do
+      unless is_integer(head) do
+        raise ArgumentError, message: "Value '#{head}' must be integer."
+      end
+      assert_if_value_is_positive(head)
+      assert_if_greater_than_zero(head)
+      assert_if_ratios_are_valid(tail)
+    end
   end
 end
