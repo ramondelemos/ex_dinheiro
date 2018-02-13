@@ -17,7 +17,6 @@ defmodule Dinheiro do
   The default currency can be set in the system Mix config.
 
   ## Example:
-
         iex> Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
         iex> Dinheiro.new(12345)
         %Dinheiro{ quantia: 1234500, moeda: :BRL }
@@ -98,6 +97,8 @@ defmodule Dinheiro do
       %Dinheiro{ quantia: 300, moeda: :BRL }
       iex> Dinheiro.sum(Dinheiro.new(1, :BRL), 2.5)
       %Dinheiro{ quantia: 350, moeda: :BRL }
+      iex> Dinheiro.sum(Dinheiro.new(2, :BRL), -1)
+      %Dinheiro{ quantia: 100, moeda: :BRL }
 
   """
   def sum(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
@@ -110,6 +111,25 @@ defmodule Dinheiro do
 
   def sum(a, b) do
     raise_moeda_must_be_the_same(a, b)
+  end
+
+  @spec subtract(t, t | integer | float) :: t
+  @doc """
+  Return a new `Dinheiro` structs with subtract of two values.
+  The first parameter must be a struct of `Dinheiro`.
+
+  ## Example:
+      iex> Dinheiro.subtract(Dinheiro.new(2, :BRL), Dinheiro.new(1, :BRL))
+      %Dinheiro{ quantia: 100, moeda: :BRL }
+      iex> Dinheiro.subtract(Dinheiro.new(4, :BRL), 2)
+      %Dinheiro{ quantia: 200, moeda: :BRL }
+      iex> Dinheiro.subtract(Dinheiro.new(5, :BRL), 2.5)
+      %Dinheiro{ quantia: 250, moeda: :BRL }
+      iex> Dinheiro.subtract(Dinheiro.new(4, :BRL), -2)
+      %Dinheiro{ quantia: 600, moeda: :BRL }
+
+  """
+  def subtract(a, b) do
   end
 
   defp raise_moeda_must_be_the_same(a, b) do

@@ -85,4 +85,14 @@ defmodule DinheiroTest do
     end
   end
 
+  test "subtract/2" do
+    assert Dinheiro.subtract(Dinheiro.new(2, :BRL), Dinheiro.new(1, :BRL)) == %Dinheiro{ quantia: 100, moeda: :BRL }
+    assert Dinheiro.subtract(Dinheiro.new(3, :BRL), 1) == %Dinheiro{ quantia: 200, moeda: :BRL }
+    assert Dinheiro.subtract(Dinheiro.new(4, :BRL), 1.2) == %Dinheiro{ quantia: 280, moeda: :BRL }
+    assert Dinheiro.subtract(Dinheiro.new(1, :BRL), -1) == %Dinheiro{ quantia: 200, moeda: :BRL }
+    assert_raise ArgumentError, fn ->
+      Dinheiro.subtract(Dinheiro.new(2, :BRL), Dinheiro.new(1, :USD))
+    end
+  end
+
 end
