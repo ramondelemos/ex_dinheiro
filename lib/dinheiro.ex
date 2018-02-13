@@ -49,9 +49,9 @@ defmodule Dinheiro do
 
   """
   def new(quantia, moeda) when is_integer(quantia) or is_float(quantia) do
-    v_moeda = Moeda.find(moeda);
+    v_moeda = Moeda.find(moeda)
     if v_moeda do
-      newp(round(quantia * :math.pow(10, v_moeda.expoente)), Moeda.get_atom(v_moeda.codigo))
+      newp(round(quantia * Moeda.get_factor(v_moeda.codigo)), Moeda.get_atom(v_moeda.codigo))
     else
       raise ArgumentError, "to use Dinheiro.new/2 you must set a valid value to moeda."
     end
