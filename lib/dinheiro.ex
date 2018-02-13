@@ -100,10 +100,19 @@ defmodule Dinheiro do
       %Dinheiro{ quantia: 350, moeda: :BRL }
 
   """
-  def sum(a, b) do
+  def sum(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
+    %Dinheiro{ quantia: a.quantia + b.quantia, moeda: m }
   end
 
-  def raise_moeda_must_be_the_same(a, b) do
+  def sum(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
+    sum(a, Dinheiro.new(b, m))
+  end
+
+  def sum(a, b) do
+    raise_moeda_must_be_the_same(a, b)
+  end
+
+  defp raise_moeda_must_be_the_same(a, b) do
     raise ArgumentError, message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
   end
 end
