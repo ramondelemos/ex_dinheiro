@@ -129,7 +129,16 @@ defmodule Dinheiro do
       %Dinheiro{ quantia: 600, moeda: :BRL }
 
   """
+  def subtract(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
+    %Dinheiro{ quantia: a.quantia - b.quantia, moeda: m }
+  end
+
+  def subtract(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
+    subtract(a, Dinheiro.new(b, m))
+  end
+
   def subtract(a, b) do
+    raise_moeda_must_be_the_same(a, b)
   end
 
   defp raise_moeda_must_be_the_same(a, b) do
