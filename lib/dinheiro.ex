@@ -83,6 +83,27 @@ defmodule Dinheiro do
   end
 
   def compare(a, b) do
+    raise_moeda_must_be_the_same(a, b)
+  end
+
+  @spec sum(t, t | integer | float) :: t
+  @doc """
+  Return a new `Dinheiro` structs with sum of two values.
+  The first parameter must be a struct of `Dinheiro`.
+
+  ## Example:
+      iex> Dinheiro.sum(Dinheiro.new(1, :BRL), Dinheiro.new(1, :BRL))
+      %Dinheiro{ quantia: 200, moeda: :BRL }
+      iex> Dinheiro.sum(Dinheiro.new(1, :BRL), 2)
+      %Dinheiro{ quantia: 300, moeda: :BRL }
+      iex> Dinheiro.sum(Dinheiro.new(1, :BRL), 2.5)
+      %Dinheiro{ quantia: 350, moeda: :BRL }
+
+  """
+  def sum(a, b) do
+  end
+
+  def raise_moeda_must_be_the_same(a, b) do
     raise ArgumentError, message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
   end
 end
