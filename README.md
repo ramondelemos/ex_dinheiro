@@ -1,10 +1,12 @@
 # ex_dinheiro
 
- - master: [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=master)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=master)[![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=master)
+ - master: [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=master)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=master)
+ [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=master)
 
- - dev: [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=dev)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=dev)[![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=dev)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=dev)
+ - dev: [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=dev)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=dev)
+ [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=dev)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=dev)
 
-Biblioteca elixir para manipulação de dinheiro.
+Elixir library for money manipulation.
 
 ## Installation
 
@@ -14,7 +16,7 @@ by adding `dinheiro` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_dinheiro, "~> 0.1.0"}
+    {:ex_dinheiro, "~> 0.1.2"}
   ]
 end
 ```
