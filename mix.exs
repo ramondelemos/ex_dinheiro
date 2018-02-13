@@ -1,7 +1,7 @@
 defmodule Dinheiro.MixProject do
   use Mix.Project
 
-  @version "0.1.1"
+  @version "0.1.2"
   @github_url "https://github.com/ramondelemos/ex_dinheiro"
 
   def project do
@@ -37,7 +37,7 @@ defmodule Dinheiro.MixProject do
 
   defp description do
     """
-    Biblioteca elixir para manipulação de dinheiro.
+    Elixir library for money manipulation.
     """
   end
 
