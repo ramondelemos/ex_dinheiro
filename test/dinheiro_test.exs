@@ -99,8 +99,11 @@ defmodule DinheiroTest do
     assert Dinheiro.multiply(Dinheiro.new(3, :BRL), 2) == %Dinheiro{ quantia: 600, moeda: :BRL }
     assert Dinheiro.multiply(Dinheiro.new(4, :BRL), 1.5) == %Dinheiro{ quantia: 600, moeda: :BRL }
     assert Dinheiro.multiply(Dinheiro.new(1, :BRL), -1) == %Dinheiro{ quantia: -100, moeda: :BRL }
-    assert_raise ArgumentError, fn ->
-      Dinheiro.multiply(Dinheiro.new(2, :BRL), 1)
+    assert_raise FunctionClauseError, fn ->
+      Dinheiro.multiply(2, 2)
+    end
+    assert_raise FunctionClauseError, fn ->
+      Dinheiro.multiply(%{ quantia: 600, moeda: :BRL }, 2)
     end
   end
 
@@ -108,6 +111,12 @@ defmodule DinheiroTest do
     assert Dinheiro.to_float(%Dinheiro{ quantia: 600, moeda: :BRL }) == 6.0
     assert Dinheiro.to_float(%Dinheiro{ quantia: 625, moeda: :BRL }) == 6.25
     assert Dinheiro.to_float(%Dinheiro{ quantia: -625, moeda: :BRL }) == -6.25
+    assert_raise FunctionClauseError, fn ->
+      Dinheiro.to_float(%{ quantia: 600, moeda: :BRL })
+    end
+    assert_raise FunctionClauseError, fn ->
+      Dinheiro.to_float(123)
+    end
   end
 
 end

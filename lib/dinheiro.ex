@@ -155,7 +155,9 @@ defmodule Dinheiro do
       %Dinheiro{ quantia: -800, moeda: :BRL }
 
   """
-  def multiply(a, b) do
+  def multiply(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
+    float_value = to_float(a)
+    new(float_value * b, m)
   end
 
   @spec to_float(t) :: float
@@ -165,13 +167,15 @@ defmodule Dinheiro do
   ## Example:
       iex> Dinheiro.to_float(%Dinheiro{ quantia: 200, moeda: :BRL })
       2.0
-      iex> Dinheiro.to_float(Dinheiro.new(50, :BRL))
-      50.0
+      iex> Dinheiro.to_float(Dinheiro.new(50.5, :BRL))
+      50.5
       iex> Dinheiro.to_float(Dinheiro.new(-4, :BRL))
       -4.0
 
   """
-  def to_float(from) do
+  def to_float(%Dinheiro{moeda: m} = from) do
+    factor = Moeda.get_factor(m)
+    Float.round(from.quantia / factor, 2)
   end
 
   defp raise_moeda_must_be_the_same(a, b) do
