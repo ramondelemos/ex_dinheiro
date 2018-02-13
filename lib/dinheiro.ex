@@ -15,20 +15,22 @@ defmodule Dinheiro do
   @doc """
   Create a new `Dinheiro` struct using a default value of Moeda.
   The default currency can be set in the system Mix config.
-  ## Example Config:
-      config :ex_dinheiro, default_moeda: :BRL
+
   ## Example:
-      Dinheiro.new(12345)
-      %Dinheiro{ quantia: 1234500, moeda: :BRL }
-      Dinheiro.new(123.45)
-      %Dinheiro{ quantia: 12345, moeda: :BRL }
+
+        iex> Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
+        iex> Dinheiro.new(12345)
+        %Dinheiro{ quantia: 1234500, moeda: :BRL }
+        iex> Dinheiro.new(123.45)
+        %Dinheiro{ quantia: 12345, moeda: :BRL }
+
   """
-  def new(quantia) do
+  def new(quantia) when is_integer(quantia) or is_float(quantia) do
     moeda = Application.get_env(:ex_dinheiro, :default_moeda)
     if moeda do
       new(quantia, moeda)
     else
-      raise ArgumentError, "to use Dinheiro.new/1 you must set a default value in your application config :ex_dinheiro, default_moeda."
+      raise ArgumentError, "to use Dinheiro.new/1 you must set a default value in your application config :ex_dinheiro, default_moeda. #{moeda}."
     end
   end
 
@@ -37,13 +39,13 @@ defmodule Dinheiro do
   Create a new `Dinheiro` struct.
   
   ## Example:
-      Dinheiro.new(12345, :BRL)
+      iex> Dinheiro.new(12345, :BRL)
       %Dinheiro{ quantia: 1234500, moeda: :BRL }
-      Dinheiro.new(12345, "BRL")
+      iex> Dinheiro.new(12345, "BRL")
       %Dinheiro{ quantia: 1234500, moeda: :BRL }
-      Dinheiro.new(123.45, :BRL)
+      iex> Dinheiro.new(123.45, :BRL)
       %Dinheiro{ quantia: 12345, moeda: :BRL }
-      Dinheiro.new(123.45, "BRL")
+      iex> Dinheiro.new(123.45, "BRL")
       %Dinheiro{ quantia: 12345, moeda: :BRL }
 
   """
@@ -58,5 +60,29 @@ defmodule Dinheiro do
 
   defp newp(quantia, moeda) when is_integer(quantia) and is_atom(moeda) do
     %Dinheiro{ quantia: quantia, moeda: moeda }
+  end
+
+  @spec compare(t, t) :: integer
+  @doc """
+  Compares two `Dinheiro` structs with each other.
+  They must each be of the same moeda and then their value are compared
+  ## Example:
+      iex> Dinheiro.compare(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :BRL))
+      0
+      iex> Dinheiro.compare(Dinheiro.new(12345, :BRL), Dinheiro.new(12346, :BRL))
+      -1
+      iex> Dinheiro.compare(Dinheiro.new(12346, :BRL), Dinheiro.new(12345, :BRL))
+      1
+  """
+  def compare(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
+    case a.quantia - b.quantia do
+      result when result >  0 -> 1
+      result when result <  0 -> -1
+      result when result == 0 -> 0
+    end
+  end
+
+  def compare(a, b) do
+    raise ArgumentError, message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
   end
 end
