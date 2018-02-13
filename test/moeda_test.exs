@@ -17,4 +17,12 @@ defmodule MoedaTest do
     assert Moeda.get_atom(:brl) == :BRL
     assert Moeda.get_atom("") == nil
   end
+
+  test "get_factor/1" do
+    assert Moeda.get_factor("BRL") == 100
+    assert Moeda.get_factor("brl") == 100
+    assert Moeda.get_factor(:BRL) == 100
+    assert Moeda.get_factor(:brl) == 100
+    assert Moeda.get_factor("") == nil
+  end
 end

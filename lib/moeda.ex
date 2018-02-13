@@ -74,4 +74,30 @@ defmodule Moeda do
       nil
     end
   end
+
+  @spec get_factor(String.t | atom) :: atom | nil
+  @doc """
+  Return a multiplication factor from an ISO 4217 code.
+
+  ## Examples
+
+      iex> Moeda.get_factor(:BRL)
+      100
+      iex> Moeda.get_factor("BRL")
+      100
+      iex> Moeda.get_factor("")
+      nil
+
+  Its function ignore case sensitive.
+
+  ## Examples
+
+      iex> Moeda.get_factor(:brl)
+      100
+      iex> Moeda.get_factor("brl")
+      100
+
+  """
+  def get_factor(codigo) do
+  end
 end
