@@ -144,9 +144,6 @@ defmodule DinheiroTest do
     assert_raise FunctionClauseError, fn ->
       Dinheiro.divide(%{ quantia: 600, moeda: :BRL }, 2)
     end
-    assert_raise ArgumentError, fn ->
-      Dinheiro.divide(123)
-    end
   end
 
 end

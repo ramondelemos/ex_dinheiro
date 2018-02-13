@@ -192,10 +192,6 @@ defmodule Dinheiro do
     to_alocate(division, remainder, m)
   end
 
-  def divide(a) do
-    raise ArgumentError, message: "Value must be a `Dinheiro`."
-  end
-
   defp calculate_ratio(ratios, ratio, value) do
     ratios |> Enum.map(&(
       div((value * &1), ratio)
@@ -203,7 +199,11 @@ defmodule Dinheiro do
   end
 
   defp to_alocate([], remainder, moeda) do
-    []
+    if is_integer(remainder) and is_atom(moeda) do
+      []
+    else
+      raise ArgumentError, message: "Invalid arguments."
+    end
   end
 
   defp to_alocate([head | tail], remainder, moeda) do
