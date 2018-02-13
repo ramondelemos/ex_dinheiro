@@ -141,6 +141,23 @@ defmodule Dinheiro do
     raise_moeda_must_be_the_same(a, b)
   end
 
+  @spec multiply(t, integer | float) :: t
+  @doc """
+  Return a new `Dinheiro` structs with value multiplied by other value.
+  The first parameter must be a struct of `Dinheiro`.
+
+  ## Example:
+      iex> Dinheiro.multiply(Dinheiro.new(2, :BRL), 2)
+      %Dinheiro{ quantia: 400, moeda: :BRL }
+      iex> Dinheiro.multiply(Dinheiro.new(5, :BRL), 2.5)
+      %Dinheiro{ quantia: 1250, moeda: :BRL }
+      iex> Dinheiro.multiply(Dinheiro.new(4, :BRL), -2)
+      %Dinheiro{ quantia: -800, moeda: :BRL }
+
+  """
+  def multiply(a, b) do
+  end
+
   defp raise_moeda_must_be_the_same(a, b) do
     raise ArgumentError, message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
   end

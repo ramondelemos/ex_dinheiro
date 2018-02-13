@@ -95,4 +95,13 @@ defmodule DinheiroTest do
     end
   end
 
+  test "multiply/2" do
+    assert Dinheiro.multiply(Dinheiro.new(3, :BRL), 2) == %Dinheiro{ quantia: 600, moeda: :BRL }
+    assert Dinheiro.multiply(Dinheiro.new(4, :BRL), 1.5) == %Dinheiro{ quantia: 600, moeda: :BRL }
+    assert Dinheiro.multiply(Dinheiro.new(1, :BRL), -1) == %Dinheiro{ quantia: -100, moeda: :BRL }
+    assert_raise ArgumentError, fn ->
+      Dinheiro.multiply(Dinheiro.new(2, :BRL), 1)
+    end
+  end
+
 end
