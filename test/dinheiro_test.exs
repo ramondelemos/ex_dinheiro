@@ -104,4 +104,10 @@ defmodule DinheiroTest do
     end
   end
 
+  test "to_float/1" do
+    assert Dinheiro.to_float(%Dinheiro{ quantia: 600, moeda: :BRL }) == 6.0
+    assert Dinheiro.to_float(%Dinheiro{ quantia: 625, moeda: :BRL }) == 6.25
+    assert Dinheiro.to_float(%Dinheiro{ quantia: -625, moeda: :BRL }) == -6.25
+  end
+
 end

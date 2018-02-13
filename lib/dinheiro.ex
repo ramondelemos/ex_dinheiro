@@ -158,6 +158,22 @@ defmodule Dinheiro do
   def multiply(a, b) do
   end
 
+  @spec to_float(t) :: float
+  @doc """
+  Return a float value from a `Dinheiro` structs.
+
+  ## Example:
+      iex> Dinheiro.to_float(%Dinheiro{ quantia: 200, moeda: :BRL })
+      2.0
+      iex> Dinheiro.to_float(Dinheiro.new(50, :BRL))
+      50.0
+      iex> Dinheiro.to_float(Dinheiro.new(-4, :BRL))
+      -4.0
+
+  """
+  def to_float(from) do
+  end
+
   defp raise_moeda_must_be_the_same(a, b) do
     raise ArgumentError, message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
   end
