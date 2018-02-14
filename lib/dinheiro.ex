@@ -2,7 +2,7 @@ defmodule Dinheiro do
   @moduledoc """
   Documentation for Dinheiro.
   """
-  defstruct quantia: nil, moeda: nil
+  defstruct [:quantia, :moeda]
 
   @typedoc """
       Type that represents Dinheiro struct with:
@@ -19,9 +19,9 @@ defmodule Dinheiro do
   ## Example:
         iex> Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
         iex> Dinheiro.new(12345)
-        %Dinheiro{ quantia: 1234500, moeda: :BRL }
+        %Dinheiro{quantia: 1234500, moeda: :BRL}
         iex> Dinheiro.new(123.45)
-        %Dinheiro{ quantia: 12345, moeda: :BRL }
+        %Dinheiro{quantia: 12345, moeda: :BRL}
 
   """
   def new(quantia) when is_integer(quantia) or is_float(quantia) do
@@ -43,20 +43,32 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.new(12345, :BRL)
-      %Dinheiro{ quantia: 1234500, moeda: :BRL }
+      %Dinheiro{quantia: 1234500, moeda: :BRL}
       iex> Dinheiro.new(12345, "BRL")
-      %Dinheiro{ quantia: 1234500, moeda: :BRL }
+      %Dinheiro{quantia: 1234500, moeda: :BRL}
       iex> Dinheiro.new(123.45, :BRL)
-      %Dinheiro{ quantia: 12345, moeda: :BRL }
+      %Dinheiro{quantia: 12345, moeda: :BRL}
       iex> Dinheiro.new(123.45, "BRL")
-      %Dinheiro{ quantia: 12345, moeda: :BRL }
+      %Dinheiro{quantia: 12345, moeda: :BRL}
 
   """
   def new(quantia, moeda) when is_integer(quantia) or is_float(quantia) do
     v_moeda = Moeda.find(moeda)
 
     if v_moeda do
-      newp(round(quantia * Moeda.get_factor(v_moeda.codigo)), Moeda.get_atom(v_moeda.codigo))
+      factor =
+        v_moeda.codigo
+        |> Moeda.get_factor()
+
+      atom =
+        v_moeda.codigo
+        |> Moeda.get_atom()
+
+      valor = quantia * factor
+
+      valor
+      |> round
+      |> newp(atom)
     else
       raise ArgumentError, "to use Dinheiro.new/2 you must set a valid value to moeda."
     end
@@ -97,13 +109,13 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.sum(Dinheiro.new(1, :BRL), Dinheiro.new(1, :BRL))
-      %Dinheiro{ quantia: 200, moeda: :BRL }
+      %Dinheiro{quantia: 200, moeda: :BRL}
       iex> Dinheiro.sum(Dinheiro.new(1, :BRL), 2)
-      %Dinheiro{ quantia: 300, moeda: :BRL }
+      %Dinheiro{quantia: 300, moeda: :BRL}
       iex> Dinheiro.sum(Dinheiro.new(1, :BRL), 2.5)
-      %Dinheiro{ quantia: 350, moeda: :BRL }
+      %Dinheiro{quantia: 350, moeda: :BRL}
       iex> Dinheiro.sum(Dinheiro.new(2, :BRL), -1)
-      %Dinheiro{ quantia: 100, moeda: :BRL }
+      %Dinheiro{quantia: 100, moeda: :BRL}
 
   """
   def sum(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
@@ -125,13 +137,13 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.subtract(Dinheiro.new(2, :BRL), Dinheiro.new(1, :BRL))
-      %Dinheiro{ quantia: 100, moeda: :BRL }
+      %Dinheiro{quantia: 100, moeda: :BRL}
       iex> Dinheiro.subtract(Dinheiro.new(4, :BRL), 2)
-      %Dinheiro{ quantia: 200, moeda: :BRL }
+      %Dinheiro{quantia: 200, moeda: :BRL}
       iex> Dinheiro.subtract(Dinheiro.new(5, :BRL), 2.5)
-      %Dinheiro{ quantia: 250, moeda: :BRL }
+      %Dinheiro{quantia: 250, moeda: :BRL}
       iex> Dinheiro.subtract(Dinheiro.new(4, :BRL), -2)
-      %Dinheiro{ quantia: 600, moeda: :BRL }
+      %Dinheiro{quantia: 600, moeda: :BRL}
 
   """
   def subtract(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
@@ -153,11 +165,11 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.multiply(Dinheiro.new(2, :BRL), 2)
-      %Dinheiro{ quantia: 400, moeda: :BRL }
+      %Dinheiro{quantia: 400, moeda: :BRL}
       iex> Dinheiro.multiply(Dinheiro.new(5, :BRL), 2.5)
-      %Dinheiro{ quantia: 1250, moeda: :BRL }
+      %Dinheiro{quantia: 1250, moeda: :BRL}
       iex> Dinheiro.multiply(Dinheiro.new(4, :BRL), -2)
-      %Dinheiro{ quantia: -800, moeda: :BRL }
+      %Dinheiro{quantia: -800, moeda: :BRL}
 
   """
   def multiply(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
@@ -198,23 +210,30 @@ defmodule Dinheiro do
   end
 
   defp calculate_ratio(ratios, ratio, value) do
-    ratios |> Enum.map(&div(value * &1, ratio))
-  end
-
-  defp to_alocate([], remainder, moeda) do
-    if is_integer(remainder) and is_atom(moeda) do
-      []
-    else
-      raise ArgumentError, message: "Invalid arguments."
-    end
+    ratios
+    |> Enum.map(&div(value * &1, ratio))
   end
 
   defp to_alocate([head | tail], remainder, moeda) do
     if head do
-      if remainder > 0 do
-        [newp(head + 1, moeda) | to_alocate(tail, remainder - 1, moeda)]
+      dinheiro =
+        if remainder > 0 do
+          newp(head + 1, moeda)
+        else
+          newp(head, moeda)
+        end
+
+      rem =
+        if remainder > 0 do
+          remainder - 1
+        else
+          remainder
+        end
+
+      if tail != [] do
+        [dinheiro | to_alocate(tail, rem, moeda)]
       else
-        [newp(head, moeda) | to_alocate(tail, remainder, moeda)]
+        [dinheiro]
       end
     else
       []
@@ -222,8 +241,21 @@ defmodule Dinheiro do
   end
 
   defp to_alocate(division, remainder, moeda, position) do
+    some =
+      if remainder > 0 do
+        1
+      else
+        0
+      end
+
     if position > 0 do
-      [newp(division + remainder, moeda) | to_alocate(division, 0, moeda, position - 1)]
+      value = division + some
+
+      dinheiro =
+        value
+        |> newp(moeda)
+
+      [dinheiro | to_alocate(division, remainder - 1, moeda, position - 1)]
     else
       []
     end
@@ -237,7 +269,7 @@ defmodule Dinheiro do
   Return a float value from a `Dinheiro` structs.
 
   ## Example:
-      iex> Dinheiro.to_float(%Dinheiro{ quantia: 200, moeda: :BRL })
+      iex> Dinheiro.to_float(%Dinheiro{quantia: 200, moeda: :BRL})
       2.0
       iex> Dinheiro.to_float(Dinheiro.new(50.5, :BRL))
       50.5
@@ -247,7 +279,8 @@ defmodule Dinheiro do
   """
   def to_float(%Dinheiro{moeda: m} = from) do
     factor = Moeda.get_factor(m)
-    Float.round(from.quantia / factor, 2)
+    moeda = Moeda.find(m)
+    Float.round(from.quantia / factor, moeda.expoente)
   end
 
   defp raise_moeda_must_be_the_same(a, b) do
@@ -255,29 +288,17 @@ defmodule Dinheiro do
   end
 
   defp assert_if_value_is_positive(value) when is_integer(value) do
-    if value < 0 do
-      raise ArgumentError, message: "Value #{value} must be positive."
-    end
+    if value < 0, do: raise(ArgumentError, message: "Value #{value} must be positive.")
   end
 
   defp assert_if_greater_than_zero(value) when is_integer(value) do
-    if value == 0 do
-      raise ArgumentError, message: "Value must be greater than zero."
-    end
-  end
-
-  defp assert_if_ratios_are_valid([]) do
+    if value == 0, do: raise(ArgumentError, message: "Value must be greater than zero.")
   end
 
   defp assert_if_ratios_are_valid([head | tail]) do
-    if head do
-      unless is_integer(head) do
-        raise ArgumentError, message: "Value '#{head}' must be integer."
-      end
-
-      assert_if_value_is_positive(head)
-      assert_if_greater_than_zero(head)
-      assert_if_ratios_are_valid(tail)
-    end
+    unless is_integer(head), do: raise(ArgumentError, message: "Value '#{head}' must be integer.")
+    assert_if_value_is_positive(head)
+    assert_if_greater_than_zero(head)
+    if tail != [], do: assert_if_ratios_are_valid(tail)
   end
 end

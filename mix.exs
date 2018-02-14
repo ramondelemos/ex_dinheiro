@@ -1,7 +1,7 @@
 defmodule Dinheiro.MixProject do
   use Mix.Project
 
-  @version "0.1.2"
+  @version "0.1.3"
   @github_url "https://github.com/ramondelemos/ex_dinheiro"
 
   def project do
@@ -31,7 +31,8 @@ defmodule Dinheiro.MixProject do
   defp deps do
     [
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
-      {:ex_doc, "~> 0.18", only: [:dev, :docs]}
+      {:ex_doc, "~> 0.18", only: [:dev, :docs]},
+      {:credo, "~> 0.8.10", only: [:dev, :test], runtime: false}
     ]
   end
 
