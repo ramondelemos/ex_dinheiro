@@ -11,12 +11,12 @@ Elixir library for money manipulation.
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `dinheiro` to your list of dependencies in `mix.exs`:
+by adding `:ex_dinheiro` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:ex_dinheiro, "~> 0.1.2"}
+    {:ex_dinheiro, "~> 0.1.3"}
   ]
 end
 ```

@@ -1,12 +1,10 @@
 ## Changelog
 
-### v0.1.0
+### v0.1.3
 
-Library creation.
+Implementation of method to_string/3.
 
-### v0.1.1
-
-Configuration of Continuous Integration, Delivery, and Deployment.
+Refactor to normalize the code to de credo patterns.
 
 ### v0.1.2
 
@@ -19,3 +17,11 @@ Implementation of methods:
  - subtract/2
  - sum/2
  - to_float/1
+
+### v0.1.1
+
+Configuration of Continuous Integration, Delivery, and Deployment.
+
+### v0.1.0
+
+Library creation.
