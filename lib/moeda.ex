@@ -107,7 +107,7 @@ defmodule Moeda do
     end
   end
 
-  @spec to_string(String.t | atom, float, Keywords.t) :: String.t | nil
+  @spec to_string(String.t | atom, float, Keywords.t) :: String.t
   @doc """
   Return a formated string from a ISO 4217 code and a float value.
 
@@ -141,24 +141,18 @@ defmodule Moeda do
 
   """
   def to_string(moeda, valor, opts \\ []) do
-    thousand_separator = Keyword.get(opts, :thousand_separator, ".")
-    decimal_separator = Keyword.get(opts, :decimal_separator, ",")
-    
     m = Moeda.find(moeda)
 
-    unless m do
-      raise ArgumentError, message: "'#{moeda}' does not represent an ISO 4217 code."
-    end
+    unless m, do: raise ArgumentError, message: "'#{moeda}' does not represent an ISO 4217 code."
 
-    unless is_float(valor) do
-      raise ArgumentError, message: "Value '#{valor}' must be float."
-    end
+    unless is_float(valor), do: raise ArgumentError, message: "Value '#{valor}' must be float."
 
-    parts = String.split(:erlang.float_to_binary(valor, decimals: m.expoente), ".")
-    thousands = List.first(parts)
-    thousands = String.reverse(thousands)
-    thousands = format_thousands(String.codepoints(thousands), thousand_separator)
-    thousands = String.reverse(thousands)
+    thousand_separator = Keyword.get(opts, :thousand_separator, ".")
+    decimal_separator = Keyword.get(opts, :decimal_separator, ",")
+
+    parts = :erlang.float_to_binary(valor, decimals: m.expoente) |> String.split(".")
+    
+    thousands = List.first(parts) |> String.reverse |> String.codepoints |> format_thousands(thousand_separator) |> String.reverse
 
     decimals = if m.expoente > 0 do      
       Enum.join([decimal_separator, List.last(parts)])
@@ -166,7 +160,7 @@ defmodule Moeda do
       ""
     end
 
-    String.trim(Enum.join([m.simbolo, " ", thousands, decimals]))
+    Enum.join([m.simbolo, " ", thousands, decimals]) |> String.trim
   end
 
   defp format_thousands([head | tail], separator, opts \\ []) do

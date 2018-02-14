@@ -249,7 +249,8 @@ defmodule Dinheiro do
   """
   def to_float(%Dinheiro{moeda: m} = from) do
     factor = Moeda.get_factor(m)
-    Float.round(from.quantia / factor, 2)
+    moeda = Moeda.find(m)
+    Float.round(from.quantia / factor, moeda.expoente)
   end
 
   defp raise_moeda_must_be_the_same(a, b) do
@@ -257,28 +258,17 @@ defmodule Dinheiro do
   end
 
   defp assert_if_value_is_positive(value) when is_integer(value) do
-    if value < 0 do
-      raise ArgumentError, message: "Value #{value} must be positive."
-    end
+    if value < 0, do: raise ArgumentError, message: "Value #{value} must be positive."
   end
 
   defp assert_if_greater_than_zero(value) when is_integer(value) do
-    if value == 0 do
-      raise ArgumentError, message: "Value must be greater than zero."
-    end
-  end
-
-  defp assert_if_ratios_are_valid([]) do
+    if value == 0, do: raise ArgumentError, message: "Value must be greater than zero."
   end
 
   defp assert_if_ratios_are_valid([head | tail]) do
-    if head do
-      unless is_integer(head) do
-        raise ArgumentError, message: "Value '#{head}' must be integer."
-      end
-      assert_if_value_is_positive(head)
-      assert_if_greater_than_zero(head)
-      assert_if_ratios_are_valid(tail)
-    end
+    unless is_integer(head), do: raise ArgumentError, message: "Value '#{head}' must be integer."
+    assert_if_value_is_positive(head)
+    assert_if_greater_than_zero(head)
+    if tail != [], do: assert_if_ratios_are_valid(tail)
   end
 end
