@@ -106,4 +106,40 @@ defmodule Moeda do
       nil
     end
   end
+
+  @spec to_string(String.t | atom, float, Keywords.t) :: String.t | nil
+  @doc """
+  Return a formated string from a ISO 4217 code and a float value.
+
+  ## Examples
+
+      iex> Moeda.to_string(:BRL, 100.0)
+      "R$ 100.00"
+      iex> Moeda.to_string("BRL", 1000.5)
+      "R$ 1,000.50"
+
+  Its function ignore case sensitive.
+
+  ## Examples
+
+      iex> Moeda.to_string(:BRL, 100.0)
+      "R$ 100,00"
+      iex> Moeda.to_string("BRL", 1000.5)
+      "R$ 1.000,50"
+      iex> Moeda.to_string(:BRL, -1.0)
+      "R$ -1,00"
+
+  Using options-style parameters you can change the behavior of the function.
+
+    - `thousand_separator` - default `"."`, sets the thousand separator.
+    - `decimal_separator` - default `","`, sets the decimal separator.
+
+  ## Exemples
+
+      iex> Moeda.to_string(:USD, 1000.5, thousand_separator: ",", decimal_separator: ".")
+      "$ 1,000.50"
+
+  """
+  def to_string(moeda, valor, opts \\ []) do
+  end
 end
