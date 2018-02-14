@@ -27,6 +27,7 @@ defmodule MoedaTest do
   end
 
   test "to_string/3" do
+    assert Moeda.to_string(:BRL, 0.1) == "R$ 0,10"
     assert Moeda.to_string("BRL", 1.0) == "R$ 1,00"
     assert Moeda.to_string("brl", 10.0) == "R$ 10,00"
     assert Moeda.to_string(:BRL, 100.0) == "R$ 100,00"

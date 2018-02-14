@@ -114,20 +114,20 @@ defmodule Moeda do
   ## Examples
 
       iex> Moeda.to_string(:BRL, 100.0)
-      "R$ 100.00"
-      iex> Moeda.to_string("BRL", 1000.5)
-      "R$ 1,000.50"
-
-  Its function ignore case sensitive.
-
-  ## Examples
-
-      iex> Moeda.to_string(:BRL, 100.0)
       "R$ 100,00"
       iex> Moeda.to_string("BRL", 1000.5)
       "R$ 1.000,50"
       iex> Moeda.to_string(:BRL, -1.0)
       "R$ -1,00"
+
+  Its function ignore case sensitive.
+
+  ## Examples
+
+      iex> Moeda.to_string(:bRl, 100.0)
+      "R$ 100,00"
+      iex> Moeda.to_string("BrL", 1000.5)
+      "R$ 1.000,50"
 
   Using options-style parameters you can change the behavior of the function.
 
@@ -141,5 +141,48 @@ defmodule Moeda do
 
   """
   def to_string(moeda, valor, opts \\ []) do
+    thousand_separator = Keyword.get(opts, :thousand_separator, ".")
+    decimal_separator = Keyword.get(opts, :decimal_separator, ",")
+    
+    m = Moeda.find(moeda)
+
+    unless m do
+      raise ArgumentError, message: "'#{moeda}' does not represent an ISO 4217 code."
+    end
+
+    unless is_float(valor) do
+      raise ArgumentError, message: "Value '#{valor}' must be float."
+    end
+
+    parts = String.split(:erlang.float_to_binary(valor, decimals: m.expoente), ".")
+    thousands = List.first(parts)
+    thousands = String.reverse(thousands)
+    thousands = format_thousands(String.codepoints(thousands), thousand_separator)
+    thousands = String.reverse(thousands)
+
+    decimals = if m.expoente > 0 do      
+      Enum.join([decimal_separator, List.last(parts)])
+    else
+      ""
+    end
+
+    String.trim(Enum.join([m.simbolo, " ", thousands, decimals]))
   end
+
+  defp format_thousands([head | tail], separator, opts \\ []) do
+    position = Keyword.get(opts, :position, 1)
+
+    num = if rem(position, 3) == 0 and head != "-" and tail != [] do
+      Enum.join([head, separator])
+    else
+      head
+    end
+
+    if tail != [] do
+      Enum.join([num, format_thousands(tail, separator, position: position + 1)])
+    else
+      num
+    end
+  end
+
 end
