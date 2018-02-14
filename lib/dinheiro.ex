@@ -223,8 +223,9 @@ defmodule Dinheiro do
   end
 
   defp to_alocate(division, remainder, moeda, position) do
+    s = if remainder > 0 do 1 else 0 end
     if position > 0 do
-      [ newp(division + remainder, moeda) | to_alocate(division, 0, moeda, position - 1) ]
+      [ newp(division + s, moeda) | to_alocate(division, remainder - 1, moeda, position - 1) ]
     else
       []
     end

@@ -120,6 +120,11 @@ defmodule DinheiroTest do
   end
 
   test "divide/2" do
+    assert Dinheiro.divide(Dinheiro.new(0.02, :BRL), 3) == [
+      %Dinheiro{quantia: 1, moeda: :BRL},
+      %Dinheiro{quantia: 1, moeda: :BRL},
+      %Dinheiro{quantia: 0, moeda: :BRL},
+      ]
     assert Dinheiro.divide(%Dinheiro{ quantia: 600, moeda: :BRL }, 2) == [%Dinheiro{quantia: 300, moeda: :BRL}, %Dinheiro{quantia: 300, moeda: :BRL}]
     assert Dinheiro.divide(%Dinheiro{ quantia: 625, moeda: :BRL }, 2) == [%Dinheiro{quantia: 313, moeda: :BRL}, %Dinheiro{quantia: 312, moeda: :BRL}]
     assert Dinheiro.divide(Dinheiro.new(0.05, :BRL), [3, 7]) == [%Dinheiro{quantia: 2, moeda: :BRL}, %Dinheiro{quantia: 3, moeda: :BRL}]
