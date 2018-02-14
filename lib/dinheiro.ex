@@ -2,14 +2,14 @@ defmodule Dinheiro do
   @moduledoc """
   Documentation for Dinheiro.
   """
-  defstruct quantia: nil, moeda: nil
+  defstruct [:quantia, :moeda]
 
   @typedoc """
       Type that represents Dinheiro struct with:
       :quantia as integer
       :moeda as atom that represents an ISO 4217 code
   """
-  @type t :: %Dinheiro{ quantia: integer, moeda: atom }
+  @type t :: %Dinheiro{quantia: integer, moeda: atom}
 
   @spec new(integer | float) :: t
   @doc """
@@ -19,9 +19,9 @@ defmodule Dinheiro do
   ## Example:
         iex> Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
         iex> Dinheiro.new(12345)
-        %Dinheiro{ quantia: 1234500, moeda: :BRL }
+        %Dinheiro{quantia: 1234500, moeda: :BRL}
         iex> Dinheiro.new(123.45)
-        %Dinheiro{ quantia: 12345, moeda: :BRL }
+        %Dinheiro{quantia: 12345, moeda: :BRL}
 
   """
   def new(quantia) when is_integer(quantia) or is_float(quantia) do
@@ -39,26 +39,36 @@ defmodule Dinheiro do
   
   ## Example:
       iex> Dinheiro.new(12345, :BRL)
-      %Dinheiro{ quantia: 1234500, moeda: :BRL }
+      %Dinheiro{quantia: 1234500, moeda: :BRL}
       iex> Dinheiro.new(12345, "BRL")
-      %Dinheiro{ quantia: 1234500, moeda: :BRL }
+      %Dinheiro{quantia: 1234500, moeda: :BRL}
       iex> Dinheiro.new(123.45, :BRL)
-      %Dinheiro{ quantia: 12345, moeda: :BRL }
+      %Dinheiro{quantia: 12345, moeda: :BRL}
       iex> Dinheiro.new(123.45, "BRL")
-      %Dinheiro{ quantia: 12345, moeda: :BRL }
+      %Dinheiro{quantia: 12345, moeda: :BRL}
 
   """
   def new(quantia, moeda) when is_integer(quantia) or is_float(quantia) do
     v_moeda = Moeda.find(moeda)
     if v_moeda do
-      newp(round(quantia * Moeda.get_factor(v_moeda.codigo)), Moeda.get_atom(v_moeda.codigo))
+      factor = v_moeda.codigo
+      |> Moeda.get_factor
+
+      atom = v_moeda.codigo
+      |> Moeda.get_atom
+
+      valor = quantia * factor
+
+      valor
+      |> round
+      |> newp(atom)
     else
       raise ArgumentError, "to use Dinheiro.new/2 you must set a valid value to moeda."
     end
   end
 
   defp newp(quantia, moeda) when is_integer(quantia) and is_atom(moeda) do
-    %Dinheiro{ quantia: quantia, moeda: moeda }
+    %Dinheiro{quantia: quantia, moeda: moeda}
   end
 
   @spec compare(t, t) :: integer
@@ -92,17 +102,17 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.sum(Dinheiro.new(1, :BRL), Dinheiro.new(1, :BRL))
-      %Dinheiro{ quantia: 200, moeda: :BRL }
+      %Dinheiro{quantia: 200, moeda: :BRL}
       iex> Dinheiro.sum(Dinheiro.new(1, :BRL), 2)
-      %Dinheiro{ quantia: 300, moeda: :BRL }
+      %Dinheiro{quantia: 300, moeda: :BRL}
       iex> Dinheiro.sum(Dinheiro.new(1, :BRL), 2.5)
-      %Dinheiro{ quantia: 350, moeda: :BRL }
+      %Dinheiro{quantia: 350, moeda: :BRL}
       iex> Dinheiro.sum(Dinheiro.new(2, :BRL), -1)
-      %Dinheiro{ quantia: 100, moeda: :BRL }
+      %Dinheiro{quantia: 100, moeda: :BRL}
 
   """
   def sum(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
-    %Dinheiro{ quantia: a.quantia + b.quantia, moeda: m }
+    %Dinheiro{quantia: a.quantia + b.quantia, moeda: m}
   end
 
   def sum(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
@@ -120,17 +130,17 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.subtract(Dinheiro.new(2, :BRL), Dinheiro.new(1, :BRL))
-      %Dinheiro{ quantia: 100, moeda: :BRL }
+      %Dinheiro{quantia: 100, moeda: :BRL}
       iex> Dinheiro.subtract(Dinheiro.new(4, :BRL), 2)
-      %Dinheiro{ quantia: 200, moeda: :BRL }
+      %Dinheiro{quantia: 200, moeda: :BRL}
       iex> Dinheiro.subtract(Dinheiro.new(5, :BRL), 2.5)
-      %Dinheiro{ quantia: 250, moeda: :BRL }
+      %Dinheiro{quantia: 250, moeda: :BRL}
       iex> Dinheiro.subtract(Dinheiro.new(4, :BRL), -2)
-      %Dinheiro{ quantia: 600, moeda: :BRL }
+      %Dinheiro{quantia: 600, moeda: :BRL}
 
   """
   def subtract(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
-    %Dinheiro{ quantia: a.quantia - b.quantia, moeda: m }
+    %Dinheiro{quantia: a.quantia - b.quantia, moeda: m}
   end
 
   def subtract(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
@@ -148,11 +158,11 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.multiply(Dinheiro.new(2, :BRL), 2)
-      %Dinheiro{ quantia: 400, moeda: :BRL }
+      %Dinheiro{quantia: 400, moeda: :BRL}
       iex> Dinheiro.multiply(Dinheiro.new(5, :BRL), 2.5)
-      %Dinheiro{ quantia: 1250, moeda: :BRL }
+      %Dinheiro{quantia: 1250, moeda: :BRL}
       iex> Dinheiro.multiply(Dinheiro.new(4, :BRL), -2)
-      %Dinheiro{ quantia: -800, moeda: :BRL }
+      %Dinheiro{quantia: -800, moeda: :BRL}
 
   """
   def multiply(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
@@ -193,7 +203,8 @@ defmodule Dinheiro do
   end
 
   defp calculate_ratio(ratios, ratio, value) do
-    ratios |> Enum.map(&(
+    ratios
+    |> Enum.map(&(
       div((value * &1), ratio)
     ))
   end
@@ -213,9 +224,9 @@ defmodule Dinheiro do
       end
 
       if tail != [] do
-        [ dinheiro | to_alocate(tail, rem, moeda) ]
+        [dinheiro | to_alocate(tail, rem, moeda)]
       else
-        [ dinheiro ]
+        [dinheiro]
       end
     else
       []
@@ -223,9 +234,14 @@ defmodule Dinheiro do
   end
 
   defp to_alocate(division, remainder, moeda, position) do
-    s = if remainder > 0 do 1 else 0 end
+    some = if remainder > 0 do 1 else 0 end
     if position > 0 do
-      [ newp(division + s, moeda) | to_alocate(division, remainder - 1, moeda, position - 1) ]
+      value = division + some
+
+      dinheiro = value
+      |> newp(moeda)
+
+      [dinheiro | to_alocate(division, remainder-1, moeda, position-1)]
     else
       []
     end
@@ -239,7 +255,7 @@ defmodule Dinheiro do
   Return a float value from a `Dinheiro` structs.
 
   ## Example:
-      iex> Dinheiro.to_float(%Dinheiro{ quantia: 200, moeda: :BRL })
+      iex> Dinheiro.to_float(%Dinheiro{quantia: 200, moeda: :BRL})
       2.0
       iex> Dinheiro.to_float(Dinheiro.new(50.5, :BRL))
       50.5

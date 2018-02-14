@@ -4,8 +4,8 @@ defmodule Moeda do
   """
 
   @moedas %{
-    BRL: %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 },
-    USD: %{ nome: "US Dollar", simbolo: "$", codigo: "USD", codigo_iso: 840, expoente: 2 }
+    BRL: %{nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2},
+    USD: %{nome: "US Dollar", simbolo: "$", codigo: "USD", codigo_iso: 840, expoente: 2}
   }
 
   @spec find(String.t | atom) :: map | nil
@@ -15,9 +15,9 @@ defmodule Moeda do
   ## Examples
 
       iex> Moeda.find(:BRL)
-      %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 }
+      %{nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2}
       iex> Moeda.find("BRL")
-      %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 }
+      %{nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2}
       iex> Moeda.find("")
       nil
 
@@ -26,17 +26,24 @@ defmodule Moeda do
   ## Examples
 
       iex> Moeda.find(:brl)
-      %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 }
+      %{nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2}
       iex> Moeda.find("brl")
-      %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 }
+      %{nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2}
 
   """
   def find(codigo) when is_atom(codigo) do
-    codigo |> Atom.to_string |> String.upcase |>  String.to_atom |> findp
+    codigo
+    |> Atom.to_string
+    |> String.upcase
+    |> String.to_atom
+    |> findp
   end
 
   def find(codigo) when is_binary(codigo) do
-    codigo |> String.upcase |>  String.to_atom |> findp
+    codigo
+    |> String.upcase
+    |> String.to_atom
+    |> findp
   end
 
   defp findp(codigo) do
@@ -150,17 +157,26 @@ defmodule Moeda do
     thousand_separator = Keyword.get(opts, :thousand_separator, ".")
     decimal_separator = Keyword.get(opts, :decimal_separator, ",")
 
-    parts = :erlang.float_to_binary(valor, decimals: m.expoente) |> String.split(".")
-    
-    thousands = List.first(parts) |> String.reverse |> String.codepoints |> format_thousands(thousand_separator) |> String.reverse
+    parts = valor
+    |> :erlang.float_to_binary(decimals: m.expoente)
+    |> String.split(".")
 
-    decimals = if m.expoente > 0 do      
+    thousands = parts
+    |> List.first
+    |> String.reverse
+    |> String.codepoints
+    |> format_thousands(thousand_separator)
+    |> String.reverse
+
+    decimals = if m.expoente > 0 do
       Enum.join([decimal_separator, List.last(parts)])
     else
       ""
     end
 
-    Enum.join([m.simbolo, " ", thousands, decimals]) |> String.trim
+    [m.simbolo, " ", thousands, decimals]
+    |> Enum.join
+    |> String.trim
   end
 
   defp format_thousands([head | tail], separator, opts \\ []) do
@@ -173,7 +189,8 @@ defmodule Moeda do
     end
 
     if tail != [] do
-      Enum.join([num, format_thousands(tail, separator, position: position + 1)])
+      [num, format_thousands(tail, separator, position: position + 1)]
+      |> Enum.join
     else
       num
     end

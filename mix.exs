@@ -32,6 +32,7 @@ defmodule Dinheiro.MixProject do
     [
       {:excoveralls, "~> 0.8.1", only: [:dev, :test]},
       {:ex_doc, "~> 0.18", only: [:dev, :docs]},
+      {:credo, "~> 0.8.10", only: [:dev, :test], runtime: false}
     ]
   end
 
