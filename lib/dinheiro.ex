@@ -198,20 +198,24 @@ defmodule Dinheiro do
     ))
   end
 
-  defp to_alocate([], remainder, moeda) do
-    if is_integer(remainder) and is_atom(moeda) do
-      []
-    else
-      raise ArgumentError, message: "Invalid arguments."
-    end
-  end
-
   defp to_alocate([head | tail], remainder, moeda) do
     if head do
-      if remainder > 0 do
-        [ newp(head + 1, moeda) | to_alocate(tail, remainder - 1, moeda) ]
+      dinheiro = if remainder > 0 do
+        newp(head + 1, moeda)
       else
-        [ newp(head, moeda) | to_alocate(tail, remainder, moeda) ]
+        newp(head, moeda)
+      end
+
+      rem = if remainder > 0 do
+        remainder - 1
+      else
+        remainder
+      end
+
+      if tail != [] do
+        [ dinheiro | to_alocate(tail, rem, moeda) ]
+      else
+        [ dinheiro ]
       end
     else
       []
