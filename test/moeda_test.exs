@@ -60,14 +60,19 @@ defmodule MoedaTest do
     assert Moeda.to_string("brl", 10.0) == "R$ 10,00"
     assert Moeda.to_string(:BRL, 100.0) == "R$ 100,00"
     assert Moeda.to_string(:BRL, -1000.0) == "R$ -1.000,00"
-    assert Moeda.to_string(:brl, 12345678.9) == "R$ 12.345.678,90"
-    assert Moeda.to_string(:USD, 12345678.9, thousand_separator: ",", decimal_separator: ".") == "$ 12,345,678.90"
+    assert Moeda.to_string(:brl, 12_345_678.9) == "R$ 12.345.678,90"
+
+    assert Moeda.to_string(:USD, 12_345_678.9, thousand_separator: ",", decimal_separator: ".") ==
+             "$ 12,345,678.90"
+
     assert_raise ArgumentError, fn ->
       Moeda.to_string(:BRL, 100)
     end
+
     assert_raise ArgumentError, fn ->
       Moeda.to_string(:NONE, 100.0)
     end
+
     assert_raise ArgumentError, fn ->
       Moeda.to_string("NONE", 100.0)
     end

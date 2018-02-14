@@ -33,16 +33,16 @@ defmodule Moeda do
   """
   def find(codigo) when is_atom(codigo) do
     codigo
-    |> Atom.to_string
-    |> String.upcase
-    |> String.to_atom
+    |> Atom.to_string()
+    |> String.upcase()
+    |> String.to_atom()
     |> findp
   end
 
   def find(codigo) when is_binary(codigo) do
     codigo
-    |> String.upcase
-    |> String.to_atom
+    |> String.upcase()
+    |> String.to_atom()
     |> findp
   end
 
@@ -116,7 +116,7 @@ defmodule Moeda do
     end
   end
 
-  @spec to_string(String.t | atom, float, Keywords.t) :: String.t
+  @spec to_string(String.t() | atom, float, Keywords.t()) :: String.t()
   @doc """
   Return a formated string from a ISO 4217 code and a float value.
 
@@ -152,50 +152,53 @@ defmodule Moeda do
   def to_string(moeda, valor, opts \\ []) do
     m = Moeda.find(moeda)
 
-    unless m, do: raise ArgumentError, message: "'#{moeda}' does not represent an ISO 4217 code."
+    unless m, do: raise(ArgumentError, message: "'#{moeda}' does not represent an ISO 4217 code.")
 
-    unless is_float(valor), do: raise ArgumentError, message: "Value '#{valor}' must be float."
+    unless is_float(valor), do: raise(ArgumentError, message: "Value '#{valor}' must be float.")
 
     thousand_separator = Keyword.get(opts, :thousand_separator, ".")
     decimal_separator = Keyword.get(opts, :decimal_separator, ",")
 
-    parts = valor
-    |> :erlang.float_to_binary(decimals: m.expoente)
-    |> String.split(".")
+    parts =
+      valor
+      |> :erlang.float_to_binary(decimals: m.expoente)
+      |> String.split(".")
 
-    thousands = parts
-    |> List.first
-    |> String.reverse
-    |> String.codepoints
-    |> format_thousands(thousand_separator)
-    |> String.reverse
+    thousands =
+      parts
+      |> List.first()
+      |> String.reverse()
+      |> String.codepoints()
+      |> format_thousands(thousand_separator)
+      |> String.reverse()
 
-    decimals = if m.expoente > 0 do
-      Enum.join([decimal_separator, List.last(parts)])
-    else
-      ""
-    end
+    decimals =
+      if m.expoente > 0 do
+        Enum.join([decimal_separator, List.last(parts)])
+      else
+        ""
+      end
 
     [m.simbolo, " ", thousands, decimals]
-    |> Enum.join
-    |> String.trim
+    |> Enum.join()
+    |> String.trim()
   end
 
   defp format_thousands([head | tail], separator, opts \\ []) do
     position = Keyword.get(opts, :position, 1)
 
-    num = if rem(position, 3) == 0 and head != "-" and tail != [] do
-      Enum.join([head, separator])
-    else
-      head
-    end
+    num =
+      if rem(position, 3) == 0 and head != "-" and tail != [] do
+        Enum.join([head, separator])
+      else
+        head
+      end
 
     if tail != [] do
       [num, format_thousands(tail, separator, position: position + 1)]
-      |> Enum.join
+      |> Enum.join()
     else
       num
     end
   end
-
 end

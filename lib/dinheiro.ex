@@ -56,11 +56,13 @@ defmodule Dinheiro do
     v_moeda = Moeda.find(moeda)
 
     if v_moeda do
-      factor = v_moeda.codigo
-      |> Moeda.get_factor
+      factor =
+        v_moeda.codigo
+        |> Moeda.get_factor()
 
-      atom = v_moeda.codigo
-      |> Moeda.get_atom
+      atom =
+        v_moeda.codigo
+        |> Moeda.get_atom()
 
       valor = quantia * factor
 
@@ -209,24 +211,24 @@ defmodule Dinheiro do
 
   defp calculate_ratio(ratios, ratio, value) do
     ratios
-    |> Enum.map(&(
-      div((value * &1), ratio)
-    ))
+    |> Enum.map(&div(value * &1, ratio))
   end
 
   defp to_alocate([head | tail], remainder, moeda) do
     if head do
-      dinheiro = if remainder > 0 do
-        newp(head + 1, moeda)
-      else
-        newp(head, moeda)
-      end
+      dinheiro =
+        if remainder > 0 do
+          newp(head + 1, moeda)
+        else
+          newp(head, moeda)
+        end
 
-      rem = if remainder > 0 do
-        remainder - 1
-      else
-        remainder
-      end
+      rem =
+        if remainder > 0 do
+          remainder - 1
+        else
+          remainder
+        end
 
       if tail != [] do
         [dinheiro | to_alocate(tail, rem, moeda)]
@@ -239,14 +241,21 @@ defmodule Dinheiro do
   end
 
   defp to_alocate(division, remainder, moeda, position) do
-    some = if remainder > 0 do 1 else 0 end
+    some =
+      if remainder > 0 do
+        1
+      else
+        0
+      end
+
     if position > 0 do
       value = division + some
 
-      dinheiro = value
-      |> newp(moeda)
+      dinheiro =
+        value
+        |> newp(moeda)
 
-      [dinheiro | to_alocate(division, remainder-1, moeda, position-1)]
+      [dinheiro | to_alocate(division, remainder - 1, moeda, position - 1)]
     else
       []
     end
@@ -279,15 +288,15 @@ defmodule Dinheiro do
   end
 
   defp assert_if_value_is_positive(value) when is_integer(value) do
-    if value < 0, do: raise ArgumentError, message: "Value #{value} must be positive."
+    if value < 0, do: raise(ArgumentError, message: "Value #{value} must be positive.")
   end
 
   defp assert_if_greater_than_zero(value) when is_integer(value) do
-    if value == 0, do: raise ArgumentError, message: "Value must be greater than zero."
+    if value == 0, do: raise(ArgumentError, message: "Value must be greater than zero.")
   end
 
   defp assert_if_ratios_are_valid([head | tail]) do
-    unless is_integer(head), do: raise ArgumentError, message: "Value '#{head}' must be integer."
+    unless is_integer(head), do: raise(ArgumentError, message: "Value '#{head}' must be integer.")
     assert_if_value_is_positive(head)
     assert_if_greater_than_zero(head)
     if tail != [], do: assert_if_ratios_are_valid(tail)
