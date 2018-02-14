@@ -26,17 +26,21 @@ defmodule Dinheiro do
   """
   def new(quantia) when is_integer(quantia) or is_float(quantia) do
     moeda = Application.get_env(:ex_dinheiro, :default_moeda)
+
     if moeda do
       new(quantia, moeda)
     else
-      raise ArgumentError, "to use Dinheiro.new/1 you must set a default value in your application config :ex_dinheiro, default_moeda. #{moeda}."
+      raise ArgumentError,
+            "to use Dinheiro.new/1 you must set a default value in your application config :ex_dinheiro, default_moeda. #{
+              moeda
+            }."
     end
   end
 
-  @spec new(integer | float, atom | String.t) :: t
+  @spec new(integer | float, atom | String.t()) :: t
   @doc """
   Create a new `Dinheiro` struct.
-  
+
   ## Example:
       iex> Dinheiro.new(12345, :BRL)
       %Dinheiro{quantia: 1234500, moeda: :BRL}
@@ -50,6 +54,7 @@ defmodule Dinheiro do
   """
   def new(quantia, moeda) when is_integer(quantia) or is_float(quantia) do
     v_moeda = Moeda.find(moeda)
+
     if v_moeda do
       factor = v_moeda.codigo
       |> Moeda.get_factor
@@ -85,8 +90,8 @@ defmodule Dinheiro do
   """
   def compare(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
     case a.quantia - b.quantia do
-      result when result >  0 -> 1
-      result when result <  0 -> -1
+      result when result > 0 -> 1
+      result when result < 0 -> -1
       result when result == 0 -> 0
     end
   end

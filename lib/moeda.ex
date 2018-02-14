@@ -8,7 +8,7 @@ defmodule Moeda do
     USD: %{nome: "US Dollar", simbolo: "$", codigo: "USD", codigo_iso: 840, expoente: 2}
   }
 
-  @spec find(String.t | atom) :: map | nil
+  @spec find(String.t() | atom) :: map | nil
   @doc """
   Return a map from an atom or string that represents an ISO 4217 code.
 
@@ -50,7 +50,7 @@ defmodule Moeda do
     @moedas[codigo]
   end
 
-  @spec get_atom(String.t | atom) :: atom | nil
+  @spec get_atom(String.t() | atom) :: atom | nil
   @doc """
   Return an atom from a value that represents an ISO 4217 code.
 
@@ -75,14 +75,15 @@ defmodule Moeda do
   """
   def get_atom(codigo) do
     moeda = find(codigo)
+
     if moeda do
-      moeda.codigo |> String.upcase |> String.to_atom
+      moeda.codigo |> String.upcase() |> String.to_atom()
     else
       nil
     end
   end
 
-  @spec get_factor(String.t | atom) :: float | nil
+  @spec get_factor(String.t() | atom) :: float | nil
   @doc """
   Return a multiplication factor from an ISO 4217 code.
 
@@ -107,6 +108,7 @@ defmodule Moeda do
   """
   def get_factor(codigo) do
     moeda = find(codigo)
+
     if moeda do
       :math.pow(10, moeda.expoente)
     else

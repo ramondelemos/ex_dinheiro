@@ -3,10 +3,38 @@ defmodule MoedaTest do
   doctest Moeda
 
   test "find/1" do
-    assert Moeda.find("BRL") == %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 }
-    assert Moeda.find("brl") == %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 }
-    assert Moeda.find(:BRL) == %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 }
-    assert Moeda.find(:brl) == %{ nome: "Brazilian Real", simbolo: "R$", codigo: "BRL", codigo_iso: 986, expoente: 2 }
+    assert Moeda.find("BRL") == %{
+             nome: "Brazilian Real",
+             simbolo: "R$",
+             codigo: "BRL",
+             codigo_iso: 986,
+             expoente: 2
+           }
+
+    assert Moeda.find("brl") == %{
+             nome: "Brazilian Real",
+             simbolo: "R$",
+             codigo: "BRL",
+             codigo_iso: 986,
+             expoente: 2
+           }
+
+    assert Moeda.find(:BRL) == %{
+             nome: "Brazilian Real",
+             simbolo: "R$",
+             codigo: "BRL",
+             codigo_iso: 986,
+             expoente: 2
+           }
+
+    assert Moeda.find(:brl) == %{
+             nome: "Brazilian Real",
+             simbolo: "R$",
+             codigo: "BRL",
+             codigo_iso: 986,
+             expoente: 2
+           }
+
     assert Moeda.find("") == nil
   end
 
