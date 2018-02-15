@@ -67,14 +67,11 @@ defmodule DinheiroTest do
   end
 
   test "compare/1" do
-    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{quantia: 12345, moeda: :BRL}) ==
-             0
+    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), Dinheiro.new(123.45, :BRL)) == 0
 
-    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{quantia: 12346, moeda: :BRL}) ==
-             -1
+    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), Dinheiro.new(123.46, :BRL)) == -1
 
-    assert Dinheiro.compare(Dinheiro.new(123.46, :BRL), %Dinheiro{quantia: 12345, moeda: :BRL}) ==
-             1
+    assert Dinheiro.compare(Dinheiro.new(123.46, :BRL), Dinheiro.new(123.45, :BRL)) == 1
 
     assert_raise ArgumentError, fn ->
       Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{quantia: 12345, moeda: :USD}) == 0
