@@ -68,13 +68,13 @@ defmodule Dinheiro do
 
       valor
       |> round
-      |> newp(atom)
+      |> do_new(atom)
     else
       raise ArgumentError, "to use Dinheiro.new/2 you must set a valid value to moeda."
     end
   end
 
-  defp newp(quantia, moeda) when is_integer(quantia) and is_atom(moeda) do
+  defp do_new(quantia, moeda) when is_integer(quantia) and is_atom(moeda) do
     %Dinheiro{quantia: quantia, moeda: moeda}
   end
 
@@ -218,9 +218,9 @@ defmodule Dinheiro do
     if head do
       dinheiro =
         if remainder > 0 do
-          newp(head + 1, moeda)
+          do_new(head + 1, moeda)
         else
-          newp(head, moeda)
+          do_new(head, moeda)
         end
 
       rem =
@@ -253,7 +253,7 @@ defmodule Dinheiro do
 
       dinheiro =
         value
-        |> newp(moeda)
+        |> do_new(moeda)
 
       [dinheiro | to_alocate(division, remainder - 1, moeda, position - 1)]
     else
