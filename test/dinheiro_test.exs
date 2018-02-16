@@ -67,14 +67,11 @@ defmodule DinheiroTest do
   end
 
   test "compare/1" do
-    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{quantia: 12345, moeda: :BRL}) ==
-             0
+    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), Dinheiro.new(123.45, :BRL)) == 0
 
-    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{quantia: 12346, moeda: :BRL}) ==
-             -1
+    assert Dinheiro.compare(Dinheiro.new(123.45, :BRL), Dinheiro.new(123.46, :BRL)) == -1
 
-    assert Dinheiro.compare(Dinheiro.new(123.46, :BRL), %Dinheiro{quantia: 12345, moeda: :BRL}) ==
-             1
+    assert Dinheiro.compare(Dinheiro.new(123.46, :BRL), Dinheiro.new(123.45, :BRL)) == 1
 
     assert_raise ArgumentError, fn ->
       Dinheiro.compare(Dinheiro.new(123.45, :BRL), %Dinheiro{quantia: 12345, moeda: :USD}) == 0
@@ -137,6 +134,10 @@ defmodule DinheiroTest do
     assert_raise FunctionClauseError, fn ->
       Dinheiro.to_float(123)
     end
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.to_float(%Dinheiro{quantia: 600, moeda: :NONE})
+    end
   end
 
   test "divide/2" do
@@ -187,6 +188,25 @@ defmodule DinheiroTest do
 
     assert_raise FunctionClauseError, fn ->
       Dinheiro.divide(%{quantia: 600, moeda: :BRL}, 2)
+    end
+  end
+
+  test "to_string/2" do
+    assert Dinheiro.to_string(Dinheiro.new(0.1, :BRL)) == "R$ 0,10"
+    assert Dinheiro.to_string(Dinheiro.new(1.0, "BRL")) == "R$ 1,00"
+    assert Dinheiro.to_string(Dinheiro.new(10.0, :brl)) == "R$ 10,00"
+    assert Dinheiro.to_string(Dinheiro.new(100.0, "brl")) == "R$ 100,00"
+    assert Dinheiro.to_string(Dinheiro.new(-1000.0, :BRL)) == "R$ -1.000,00"
+    assert Dinheiro.to_string(Dinheiro.new(12_345_678.9, :BRL)) == "R$ 12.345.678,90"
+
+    assert Dinheiro.to_string(
+             Dinheiro.new(12_345_678.9, :USD),
+             thousand_separator: ",",
+             decimal_separator: "."
+           ) == "$ 12,345,678.90"
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.to_string(%Dinheiro{quantia: 600, moeda: :NONE})
     end
   end
 end

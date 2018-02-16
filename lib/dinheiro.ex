@@ -68,13 +68,13 @@ defmodule Dinheiro do
 
       valor
       |> round
-      |> newp(atom)
+      |> do_new(atom)
     else
       raise ArgumentError, "to use Dinheiro.new/2 you must set a valid value to moeda."
     end
   end
 
-  defp newp(quantia, moeda) when is_integer(quantia) and is_atom(moeda) do
+  defp do_new(quantia, moeda) when is_integer(quantia) and is_atom(moeda) do
     %Dinheiro{quantia: quantia, moeda: moeda}
   end
 
@@ -218,9 +218,9 @@ defmodule Dinheiro do
     if head do
       dinheiro =
         if remainder > 0 do
-          newp(head + 1, moeda)
+          do_new(head + 1, moeda)
         else
-          newp(head, moeda)
+          do_new(head, moeda)
         end
 
       rem =
@@ -253,7 +253,7 @@ defmodule Dinheiro do
 
       dinheiro =
         value
-        |> newp(moeda)
+        |> do_new(moeda)
 
       [dinheiro | to_alocate(division, remainder - 1, moeda, position - 1)]
     else
@@ -278,9 +278,38 @@ defmodule Dinheiro do
 
   """
   def to_float(%Dinheiro{moeda: m} = from) do
-    factor = Moeda.get_factor(m)
     moeda = Moeda.find(m)
+    unless moeda, do: raise(ArgumentError, message: "'#{m}' does not represent an ISO 4217 code.")
+    factor = Moeda.get_factor(m)
     Float.round(from.quantia / factor, moeda.expoente)
+  end
+
+  @spec to_string(t, Keywords.t()) :: String.t()
+  @doc """
+  Return a formated string from a `Dinheiro` struct.
+
+  ## Example:
+      iex> Dinheiro.to_string(%Dinheiro{quantia: 200, moeda: :BRL})
+      "R$ 2,00"
+      iex> Dinheiro.to_string(Dinheiro.new(50.5, :BRL))
+      "R$ 50,50"
+      iex> Dinheiro.to_string(Dinheiro.new(-4, :BRL))
+      "R$ -4,00"
+
+  Using options-style parameters you can change the behavior of the function.
+
+    - `thousand_separator` - default `"."`, sets the thousand separator.
+    - `decimal_separator` - default `","`, sets the decimal separator.
+
+  ## Exemples
+
+      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), thousand_separator: ",", decimal_separator: ".")
+      "$ 1,000.50"
+
+  """
+  def to_string(%Dinheiro{moeda: m} = from, opts \\ []) do
+    value = to_float(from)
+    Moeda.to_string(m, value, opts)
   end
 
   defp raise_moeda_must_be_the_same(a, b) do

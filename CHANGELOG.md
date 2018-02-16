@@ -1,14 +1,20 @@
 ## Changelog
 
+### v0.1.4
+
+Implementation of the wrapper method to_string/2.
+
+Refactor of the method to_float/1.
+
 ### v0.1.3
 
-Implementation of method to_string/3.
+Implementation of the method to_string/3.
 
 Refactor to normalize the code to de credo patterns.
 
 ### v0.1.2
 
-Implementation of methods:
+Implementation of the methods:
  - compare/2
  - divide/2
  - multiply/2
