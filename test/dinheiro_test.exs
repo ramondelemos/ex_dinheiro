@@ -134,6 +134,10 @@ defmodule DinheiroTest do
     assert_raise FunctionClauseError, fn ->
       Dinheiro.to_float(123)
     end
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.to_float(%Dinheiro{quantia: 600, moeda: :NONE})
+    end
   end
 
   test "divide/2" do
