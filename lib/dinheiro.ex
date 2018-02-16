@@ -283,6 +283,32 @@ defmodule Dinheiro do
     Float.round(from.quantia / factor, moeda.expoente)
   end
 
+  @spec to_string(t, Keywords.t()) :: String.t()
+  @doc """
+  Return a formated string from a `Dinheiro` struct.
+
+  ## Example:
+      iex> Dinheiro.to_string(%Dinheiro{quantia: 200, moeda: :BRL})
+      "R$ 2,00"
+      iex> Dinheiro.to_string(Dinheiro.new(50.5, :BRL))
+      "R$ 50,50"
+      iex> Dinheiro.to_string(Dinheiro.new(-4, :BRL))
+      "R$ -4,00"
+
+  Using options-style parameters you can change the behavior of the function.
+
+    - `thousand_separator` - default `"."`, sets the thousand separator.
+    - `decimal_separator` - default `","`, sets the decimal separator.
+
+  ## Exemples
+
+      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), thousand_separator: ",", decimal_separator: ".")
+      "$ 1,000.50"
+
+  """
+  def to_string(%Dinheiro{moeda: m} = from, opts \\ []) do
+  end
+
   defp raise_moeda_must_be_the_same(a, b) do
     raise ArgumentError, message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
   end

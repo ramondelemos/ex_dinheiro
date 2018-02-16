@@ -186,4 +186,23 @@ defmodule DinheiroTest do
       Dinheiro.divide(%{quantia: 600, moeda: :BRL}, 2)
     end
   end
+
+  test "to_string/2" do
+    assert Dinheiro.to_string(Dinheiro.new(0.1, :BRL)) == "R$ 0,10"
+    assert Dinheiro.to_string(Dinheiro.new(1.0, "BRL")) == "R$ 1,00"
+    assert Dinheiro.to_string(Dinheiro.new(10.0, :brl)) == "R$ 10,00"
+    assert Dinheiro.to_string(Dinheiro.new(100.0, "brl")) == "R$ 100,00"
+    assert Dinheiro.to_string(Dinheiro.new(-1000.0, :BRL)) == "R$ -1.000,00"
+    assert Dinheiro.to_string(Dinheiro.new(12_345_678.9, :BRL)) == "R$ 12.345.678,90"
+
+    assert Dinheiro.to_string(
+             Dinheiro.new(12_345_678.9, :USD),
+             thousand_separator: ",",
+             decimal_separator: "."
+           ) == "$ 12,345,678.90"
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.to_string(%Dinheiro{quantia: 600, moeda: :NONE})
+    end
+  end
 end
