@@ -2,6 +2,13 @@ defmodule MoedaTest do
   use ExUnit.Case
   doctest Moeda
 
+  setup do
+    Application.delete_env(:ex_dinheiro, :thousand_separator)
+    Application.delete_env(:ex_dinheiro, :decimal_separator)
+    Application.delete_env(:ex_dinheiro, :display_currency_symbol)
+    Application.delete_env(:ex_dinheiro, :display_currency_code)
+  end
+
   test "find/1" do
     assert Moeda.find("BRL") == %{
              nome: "Brazilian Real",
@@ -99,10 +106,10 @@ defmodule MoedaTest do
     assert Moeda.to_string(:USD, 12_345_678.9, thousand_separator: ",", decimal_separator: ".") ==
              "$ 12,345,678.90"
 
-    assert Moeda.to_string(:BRL, 12_345_678.9, display_currency_symbol: false) == "12,345,678.90"
+    assert Moeda.to_string(:BRL, 12_345_678.9, display_currency_symbol: false) == "12.345.678,90"
 
     assert Moeda.to_string(:BRL, 12_345_678.9, display_currency_code: true) ==
-             "R$ 12,345,678.90 BRL"
+             "R$ 12.345.678,90 BRL"
 
     assert_raise ArgumentError, fn ->
       Moeda.to_string(:BRL, 100)
@@ -118,43 +125,31 @@ defmodule MoedaTest do
   end
 
   test "to_string/3 with changes in the system Mix config." do
-    try do
-      Application.delete_env(:ex_dinheiro, :thousand_separator)
-      Application.delete_env(:ex_dinheiro, :decimal_separator)
-      Application.delete_env(:ex_dinheiro, :display_currency_symbol)
-      Application.delete_env(:ex_dinheiro, :display_currency_code)
+    assert Moeda.to_string(:BRL, 12_345_678.9) == "R$ 12.345.678,90"
 
-      assert Moeda.to_string(:BRL, 12_345_678.9) == "R$ 12.345.678,90"
+    Application.put_env(:ex_dinheiro, :thousand_separator, ",")
+    Application.put_env(:ex_dinheiro, :decimal_separator, ".")
 
-      Application.put_env(:ex_dinheiro, :thousand_separator, ",")
-      Application.put_env(:ex_dinheiro, :decimal_separator, ".")
+    assert Moeda.to_string(:USD, 12_345_678.9) == "$ 12,345,678.90"
 
-      assert Moeda.to_string(:USD, 12_345_678.9) == "$ 12,345,678.90"
+    assert Moeda.to_string(:USD, 12_345_678.9, thousand_separator: "_", decimal_separator: "*") ==
+             "$ 12_345_678*90"
 
-      assert Moeda.to_string(:USD, 12_345_678.9, thousand_separator: "_", decimal_separator: "*") ==
-               "$ 12_345_678*90"
+    Application.put_env(:ex_dinheiro, :display_currency_symbol, false)
 
-      Application.put_env(:ex_dinheiro, :display_currency_symbol, false)
+    assert Moeda.to_string(:USD, 12_345_678.9) == "12,345,678.90"
 
-      assert Moeda.to_string(:USD, 12_345_678.9) == "12,345,678.90"
+    Application.put_env(:ex_dinheiro, :display_currency_code, true)
 
-      Application.put_env(:ex_dinheiro, :display_currency_code, true)
+    assert Moeda.to_string(:USD, 12_345_678.9) == "12,345,678.90 USD"
 
-      assert Moeda.to_string(:USD, 12_345_678.9) == "12,345,678.90 USD"
-
-      assert Moeda.to_string(
-               :BRL,
-               12_345_678.9,
-               thousand_separator: "_",
-               decimal_separator: "*",
-               display_currency_code: false,
-               display_currency_symbol: true
-             ) == "R$ 12_345_678*90 BRL"
-    after
-      Application.delete_env(:ex_dinheiro, :thousand_separator)
-      Application.delete_env(:ex_dinheiro, :decimal_separator)
-      Application.delete_env(:ex_dinheiro, :display_currency_symbol)
-      Application.delete_env(:ex_dinheiro, :display_currency_code)
-    end
+    assert Moeda.to_string(
+             :BRL,
+             12_345_678.9,
+             thousand_separator: "_",
+             decimal_separator: "*",
+             display_currency_code: false,
+             display_currency_symbol: true
+           ) == "R$ 12_345_678*90"
   end
 end

@@ -2,24 +2,21 @@ defmodule DinheiroTest do
   use ExUnit.Case
   doctest Dinheiro
 
+  setup do
+    Application.delete_env(:ex_dinheiro, :default_moeda)
+  end
+
   test "new/1 with default value set" do
-    try do
-      Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
-      assert Dinheiro.new(12345) == %Dinheiro{quantia: 1_234_500, moeda: :BRL}
-    after
-      Application.delete_env(:ex_dinheiro, :default_moeda)
-    end
+    Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
+
+    assert Dinheiro.new(12345) == %Dinheiro{quantia: 1_234_500, moeda: :BRL}
   end
 
   test "new/1 with an invalid default value set" do
-    try do
-      Application.put_env(:ex_dinheiro, :default_moeda, :NONE)
+    Application.put_env(:ex_dinheiro, :default_moeda, :NONE)
 
-      assert_raise ArgumentError, fn ->
-        Dinheiro.new(12345)
-      end
-    after
-      Application.delete_env(:ex_dinheiro, :default_moeda)
+    assert_raise ArgumentError, fn ->
+      Dinheiro.new(12345)
     end
   end
 
@@ -38,23 +35,16 @@ defmodule DinheiroTest do
   end
 
   test "new/1 with float value" do
-    try do
-      Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
-      assert Dinheiro.new(123.45) == %Dinheiro{quantia: 12345, moeda: :BRL}
-    after
-      Application.delete_env(:ex_dinheiro, :default_moeda)
-    end
+    Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
+
+    assert Dinheiro.new(123.45) == %Dinheiro{quantia: 12345, moeda: :BRL}
   end
 
   test "new/1 with an invalid value" do
-    try do
-      Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
+    Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
 
-      assert_raise FunctionClauseError, fn ->
-        Dinheiro.new("1234")
-      end
-    after
-      Application.delete_env(:ex_dinheiro, :default_moeda)
+    assert_raise FunctionClauseError, fn ->
+      Dinheiro.new("1234")
     end
   end
 
