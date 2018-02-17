@@ -25,6 +25,7 @@ defmodule DinheiroTest do
 
   test "new/1 with no config set" do
     Application.delete_env(:ex_dinheiro, :default_moeda)
+
     assert_raise ArgumentError, fn ->
       Dinheiro.new(12345)
     end
