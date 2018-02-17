@@ -477,13 +477,45 @@ defmodule Moeda do
 
   Using options-style parameters you can change the behavior of the function.
 
-    - `thousand_separator` - default `"."`, sets the thousand separator.
-    - `decimal_separator` - default `","`, sets the decimal separator.
+    - `thousand_separator` - default `"."`, set the thousand separator.
+    - `decimal_separator` - default `","`, set the decimal separator.
+    - `display_currency_symbol` - default `true`, put to `false` to hide de currency symbol.
+    - `display_currency_code` - default `false`, put to `true` to display de currency ISO 4217 code.
 
   ## Exemples
 
       iex> Moeda.to_string(:USD, 1000.5, thousand_separator: ",", decimal_separator: ".")
       "$ 1,000.50"
+      iex> Moeda.to_string(:USD, 1000.5, display_currency_symbol: false)
+      "1.000,50"
+      iex> Moeda.to_string(:USD, 1000.5, display_currency_code: true)
+      "$ 1.000,50 USD"
+      Moeda.to_string(:USD, 1000.5, display_currency_code: true, display_currency_symbol: false)
+      "1.000,50 USD"
+
+  The default values also can be set in the system Mix config.
+
+  ## Example:
+      iex> Application.put_env(:ex_dinheiro, :thousand_separator, ",")
+      iex> Application.put_env(:ex_dinheiro, :decimal_separator, ".")
+      iex> Moeda.to_string(:USD, 1000.5)
+      "$ 1,000.50"
+      iex> Application.put_env(:ex_dinheiro, :display_currency_symbol, false)
+      iex> Moeda.to_string(:USD, 5000.5)
+      "5,000.50"
+      iex> Application.put_env(:ex_dinheiro, :display_currency_code, true)
+      iex> Moeda.to_string(:USD, 10000.0)
+      "10,000.00 USD"
+
+  The options-style parameters override values in the system Mix config.
+
+  ## Example:
+      iex> Application.put_env(:ex_dinheiro, :thousand_separator, ",")
+      iex> Application.put_env(:ex_dinheiro, :decimal_separator, ".")
+      iex> Moeda.to_string(:USD, 1000.5)
+      "$ 1,000.50"
+      iex> Moeda.to_string(:BRL, 1000.5, thousand_separator: ".", decimal_separator: ",")
+      "R$ 1.000,50"
 
   """
   def to_string(moeda, valor, opts \\ []) do
