@@ -490,7 +490,7 @@ defmodule Moeda do
       "1.000,50"
       iex> Moeda.to_string(:USD, 1000.5, display_currency_code: true)
       "$ 1.000,50 USD"
-      Moeda.to_string(:USD, 1000.5, display_currency_code: true, display_currency_symbol: false)
+      iex> Moeda.to_string(:USD, 1000.5, display_currency_code: true, display_currency_symbol: false)
       "1.000,50 USD"
 
   The default values also can be set in the system Mix config.
@@ -525,8 +525,21 @@ defmodule Moeda do
 
     unless is_float(valor), do: raise(ArgumentError, message: "Value '#{valor}' must be float.")
 
-    thousand_separator = Keyword.get(opts, :thousand_separator, ".")
-    decimal_separator = Keyword.get(opts, :decimal_separator, ",")
+    conf_thousand_separator = Application.get_env(:ex_dinheiro, :thousand_separator, ".")
+    conf_decimal_separator = Application.get_env(:ex_dinheiro, :decimal_separator, ",")
+
+    conf_display_currency_symbol =
+      Application.get_env(:ex_dinheiro, :display_currency_symbol, true)
+
+    conf_display_currency_code = Application.get_env(:ex_dinheiro, :display_currency_code, false)
+
+    thousand_separator = Keyword.get(opts, :thousand_separator, conf_thousand_separator)
+    decimal_separator = Keyword.get(opts, :decimal_separator, conf_decimal_separator)
+
+    display_currency_symbol =
+      Keyword.get(opts, :display_currency_symbol, conf_display_currency_symbol)
+
+    display_currency_code = Keyword.get(opts, :display_currency_code, conf_display_currency_code)
 
     parts =
       valor
@@ -548,7 +561,21 @@ defmodule Moeda do
         ""
       end
 
-    [m.simbolo, " ", thousands, decimals]
+    currency_symbol =
+      if display_currency_symbol do
+        m.simbolo
+      else
+        ""
+      end
+
+    currency_code =
+      if display_currency_code do
+        m.codigo
+      else
+        ""
+      end
+
+    [currency_symbol, " ", thousands, decimals, " ", currency_code]
     |> Enum.join()
     |> String.trim()
   end
