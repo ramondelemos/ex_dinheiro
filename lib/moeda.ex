@@ -408,7 +408,15 @@ defmodule Moeda do
   end
 
   defp do_find(codigo) do
-    @moedas[codigo]
+    unofficial_currencies = Application.get_env(:ex_dinheiro, :unofficial_currencies, %{})
+
+    currency = unofficial_currencies[codigo]
+
+    if currency do
+      currency
+    else
+      @moedas[codigo]
+    end
   end
 
   @spec get_atom(String.t() | atom) :: atom | nil
