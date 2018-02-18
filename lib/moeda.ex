@@ -367,23 +367,47 @@ defmodule Moeda do
       iex> Moeda.find("brl")
       %{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
 
+  Is possible to work with no official ISO currency code adding it in the system Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:XBT)
+      nil
+      iex> moedas = %{ XBT: %{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
+      iex> Moeda.find("xbt")
+      %{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8}
+
+  Is possible to override some official ISO currency code adding it in the system Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:BRL)
+      %{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
+      iex> moedas = %{ BRL: %{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}, USD: %{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 986, expoente: 3} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
+      iex> Moeda.find(:BRL)
+      %{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
+      iex> Moeda.find(:USD)
+      %{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 986, expoente: 3}
+
   """
   def find(codigo) when is_atom(codigo) do
     codigo
     |> Atom.to_string()
     |> String.upcase()
     |> String.to_atom()
-    |> findp
+    |> do_find
   end
 
   def find(codigo) when is_binary(codigo) do
     codigo
     |> String.upcase()
     |> String.to_atom()
-    |> findp
+    |> do_find
   end
 
-  defp findp(codigo) do
+  defp do_find(codigo) do
     @moedas[codigo]
   end
 
