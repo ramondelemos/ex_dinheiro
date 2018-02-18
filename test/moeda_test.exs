@@ -4,9 +4,27 @@ defmodule MoedaTest do
 
   setup_all do
     moedas = %{
-      XBT: %{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8},
-      BRL: %{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4},
-      USD: %{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 986, expoente: 3}
+      XBT: %Moeda{
+        nome: "Bitcoin",
+        simbolo: '฿',
+        codigo: "XBT",
+        codigo_iso: 0,
+        expoente: 8
+      },
+      BRL: %Moeda{
+        nome: "Moeda do Brasil",
+        simbolo: 'BR$',
+        codigo: "BRL",
+        codigo_iso: 986,
+        expoente: 4
+      },
+      USD: %Moeda{
+        nome: "Moeda do EUA",
+        simbolo: 'US$',
+        codigo: "USD",
+        codigo_iso: 986,
+        expoente: 3
+      }
     }
 
     {:ok, %{moedas: moedas}}
@@ -21,7 +39,7 @@ defmodule MoedaTest do
   end
 
   test "find/1", context do
-    assert Moeda.find("BRL") == %{
+    assert Moeda.find("BRL") == %Moeda{
              nome: "Brazilian Real",
              simbolo: 'R$',
              codigo: "BRL",
@@ -29,7 +47,7 @@ defmodule MoedaTest do
              expoente: 2
            }
 
-    assert Moeda.find("brl") == %{
+    assert Moeda.find("brl") == %Moeda{
              nome: "Brazilian Real",
              simbolo: 'R$',
              codigo: "BRL",
@@ -37,7 +55,7 @@ defmodule MoedaTest do
              expoente: 2
            }
 
-    assert Moeda.find(:BRL) == %{
+    assert Moeda.find(:BRL) == %Moeda{
              nome: "Brazilian Real",
              simbolo: 'R$',
              codigo: "BRL",
@@ -45,7 +63,7 @@ defmodule MoedaTest do
              expoente: 2
            }
 
-    assert Moeda.find(:brl) == %{
+    assert Moeda.find(:brl) == %Moeda{
              nome: "Brazilian Real",
              simbolo: 'R$',
              codigo: "BRL",
@@ -53,7 +71,7 @@ defmodule MoedaTest do
              expoente: 2
            }
 
-    assert Moeda.find("CNY") == %{
+    assert Moeda.find("CNY") == %Moeda{
              nome: "Yuan Renminbi",
              simbolo: [165],
              codigo: "CNY",
@@ -61,7 +79,7 @@ defmodule MoedaTest do
              expoente: 2
            }
 
-    assert Moeda.find(:chf) == %{
+    assert Moeda.find(:chf) == %Moeda{
              nome: "Swiss Franc",
              simbolo: [67, 72, 70],
              codigo: "CHF",
@@ -69,7 +87,7 @@ defmodule MoedaTest do
              expoente: 2
            }
 
-    assert Moeda.find(:CHW) == %{
+    assert Moeda.find(:CHW) == %Moeda{
              nome: "WIR Franc",
              simbolo: [],
              codigo: "CHW",
@@ -81,7 +99,7 @@ defmodule MoedaTest do
 
     Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
 
-    assert Moeda.find(:BRL) == %{
+    assert Moeda.find(:BRL) == %Moeda{
              nome: "Moeda do Brasil",
              simbolo: 'BR$',
              codigo: "BRL",
@@ -89,7 +107,7 @@ defmodule MoedaTest do
              expoente: 4
            }
 
-    assert Moeda.find(:usd) == %{
+    assert Moeda.find(:usd) == %Moeda{
              nome: "Moeda do EUA",
              simbolo: 'US$',
              codigo: "USD",
@@ -97,7 +115,7 @@ defmodule MoedaTest do
              expoente: 3
            }
 
-    assert Moeda.find("XBT") == %{
+    assert Moeda.find("XBT") == %Moeda{
              nome: "Bitcoin",
              simbolo: '฿',
              codigo: "XBT",
@@ -152,10 +170,15 @@ defmodule MoedaTest do
     assert Moeda.to_string(:BRL, -1_000.0) == "R$ -1.000,00"
     assert Moeda.to_string(:brl, 12_345_678.9) == "R$ 12.345.678,90"
 
-    assert Moeda.to_string(:USD, 12_345_678.9, thousand_separator: ",", decimal_separator: ".") ==
-             "$ 12,345,678.90"
+    assert Moeda.to_string(
+             :USD,
+             12_345_678.9,
+             thousand_separator: ",",
+             decimal_separator: "."
+           ) == "$ 12,345,678.90"
 
-    assert Moeda.to_string(:BRL, 12_345_678.9, display_currency_symbol: false) == "12.345.678,90"
+    assert Moeda.to_string(:BRL, 12_345_678.9, display_currency_symbol: false) ==
+             "12.345.678,90"
 
     assert Moeda.to_string(:BRL, 12_345_678.9, display_currency_code: true) ==
              "R$ 12.345.678,90 BRL"
@@ -181,8 +204,12 @@ defmodule MoedaTest do
 
     assert Moeda.to_string(:USD, 12_345_678.9) == "$ 12,345,678.90"
 
-    assert Moeda.to_string(:USD, 12_345_678.9, thousand_separator: "_", decimal_separator: "*") ==
-             "$ 12_345_678*90"
+    assert Moeda.to_string(
+             :USD,
+             12_345_678.9,
+             thousand_separator: "_",
+             decimal_separator: "*"
+           ) == "$ 12_345_678*90"
 
     Application.put_env(:ex_dinheiro, :display_currency_symbol, false)
 

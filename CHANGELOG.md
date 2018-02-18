@@ -1,5 +1,16 @@
 ## Changelog
 
+### v0.1.6
+
+Refector of the code:
+ - Creation of a bag of currencies `Moeda.Moedas` to separate the logic to manipulate currencies of the repository of them.
+ - Change the lines length to 80 in `.formatter.exs` to compliance with credo.
+
+Update of documentation:
+ - Adding more exemples.
+ - Adding badge of Travis.CI.
+ - Adding badge of Coveralls.IO.
+
 ### v0.1.5
 
 New feactures to permit:
