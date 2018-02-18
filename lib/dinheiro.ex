@@ -113,7 +113,10 @@ defmodule Dinheiro do
       iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :USD))
       false
   """
-  def equals?(a, b), do: nil
+  def equals?(%Dinheiro{moeda: moeda, quantia: quantia}, %Dinheiro{moeda: moeda, quantia: quantia}),
+      do: true
+
+  def equals?(a, b), do: false
 
   @spec sum(t, t | integer | float) :: t
   @doc """
