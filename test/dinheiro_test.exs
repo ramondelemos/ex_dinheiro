@@ -70,6 +70,12 @@ defmodule DinheiroTest do
     end
   end
 
+  test "equals?/2" do
+    assert Dinheiro.equals?(Dinheiro.new(123.45, :BRL), Dinheiro.new(123.45, :BRL)) == true
+    assert Dinheiro.equals?(Dinheiro.new(123.45, :BRL), Dinheiro.new(123.46, :BRL)) == false
+    assert Dinheiro.equals?(Dinheiro.new(123.46, :BRL), Dinheiro.new(123.46, :USD)) == false
+  end
+
   test "sum/2" do
     assert Dinheiro.sum(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :BRL)) == %Dinheiro{
              quantia: 2_469_000,

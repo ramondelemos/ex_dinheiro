@@ -102,6 +102,19 @@ defmodule Dinheiro do
     raise_moeda_must_be_the_same(a, b)
   end
 
+  @spec equals?(t, t) :: boolean
+  @doc """
+  Retun `true` if two `Dinheiro` structs are equals.
+  ## Example:
+      iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :BRL))
+      true
+      iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12346, :BRL))
+      false
+      iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :USD))
+      false
+  """
+  def equals?(a, b), do: nil
+
   @spec sum(t, t | integer | float) :: t
   @doc """
   Return a new `Dinheiro` structs with sum of two values.
