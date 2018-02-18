@@ -16,7 +16,7 @@ by adding `:ex_dinheiro` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_dinheiro, "~> 0.1.4"}
+    {:ex_dinheiro, "~> 0.1.5"}
   ]
 end
 ```

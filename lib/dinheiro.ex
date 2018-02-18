@@ -6,8 +6,8 @@ defmodule Dinheiro do
 
   @typedoc """
       Type that represents Dinheiro struct with:
-      :quantia as integer
-      :moeda as atom that represents an ISO 4217 code
+      :quantia as integer that represents an amount.
+      :moeda as atom that represents an ISO 4217 code.
   """
   @type t :: %Dinheiro{quantia: integer, moeda: atom}
 

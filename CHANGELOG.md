@@ -1,5 +1,14 @@
 ## Changelog
 
+### v0.1.5
+
+New feactures to permit:
+ - Compliance with ISO 4217.
+ - To work with no official ISO currency code adding it in the system Mix config.
+ - To override some official ISO currency code adding it in the system Mix config.
+
+Implementation of the method equals?/2.
+
 ### v0.1.4
 
 Implementation of the wrapper method to_string/2.
