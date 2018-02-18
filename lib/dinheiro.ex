@@ -6,8 +6,8 @@ defmodule Dinheiro do
 
   @typedoc """
       Type that represents Dinheiro struct with:
-      :quantia as integer
-      :moeda as atom that represents an ISO 4217 code
+      :quantia as integer that represents an amount.
+      :moeda as atom that represents an ISO 4217 code.
   """
   @type t :: %Dinheiro{quantia: integer, moeda: atom}
 
@@ -101,6 +101,22 @@ defmodule Dinheiro do
   def compare(a, b) do
     raise_moeda_must_be_the_same(a, b)
   end
+
+  @spec equals?(t, t) :: boolean
+  @doc """
+  Retun `true` if two `Dinheiro` structs are equals.
+  ## Example:
+      iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :BRL))
+      true
+      iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12346, :BRL))
+      false
+      iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :USD))
+      false
+  """
+  def equals?(%Dinheiro{moeda: moeda, quantia: quantia}, %Dinheiro{moeda: moeda, quantia: quantia}),
+      do: true
+
+  def equals?(a, b), do: false
 
   @spec sum(t, t | integer | float) :: t
   @doc """

@@ -2,14 +2,25 @@ defmodule MoedaTest do
   use ExUnit.Case
   doctest Moeda
 
+  setup_all do
+    moedas = %{
+      XBT: %{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8},
+      BRL: %{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4},
+      USD: %{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 986, expoente: 3}
+    }
+
+    {:ok, %{moedas: moedas}}
+  end
+
   setup do
     Application.delete_env(:ex_dinheiro, :thousand_separator)
     Application.delete_env(:ex_dinheiro, :decimal_separator)
     Application.delete_env(:ex_dinheiro, :display_currency_symbol)
     Application.delete_env(:ex_dinheiro, :display_currency_code)
+    Application.delete_env(:ex_dinheiro, :unofficial_currencies)
   end
 
-  test "find/1" do
+  test "find/1", context do
     assert Moeda.find("BRL") == %{
              nome: "Brazilian Real",
              simbolo: 'R$',
@@ -67,9 +78,35 @@ defmodule MoedaTest do
            }
 
     assert Moeda.find("") == nil
+
+    Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
+
+    assert Moeda.find(:BRL) == %{
+             nome: "Moeda do Brasil",
+             simbolo: 'BR$',
+             codigo: "BRL",
+             codigo_iso: 986,
+             expoente: 4
+           }
+
+    assert Moeda.find(:usd) == %{
+             nome: "Moeda do EUA",
+             simbolo: 'US$',
+             codigo: "USD",
+             codigo_iso: 986,
+             expoente: 3
+           }
+
+    assert Moeda.find("XBT") == %{
+             nome: "Bitcoin",
+             simbolo: '฿',
+             codigo: "XBT",
+             codigo_iso: 0,
+             expoente: 8
+           }
   end
 
-  test "get_atom/1" do
+  test "get_atom/1", context do
     assert Moeda.get_atom("BRL") == :BRL
     assert Moeda.get_atom("brl") == :BRL
     assert Moeda.get_atom(:BRL) == :BRL
@@ -78,9 +115,15 @@ defmodule MoedaTest do
     assert Moeda.get_atom(:CLF) == :CLF
     assert Moeda.get_atom("PYG") == :PYG
     assert Moeda.get_atom(:CHW) == :CHW
+
+    Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
+
+    assert Moeda.get_atom(:BRL) == :BRL
+    assert Moeda.get_atom("XBT") == :XBT
+    assert Moeda.get_atom(:usd) == :USD
   end
 
-  test "get_factor/1" do
+  test "get_factor/1", context do
     assert Moeda.get_factor("BRL") == 100.0
     assert Moeda.get_factor("brl") == 100.0
     assert Moeda.get_factor(:BRL) == 100.0
@@ -89,6 +132,12 @@ defmodule MoedaTest do
     assert Moeda.get_factor(:CLF) == 10_000.0
     assert Moeda.get_factor(:PYG) == 1.0
     assert Moeda.get_factor(:IQD) == 1_000.0
+
+    Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
+
+    assert Moeda.get_factor(:BRL) == 10_000.0
+    assert Moeda.get_factor("XBT") == 100_000_000.0
+    assert Moeda.get_factor(:usd) == 1_000.0
   end
 
   test "to_string/3" do
@@ -151,5 +200,12 @@ defmodule MoedaTest do
              display_currency_code: false,
              display_currency_symbol: true
            ) == "R$ 12_345_678*90"
+  end
+
+  test "to_string/3 with new currencies in the system Mix config.", context do
+    Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
+    assert Moeda.to_string(:BRL, 12_345_678.9) == "BR$ 12.345.678,9000"
+    assert Moeda.to_string(:usd, 12_345_678.9) == "US$ 12.345.678,900"
+    assert Moeda.to_string("XBT", 12_345_678.9) == "฿ 12.345.678,90000000"
   end
 end

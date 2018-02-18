@@ -3,6 +3,24 @@ defmodule Moeda do
   Documentation for Moeda.
   """
 
+  defstruct [:nome, :simbolo, :codigo, :codigo_iso, :expoente]
+
+  @typedoc """
+      Type that represents `Moeda` struct with:
+      :nome as String.t that represents the name of the currency.
+      :simbolo as String.t that represents symbol of the currency.
+      :codigo as String.t that represents the ISO 4217 code.
+      :codigo_iso as integer that represents the country code.
+      :expoente as integer that represents the exponent of the currency.
+  """
+  @type t :: %Moeda{
+          nome: String.t(),
+          simbolo: String.t(),
+          codigo: String.t(),
+          codigo_iso: integer,
+          expoente: integer
+        }
+
   @moedas %{
     AED: %{nome: "UAE Dirham", simbolo: [], codigo: "AED", codigo_iso: 784, expoente: 2},
     AFN: %{nome: "Afghani", simbolo: [1547], codigo: "AFN", codigo_iso: 971, expoente: 2},
@@ -367,24 +385,56 @@ defmodule Moeda do
       iex> Moeda.find("brl")
       %{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
 
+  Is possible to work with no official ISO currency code adding it in the system Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:XBT)
+      nil
+      iex> moedas = %{ XBT: %{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
+      iex> Moeda.find("xbt")
+      %{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8}
+
+  Is possible to override some official ISO currency code adding it in the system Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:BRL)
+      %{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
+      iex> moedas = %{ BRL: %{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}, USD: %{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 986, expoente: 3} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
+      iex> Moeda.find(:BRL)
+      %{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
+      iex> Moeda.find(:USD)
+      %{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 986, expoente: 3}
+
   """
   def find(codigo) when is_atom(codigo) do
     codigo
     |> Atom.to_string()
     |> String.upcase()
     |> String.to_atom()
-    |> findp
+    |> do_find
   end
 
   def find(codigo) when is_binary(codigo) do
     codigo
     |> String.upcase()
     |> String.to_atom()
-    |> findp
+    |> do_find
   end
 
-  defp findp(codigo) do
-    @moedas[codigo]
+  defp do_find(codigo) do
+    unofficial_currencies = Application.get_env(:ex_dinheiro, :unofficial_currencies, %{})
+
+    currency = unofficial_currencies[codigo]
+
+    if currency do
+      currency
+    else
+      @moedas[codigo]
+    end
   end
 
   @spec get_atom(String.t() | atom) :: atom | nil
@@ -525,21 +575,8 @@ defmodule Moeda do
 
     unless is_float(valor), do: raise(ArgumentError, message: "Value '#{valor}' must be float.")
 
-    conf_thousand_separator = Application.get_env(:ex_dinheiro, :thousand_separator, ".")
-    conf_decimal_separator = Application.get_env(:ex_dinheiro, :decimal_separator, ",")
-
-    conf_display_currency_symbol =
-      Application.get_env(:ex_dinheiro, :display_currency_symbol, true)
-
-    conf_display_currency_code = Application.get_env(:ex_dinheiro, :display_currency_code, false)
-
-    thousand_separator = Keyword.get(opts, :thousand_separator, conf_thousand_separator)
-    decimal_separator = Keyword.get(opts, :decimal_separator, conf_decimal_separator)
-
-    display_currency_symbol =
-      Keyword.get(opts, :display_currency_symbol, conf_display_currency_symbol)
-
-    display_currency_code = Keyword.get(opts, :display_currency_code, conf_display_currency_code)
+    {thousand_separator, decimal_separator, display_currency_symbol, display_currency_code} =
+      get_config(opts)
 
     parts =
       valor
@@ -578,6 +615,26 @@ defmodule Moeda do
     [currency_symbol, " ", thousands, decimals, " ", currency_code]
     |> Enum.join()
     |> String.trim()
+  end
+
+  defp get_config(opts) do
+    conf_thousand_separator = Application.get_env(:ex_dinheiro, :thousand_separator, ".")
+    conf_decimal_separator = Application.get_env(:ex_dinheiro, :decimal_separator, ",")
+
+    conf_display_currency_symbol =
+      Application.get_env(:ex_dinheiro, :display_currency_symbol, true)
+
+    conf_display_currency_code = Application.get_env(:ex_dinheiro, :display_currency_code, false)
+
+    thousand_separator = Keyword.get(opts, :thousand_separator, conf_thousand_separator)
+    decimal_separator = Keyword.get(opts, :decimal_separator, conf_decimal_separator)
+
+    display_currency_symbol =
+      Keyword.get(opts, :display_currency_symbol, conf_display_currency_symbol)
+
+    display_currency_code = Keyword.get(opts, :display_currency_code, conf_display_currency_code)
+
+    {thousand_separator, decimal_separator, display_currency_symbol, display_currency_code}
   end
 
   defp format_thousands([head | tail], separator, opts \\ []) do
