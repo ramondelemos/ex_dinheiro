@@ -1,7 +1,11 @@
 defmodule Dinheiro do
   @moduledoc """
-  Documentation for Dinheiro.
+
+  [![Build Status](https://travis-ci.org/ramondelemos/ex_dinheiro.svg?branch=master)](https://travis-ci.org/ramondelemos/ex_dinheiro?branch=master)
+  [![Coverage Status](https://coveralls.io/repos/github/ramondelemos/ex_dinheiro/badge.svg?branch=master)](https://coveralls.io/github/ramondelemos/ex_dinheiro?branch=master)
+
   """
+
   defstruct [:quantia, :moeda]
 
   @typedoc """
@@ -13,11 +17,11 @@ defmodule Dinheiro do
 
   @spec new(integer | float) :: t
   @doc """
-  Create a new `Dinheiro` struct using a default value of Moeda.
+  Create a new `Dinheiro` struct using a default currency.
   The default currency can be set in the system Mix config.
 
   ## Example:
-        iex> Application.put_env(:ex_dinheiro, :default_moeda, :BRL)
+        iex> Application.put_env(:ex_dinheiro, :default_currency, :BRL)
         iex> Dinheiro.new(12345)
         %Dinheiro{quantia: 1234500, moeda: :BRL}
         iex> Dinheiro.new(123.45)
@@ -25,7 +29,7 @@ defmodule Dinheiro do
 
   """
   def new(quantia) when is_integer(quantia) or is_float(quantia) do
-    moeda = Application.get_env(:ex_dinheiro, :default_moeda)
+    moeda = Application.get_env(:ex_dinheiro, :default_currency)
 
     if moeda do
       new(quantia, moeda)
@@ -51,6 +55,17 @@ defmodule Dinheiro do
       iex> Dinheiro.new(123.45, "BRL")
       %Dinheiro{quantia: 12345, moeda: :BRL}
 
+  Is possible to work with no official ISO currency code adding it in the system Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:XBT)
+      nil
+      iex> moedas = %{ XBT: %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
+      iex> Dinheiro.new(123.45, :XBT)
+      %Dinheiro{quantia: 12345000000, moeda: :XBT}
+
   """
   def new(quantia, moeda) when is_integer(quantia) or is_float(quantia) do
     v_moeda = Moeda.find(moeda)
@@ -70,7 +85,8 @@ defmodule Dinheiro do
       |> round
       |> do_new(atom)
     else
-      raise ArgumentError, "to use Dinheiro.new/2 you must set a valid value to moeda."
+      raise ArgumentError,
+            "to use Dinheiro.new/2 you must set a valid value to moeda."
     end
   end
 
@@ -81,7 +97,8 @@ defmodule Dinheiro do
   @spec compare(t, t) :: integer
   @doc """
   Compares two `Dinheiro` structs with each other.
-  They must each be of the same moeda and then their value are compared
+  They must each be of the same moeda and then their value are compared.
+
   ## Example:
       iex> Dinheiro.compare(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :BRL))
       0
@@ -105,6 +122,7 @@ defmodule Dinheiro do
   @spec equals?(t, t) :: boolean
   @doc """
   Retun `true` if two `Dinheiro` structs are equals.
+
   ## Example:
       iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :BRL))
       true
@@ -113,7 +131,10 @@ defmodule Dinheiro do
       iex> Dinheiro.equals?(Dinheiro.new(12345, :BRL), Dinheiro.new(12345, :USD))
       false
   """
-  def equals?(%Dinheiro{moeda: moeda, quantia: quantia}, %Dinheiro{moeda: moeda, quantia: quantia}),
+  def equals?(%Dinheiro{moeda: moeda, quantia: quantia}, %Dinheiro{
+        moeda: moeda,
+        quantia: quantia
+      }),
       do: true
 
   def equals?(a, b), do: false
@@ -295,7 +316,14 @@ defmodule Dinheiro do
   """
   def to_float(%Dinheiro{moeda: m} = from) do
     moeda = Moeda.find(m)
-    unless moeda, do: raise(ArgumentError, message: "'#{m}' does not represent an ISO 4217 code.")
+
+    unless moeda,
+      do:
+        raise(
+          ArgumentError,
+          message: "'#{m}' does not represent an ISO 4217 code."
+        )
+
     factor = Moeda.get_factor(m)
     Float.round(from.quantia / factor, moeda.expoente)
   end
@@ -316,11 +344,68 @@ defmodule Dinheiro do
 
     - `thousand_separator` - default `"."`, sets the thousand separator.
     - `decimal_separator` - default `","`, sets the decimal separator.
+    - `display_currency_symbol` - default `true`, put to `false` to hide de currency symbol.
+    - `display_currency_code` - default `false`, put to `true` to display de currency ISO 4217 code.
 
   ## Exemples
 
       iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), thousand_separator: ",", decimal_separator: ".")
       "$ 1,000.50"
+      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), display_currency_symbol: false)
+      "1.000,50"
+      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), display_currency_code: true)
+      "$ 1.000,50 USD"
+      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), display_currency_code: true, display_currency_symbol: false)
+      "1.000,50 USD"
+
+  The default values also can be set in the system Mix config.
+
+  ## Example:
+      iex> Application.put_env(:ex_dinheiro, :thousand_separator, ",")
+      iex> Application.put_env(:ex_dinheiro, :decimal_separator, ".")
+      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD))
+      "$ 1,000.50"
+      iex> Application.put_env(:ex_dinheiro, :display_currency_symbol, false)
+      iex> Dinheiro.to_string(Dinheiro.new(5000.5, :USD))
+      "5,000.50"
+      iex> Application.put_env(:ex_dinheiro, :display_currency_code, true)
+      iex> Dinheiro.to_string(Dinheiro.new(10000.0, :USD))
+      "10,000.00 USD"
+
+  The options-style parameters override values in the system Mix config.
+
+  ## Example:
+      iex> Application.put_env(:ex_dinheiro, :thousand_separator, ",")
+      iex> Application.put_env(:ex_dinheiro, :decimal_separator, ".")
+      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD))
+      "$ 1,000.50"
+      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :BRL), thousand_separator: ".", decimal_separator: ",")
+      "R$ 1.000,50"
+
+  Is possible to override some official ISO currency code adding it in the system Mix config.
+
+  ## Examples
+
+      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :BRL))
+      "R$ 12.345.678,90"
+      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :USD))
+      "$ 12.345.678,90"
+      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :XBT))
+      ** (ArgumentError) to use Dinheiro.new/2 you must set a valid value to moeda.
+      iex> real = %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
+      %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
+      iex> dollar = %Moeda{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 840, expoente: 3}
+      %Moeda{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 840, expoente: 3}
+      iex> bitcoin = %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8}
+      %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8}
+      iex> moedas = %{ BRL: real, USD: dollar, XBT: bitcoin }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
+      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :BRL))
+      "BR$ 12.345.678,9000"
+      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :usd))
+      "US$ 12.345.678,900"
+      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, "XBT"))
+      "฿ 12.345.678,90000000"
 
   """
   def to_string(%Dinheiro{moeda: m} = from, opts \\ []) do
@@ -329,19 +414,24 @@ defmodule Dinheiro do
   end
 
   defp raise_moeda_must_be_the_same(a, b) do
-    raise ArgumentError, message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
+    raise ArgumentError,
+      message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
   end
 
   defp assert_if_value_is_positive(value) when is_integer(value) do
-    if value < 0, do: raise(ArgumentError, message: "Value #{value} must be positive.")
+    if value < 0,
+      do: raise(ArgumentError, message: "Value #{value} must be positive.")
   end
 
   defp assert_if_greater_than_zero(value) when is_integer(value) do
-    if value == 0, do: raise(ArgumentError, message: "Value must be greater than zero.")
+    if value == 0,
+      do: raise(ArgumentError, message: "Value must be greater than zero.")
   end
 
   defp assert_if_ratios_are_valid([head | tail]) do
-    unless is_integer(head), do: raise(ArgumentError, message: "Value '#{head}' must be integer.")
+    unless is_integer(head),
+      do: raise(ArgumentError, message: "Value '#{head}' must be integer.")
+
     assert_if_value_is_positive(head)
     assert_if_greater_than_zero(head)
     if tail != [], do: assert_if_ratios_are_valid(tail)
