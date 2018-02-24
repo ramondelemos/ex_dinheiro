@@ -11,6 +11,17 @@ defmodule DinheiroTest do
     Application.delete_env(:ex_dinheiro, :unofficial_currencies)
   end
 
+  test "new/1" do
+    assert Dinheiro.new(12345) ==
+             {:error,
+              "you must set a default value in your application config :ex_dinheiro, default_currency."}
+
+    Application.put_env(:ex_dinheiro, :default_currency, :BRL)
+
+    assert Dinheiro.new(12345) ==
+             {:ok, %Dinheiro{quantia: 1_234_500, moeda: :BRL}}
+  end
+
   test "new!/1 with default value set" do
     Application.put_env(:ex_dinheiro, :default_currency, :BRL)
 

@@ -15,6 +15,23 @@ defmodule Dinheiro do
   """
   @type t :: %Dinheiro{quantia: integer, moeda: atom}
 
+  @spec new(integer | float) :: {:ok, t} | {:error, String.t()}
+  @doc """
+  Create a new `Dinheiro` struct using a default currency.
+  The default currency can be set in the system Mix config.
+
+  ## Example:
+        iex> Application.put_env(:ex_dinheiro, :default_currency, :BRL)
+        iex> Dinheiro.new(12345)
+        {:ok, %Dinheiro{quantia: 1234500, moeda: :BRL}}
+        iex> Application.delete_env(:ex_dinheiro, :default_currency)
+        iex> Dinheiro.new(12345)
+        {:error, "you must set a default value in your application config :ex_dinheiro, default_currency."}
+
+  """
+  def new(quantia) do
+  end
+
   @spec new!(integer | float) :: t
   @doc """
   Create a new `Dinheiro` struct using a default currency.
@@ -35,9 +52,7 @@ defmodule Dinheiro do
       new!(quantia, moeda)
     else
       raise ArgumentError,
-            "to use Dinheiro.new!/1 you must set a default value in your application config :ex_dinheiro, default_moeda. #{
-              moeda
-            }."
+            "you must set a default value in your application config :ex_dinheiro, default_currency."
     end
   end
 

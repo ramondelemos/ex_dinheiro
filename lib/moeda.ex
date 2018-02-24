@@ -168,7 +168,8 @@ defmodule Moeda do
     end
   end
 
-  @spec to_string(String.t() | atom, float, Keywords.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @spec to_string(String.t() | atom, float, Keywords.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
   @doc """
   Return a formated string from a ISO 4217 code and a float value.
 
