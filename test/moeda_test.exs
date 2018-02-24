@@ -235,4 +235,8 @@ defmodule MoedaTest do
     assert Moeda.to_string(:usd, 12_345_678.9) == "US$ 12.345.678,900"
     assert Moeda.to_string("XBT", 12_345_678.9) == "฿ 12.345.678,90000000"
   end
+
+  test "Bloqueio para subir versão!" do
+    assert false
+  end
 end
