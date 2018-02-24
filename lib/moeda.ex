@@ -180,7 +180,11 @@ defmodule Moeda do
       {:error, "'NONE' does not represent an ISO 4217 code."}
   """
   def to_string(moeda, valor, opts \\ []) do
-    
+    try do
+      {:ok, to_string!(moeda, valor, opts)}
+    rescue
+      e -> {:error, e.message}
+    end
   end
 
   @spec to_string!(String.t() | atom, float, Keywords.t()) :: String.t()
