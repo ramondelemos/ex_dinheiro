@@ -168,6 +168,21 @@ defmodule Moeda do
     end
   end
 
+  @spec to_string(String.t() | atom, float, Keywords.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @doc """
+  Return a formated string from a ISO 4217 code and a float value.
+
+  ## Examples
+
+      iex> Moeda.to_string(:BRL, 100.0)
+      {:ok, "R$ 100,00"}
+      iex> Moeda.to_string(:NONE, 1000.5)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+  """
+  def to_string(moeda, valor, opts \\ []) do
+    
+  end
+
   @spec to_string!(String.t() | atom, float, Keywords.t()) :: String.t()
   @doc """
   Return a formated string from a ISO 4217 code and a float value.
