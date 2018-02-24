@@ -359,6 +359,11 @@ defmodule Dinheiro do
       {:error, "'NONE' does not represent an ISO 4217 code."}
   """
   def to_string(%Dinheiro{moeda: m} = from, opts \\ []) do
+    try do
+      {:ok, to_string!(from, opts)}
+    rescue
+      e -> {:error, e.message}
+    end
   end
 
   @spec to_string!(t, Keywords.t()) :: String.t()
