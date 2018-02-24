@@ -77,7 +77,19 @@ defmodule DinheiroTest do
     end
   end
 
-  test "compare!(1" do
+  test "compare/1" do
+    assert Dinheiro.compare(
+             Dinheiro.new!(123.45, :BRL),
+             Dinheiro.new!(123.45, :BRL)
+           ) == {:ok, 0}
+          
+    assert Dinheiro.compare(
+             Dinheiro.new!(123.45, :USD),
+             Dinheiro.new!(123.45, :BRL)
+           ) == {:error, "currency :USD must be the same as :BRL."}
+  end
+
+  test "compare!/1" do
     assert Dinheiro.compare!(
              Dinheiro.new!(123.45, :BRL),
              Dinheiro.new!(123.45, :BRL)

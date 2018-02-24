@@ -112,6 +112,24 @@ defmodule Dinheiro do
     %Dinheiro{amount: amount, currency: currency}
   end
 
+@spec compare(t, t) :: {:ok, integer} | {:error, String.t()}
+  @doc """
+  Compares two `Dinheiro` structs with each other.
+  They must each be of the same currency and then their value are compared.
+
+  ## Example:
+      iex> Dinheiro.compare(Dinheiro.new!(12345, :BRL), Dinheiro.new!(12345, :BRL))
+      {:ok, 0}
+      iex> Dinheiro.compare(Dinheiro.new!(12345, :BRL), Dinheiro.new!(12346, :BRL))
+      {:ok, -1}
+      iex> Dinheiro.compare(Dinheiro.new!(12346, :BRL), Dinheiro.new!(12345, :BRL))
+      {:ok, 1}
+      iex> Dinheiro.compare(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
+      {:error, "currency :USD must be the same as :BRL."}
+  """
+  def compare(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+  end
+
   @spec compare!(t, t) :: integer
   @doc """
   Compares two `Dinheiro` structs with each other.
@@ -483,22 +501,22 @@ defmodule Dinheiro do
 
   defp raise_currency_must_be_the_same(a, b) do
     raise ArgumentError,
-      message: "Moeda of #{a.currency} must be the same as #{b.currency}"
+      message: "currency :#{a.currency} must be the same as :#{b.currency}."
   end
 
   defp assert_if_value_is_positive(value) when is_integer(value) do
     if value < 0,
-      do: raise(ArgumentError, message: "Value #{value} must be positive.")
+      do: raise(ArgumentError, message: "value #{value} must be positive.")
   end
 
   defp assert_if_greater_than_zero(value) when is_integer(value) do
     if value == 0,
-      do: raise(ArgumentError, message: "Value must be greater than zero.")
+      do: raise(ArgumentError, message: "value must be greater than zero.")
   end
 
   defp assert_if_ratios_are_valid([head | tail]) do
     unless is_integer(head),
-      do: raise(ArgumentError, message: "Value '#{head}' must be integer.")
+      do: raise(ArgumentError, message: "value '#{head}' must be integer.")
 
     assert_if_value_is_positive(head)
     assert_if_greater_than_zero(head)
