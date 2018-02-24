@@ -252,6 +252,11 @@ defmodule Dinheiro do
 
   """
   def divide(%Dinheiro{moeda: _m} = a, b) when is_integer(b) or is_list(b) do
+    try do
+      {:ok, divide!(a, b)}
+    rescue
+      e -> {:error, e.message}
+    end
   end
 
   @spec divide!(t, integer | [integer]) :: [t]
