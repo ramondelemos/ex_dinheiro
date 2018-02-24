@@ -30,6 +30,11 @@ defmodule Dinheiro do
 
   """
   def new(quantia) do
+    try do
+      {:ok, new!(quantia)}
+    rescue
+      e -> {:error, e.message}
+    end
   end
 
   @spec new!(integer | float) :: t
