@@ -53,89 +53,110 @@ defmodule MoedaTest do
   end
 
   test "find/1", context do
-    assert Moeda.find("BRL") == %Moeda{
-             nome: "Brazilian Real",
-             simbolo: 'R$',
-             codigo: "BRL",
-             codigo_iso: 986,
-             expoente: 2
-           }
+    assert Moeda.find("BRL") ==
+             {:ok,
+              %Moeda{
+                nome: "Brazilian Real",
+                simbolo: 'R$',
+                codigo: "BRL",
+                codigo_iso: 986,
+                expoente: 2
+              }}
 
-    assert Moeda.find("brl") == %Moeda{
-             nome: "Brazilian Real",
-             simbolo: 'R$',
-             codigo: "BRL",
-             codigo_iso: 986,
-             expoente: 2
-           }
+    assert Moeda.find("brl") ==
+             {:ok,
+              %Moeda{
+                nome: "Brazilian Real",
+                simbolo: 'R$',
+                codigo: "BRL",
+                codigo_iso: 986,
+                expoente: 2
+              }}
 
-    assert Moeda.find(:BRL) == %Moeda{
-             nome: "Brazilian Real",
-             simbolo: 'R$',
-             codigo: "BRL",
-             codigo_iso: 986,
-             expoente: 2
-           }
+    assert Moeda.find(:BRL) ==
+             {:ok,
+              %Moeda{
+                nome: "Brazilian Real",
+                simbolo: 'R$',
+                codigo: "BRL",
+                codigo_iso: 986,
+                expoente: 2
+              }}
 
-    assert Moeda.find(:brl) == %Moeda{
-             nome: "Brazilian Real",
-             simbolo: 'R$',
-             codigo: "BRL",
-             codigo_iso: 986,
-             expoente: 2
-           }
+    assert Moeda.find(:brl) ==
+             {:ok,
+              %Moeda{
+                nome: "Brazilian Real",
+                simbolo: 'R$',
+                codigo: "BRL",
+                codigo_iso: 986,
+                expoente: 2
+              }}
 
-    assert Moeda.find("CNY") == %Moeda{
-             nome: "Yuan Renminbi",
-             simbolo: [165],
-             codigo: "CNY",
-             codigo_iso: 156,
-             expoente: 2
-           }
+    assert Moeda.find("CNY") ==
+             {:ok,
+              %Moeda{
+                nome: "Yuan Renminbi",
+                simbolo: [165],
+                codigo: "CNY",
+                codigo_iso: 156,
+                expoente: 2
+              }}
 
-    assert Moeda.find(:chf) == %Moeda{
-             nome: "Swiss Franc",
-             simbolo: [67, 72, 70],
-             codigo: "CHF",
-             codigo_iso: 756,
-             expoente: 2
-           }
+    assert Moeda.find(:chf) ==
+             {:ok,
+              %Moeda{
+                nome: "Swiss Franc",
+                simbolo: [67, 72, 70],
+                codigo: "CHF",
+                codigo_iso: 756,
+                expoente: 2
+              }}
 
-    assert Moeda.find(:CHW) == %Moeda{
-             nome: "WIR Franc",
-             simbolo: [],
-             codigo: "CHW",
-             codigo_iso: 948,
-             expoente: 2
-           }
+    assert Moeda.find(:CHW) ==
+             {:ok,
+              %Moeda{
+                nome: "WIR Franc",
+                simbolo: [],
+                codigo: "CHW",
+                codigo_iso: 948,
+                expoente: 2
+              }}
 
-    assert Moeda.find("") == nil
+    assert Moeda.find(:NONE) ==
+             {:error, "'NONE' does not represent an ISO 4217 code."}
 
     Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
 
-    assert Moeda.find(:BRL) == %Moeda{
-             nome: "Moeda do Brasil",
-             simbolo: 'BR$',
-             codigo: "BRL",
-             codigo_iso: 986,
-             expoente: 4
-           }
+    assert Moeda.find(:BRL) ==
+             {:ok,
+              %Moeda{
+                nome: "Moeda do Brasil",
+                simbolo: 'BR$',
+                codigo: "BRL",
+                codigo_iso: 986,
+                expoente: 4
+              }}
 
-    assert Moeda.find(:usd) == %Moeda{
-             nome: "Moeda do EUA",
-             simbolo: 'US$',
-             codigo: "USD",
-             codigo_iso: 986,
-             expoente: 3
-           }
+    assert Moeda.find(:usd) ==
+             {:ok,
+              %Moeda{
+                nome: "Moeda do EUA",
+                simbolo: 'US$',
+                codigo: "USD",
+                codigo_iso: 986,
+                expoente: 3
+              }}
 
-    assert Moeda.find("XBT") == %Moeda{
-             nome: "Bitcoin",
-             simbolo: '฿',
-             codigo: "XBT",
-             codigo_iso: 0,
-             expoente: 8
-           }
+    assert Moeda.find("XBT") ==
+             {:ok,
+              %Moeda{
+                nome: "Bitcoin",
+                simbolo: '฿',
+                codigo: "XBT",
+                codigo_iso: 0,
+                expoente: 8
+              }}
   end
 
   test "get_atom/1", context do
