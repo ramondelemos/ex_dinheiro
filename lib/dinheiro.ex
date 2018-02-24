@@ -127,7 +127,10 @@ defmodule Dinheiro do
       iex> Dinheiro.compare(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
       {:error, "currency :USD must be the same as :BRL."}
   """
-  def compare(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+  def compare(a, b) do
+    {:ok, compare!(a, b)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec compare!(t, t) :: integer
