@@ -128,37 +128,32 @@ defmodule Moeda do
     end
   end
 
-  @spec get_atom(String.t() | atom) :: atom | nil
+  @spec get_atom!(String.t() | atom) :: atom
   @doc """
   Return an atom from a value that represents an ISO 4217 code.
 
   ## Examples
 
-      iex> Moeda.get_atom(:BRL)
+      iex> Moeda.get_atom!(:BRL)
       :BRL
-      iex> Moeda.get_atom("BRL")
+      iex> Moeda.get_atom!("BRL")
       :BRL
-      iex> Moeda.get_atom("")
-      nil
+      iex> Moeda.get_atom!(:NONE)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   Its function ignore case sensitive.
 
   ## Examples
 
-      iex> Moeda.get_atom(:brl)
+      iex> Moeda.get_atom!(:brl)
       :BRL
-      iex> Moeda.get_atom("brl")
+      iex> Moeda.get_atom!("brl")
       :BRL
 
   """
-  def get_atom(codigo) do
+  def get_atom!(codigo) do
     moeda = find!(codigo)
-
-    if moeda do
-      moeda.codigo |> String.upcase() |> String.to_atom()
-    else
-      nil
-    end
+    moeda.codigo |> String.upcase() |> String.to_atom()
   end
 
   @spec get_factor(String.t() | atom) :: float | nil

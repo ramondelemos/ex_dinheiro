@@ -159,21 +159,25 @@ defmodule MoedaTest do
               }}
   end
 
-  test "get_atom/1", context do
-    assert Moeda.get_atom("BRL") == :BRL
-    assert Moeda.get_atom("brl") == :BRL
-    assert Moeda.get_atom(:BRL) == :BRL
-    assert Moeda.get_atom(:brl) == :BRL
-    assert Moeda.get_atom("") == nil
-    assert Moeda.get_atom(:CLF) == :CLF
-    assert Moeda.get_atom("PYG") == :PYG
-    assert Moeda.get_atom(:CHW) == :CHW
+  test "get_atom!/1", context do
+    assert Moeda.get_atom!("BRL") == :BRL
+    assert Moeda.get_atom!("brl") == :BRL
+    assert Moeda.get_atom!(:BRL) == :BRL
+    assert Moeda.get_atom!(:brl) == :BRL
+
+    assert_raise ArgumentError, fn ->
+      Moeda.get_atom!("")
+    end
+
+    assert Moeda.get_atom!(:CLF) == :CLF
+    assert Moeda.get_atom!("PYG") == :PYG
+    assert Moeda.get_atom!(:CHW) == :CHW
 
     Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
 
-    assert Moeda.get_atom(:BRL) == :BRL
-    assert Moeda.get_atom("XBT") == :XBT
-    assert Moeda.get_atom(:usd) == :USD
+    assert Moeda.get_atom!(:BRL) == :BRL
+    assert Moeda.get_atom!("XBT") == :XBT
+    assert Moeda.get_atom!(:usd) == :USD
   end
 
   test "get_factor/1", context do

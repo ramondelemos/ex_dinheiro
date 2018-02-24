@@ -97,7 +97,7 @@ defmodule Dinheiro do
 
       atom =
         v_moeda.codigo
-        |> Moeda.get_atom()
+        |> Moeda.get_atom!()
 
       valor = quantia * factor
 
