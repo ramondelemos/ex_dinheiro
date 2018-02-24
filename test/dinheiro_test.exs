@@ -64,6 +64,14 @@ defmodule DinheiroTest do
     end
   end
 
+  test "new/2" do
+    assert Dinheiro.new(12345, :NONE) ==
+             {:error, "'NONE' does not represent an ISO 4217 code."}
+
+    assert Dinheiro.new(12345, :BRL) ==
+             {:ok, %Dinheiro{amount: 1_234_500, currency: :BRL}}
+  end
+
   test "new!/2 with a float value" do
     assert Dinheiro.new!(123.45, :BRL) == %Dinheiro{
              amount: 12345,

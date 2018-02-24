@@ -59,6 +59,24 @@ defmodule Dinheiro do
     end
   end
 
+  @spec new(integer | float, atom | String.t()) :: {:ok, t} | {:error, String.t()}
+  @doc """
+  Create a new `Dinheiro` struct.
+
+  ## Example:
+      iex> Dinheiro.new(12345, :BRL)
+      {:ok, %Dinheiro{amount: 1234500, currency: :BRL}}
+      iex> Dinheiro.new(12345, :XBT)
+      {:error, "'XBT' does not represent an ISO 4217 code."}
+      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
+      iex> Dinheiro.new(123.45, :XBT)
+      {:ok, %Dinheiro{amount: 12345000000, currency: :XBT}}
+
+  """
+  def new(amount, currency) do
+  end
+
   @spec new!(integer | float, atom | String.t()) :: t
   @doc """
   Create a new `Dinheiro` struct.
