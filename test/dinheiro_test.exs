@@ -130,6 +130,18 @@ defmodule DinheiroTest do
            ) == false
   end
 
+  test "sum/2" do
+    assert Dinheiro.sum(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL)) ==
+             {:ok,
+              %Dinheiro{
+                amount: 300,
+                currency: :BRL
+              }}
+
+    assert Dinheiro.sum(%Dinheiro{amount: 100, currency: :NONE}, 2) ==
+             {:error, "'NONE' does not represent an ISO 4217 code."}
+  end
+
   test "sum!(2" do
     assert Dinheiro.sum!(Dinheiro.new!(12345, :BRL), Dinheiro.new!(12345, :BRL)) ==
              %Dinheiro{

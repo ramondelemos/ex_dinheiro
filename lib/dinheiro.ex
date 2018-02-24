@@ -178,6 +178,27 @@ defmodule Dinheiro do
 
   def equals?(_, _), do: false
 
+  @spec sum(t, t | integer | float) :: {:ok, t} | {:error, String.t()}
+  @doc """
+  Return a new `Dinheiro` structs with sum of two values.
+  The first parameter must be a struct of `Dinheiro`.
+
+  ## Example:
+      iex> Dinheiro.sum(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL))
+      {:ok, %Dinheiro{amount: 300, currency: :BRL}}
+      iex> Dinheiro.sum(%Dinheiro{amount: 100, currency: :NONE}, 2)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+      iex> Dinheiro.sum(2, 2)
+      {:error, "the first param must be a Dinheiro struct."}
+      iex> Dinheiro.sum(Dinheiro.new!(2, :BRL), "1")
+      {:error, "value '1' must be integer or float."}
+      iex> Dinheiro.sum(%Dinheiro{amount: 100, currency: :NONE}, %Dinheiro{amount: 100, currency: :NONE})
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+
+  """
+  def sum(a, b) do
+  end
+
   @spec sum!(t, t | integer | float) :: t
   @doc """
   Return a new `Dinheiro` structs with sum of two values.
