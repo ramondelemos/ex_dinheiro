@@ -6,14 +6,14 @@ defmodule Dinheiro do
 
   """
 
-  defstruct [:quantia, :moeda]
+  defstruct [:amount, :currency]
 
   @typedoc """
       Type that represents Dinheiro struct with:
-      :quantia as integer that represents an amount.
-      :moeda as atom that represents an ISO 4217 code.
+      :amount as integer that represents an amount.
+      :currency as atom that represents an ISO 4217 code.
   """
-  @type t :: %Dinheiro{quantia: integer, moeda: atom}
+  @type t :: %Dinheiro{amount: integer, currency: atom}
 
   @spec new(integer | float) :: {:ok, t} | {:error, String.t()}
   @doc """
@@ -23,14 +23,14 @@ defmodule Dinheiro do
   ## Example:
         iex> Application.put_env(:ex_dinheiro, :default_currency, :BRL)
         iex> Dinheiro.new(12345)
-        {:ok, %Dinheiro{quantia: 1234500, moeda: :BRL}}
+        {:ok, %Dinheiro{amount: 1234500, currency: :BRL}}
         iex> Application.delete_env(:ex_dinheiro, :default_currency)
         iex> Dinheiro.new(12345)
         {:error, "you must set a default value in your application config :ex_dinheiro, default_currency."}
 
   """
-  def new(quantia) do
-    {:ok, new!(quantia)}
+  def new(amount) do
+    {:ok, new!(amount)}
   rescue
     e -> {:error, e.message}
   end
@@ -43,16 +43,16 @@ defmodule Dinheiro do
   ## Example:
         iex> Application.put_env(:ex_dinheiro, :default_currency, :BRL)
         iex> Dinheiro.new!(12345)
-        %Dinheiro{quantia: 1234500, moeda: :BRL}
+        %Dinheiro{amount: 1234500, currency: :BRL}
         iex> Dinheiro.new!(123.45)
-        %Dinheiro{quantia: 12345, moeda: :BRL}
+        %Dinheiro{amount: 12345, currency: :BRL}
 
   """
-  def new!(quantia) when is_integer(quantia) or is_float(quantia) do
-    moeda = Application.get_env(:ex_dinheiro, :default_currency)
+  def new!(amount) when is_integer(amount) or is_float(amount) do
+    currency = Application.get_env(:ex_dinheiro, :default_currency)
 
-    if moeda do
-      new!(quantia, moeda)
+    if currency do
+      new!(amount, currency)
     else
       raise ArgumentError,
             "you must set a default value in your application config :ex_dinheiro, default_currency."
@@ -65,13 +65,13 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.new!(12345, :BRL)
-      %Dinheiro{quantia: 1234500, moeda: :BRL}
+      %Dinheiro{amount: 1234500, currency: :BRL}
       iex> Dinheiro.new!(12345, "BRL")
-      %Dinheiro{quantia: 1234500, moeda: :BRL}
+      %Dinheiro{amount: 1234500, currency: :BRL}
       iex> Dinheiro.new!(123.45, :BRL)
-      %Dinheiro{quantia: 12345, moeda: :BRL}
+      %Dinheiro{amount: 12345, currency: :BRL}
       iex> Dinheiro.new!(123.45, "BRL")
-      %Dinheiro{quantia: 12345, moeda: :BRL}
+      %Dinheiro{amount: 12345, currency: :BRL}
 
   Is possible to work with no official ISO currency code adding it in the system Mix config.
 
@@ -79,43 +79,43 @@ defmodule Dinheiro do
 
       iex> Moeda.find(:XBT)
       {:error, "'XBT' does not represent an ISO 4217 code."}
-      iex> moedas = %{ XBT: %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8} }
-      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
+      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Dinheiro.new!(123.45, :XBT)
-      %Dinheiro{quantia: 12345000000, moeda: :XBT}
+      %Dinheiro{amount: 12345000000, currency: :XBT}
 
   """
-  def new!(quantia, moeda) when is_integer(quantia) or is_float(quantia) do
-    v_moeda = Moeda.find!(moeda)
+  def new!(amount, currency) when is_integer(amount) or is_float(amount) do
+    v_currency = Moeda.find!(currency)
 
-    if v_moeda do
+    if v_currency do
       factor =
-        v_moeda.codigo
+        v_currency.iso_code
         |> Moeda.get_factor!()
 
       atom =
-        v_moeda.codigo
+        v_currency.iso_code
         |> Moeda.get_atom!()
 
-      valor = quantia * factor
+      valor = amount * factor
 
       valor
       |> round
       |> do_new(atom)
     else
       raise ArgumentError,
-            "to use Dinheiro.new!/2 you must set a valid value to moeda."
+            "to use Dinheiro.new!/2 you must set a valid value to currency."
     end
   end
 
-  defp do_new(quantia, moeda) when is_integer(quantia) and is_atom(moeda) do
-    %Dinheiro{quantia: quantia, moeda: moeda}
+  defp do_new(amount, currency) when is_integer(amount) and is_atom(currency) do
+    %Dinheiro{amount: amount, currency: currency}
   end
 
   @spec compare!(t, t) :: integer
   @doc """
   Compares two `Dinheiro` structs with each other.
-  They must each be of the same moeda and then their value are compared.
+  They must each be of the same currency and then their value are compared.
 
   ## Example:
       iex> Dinheiro.compare!(Dinheiro.new!(12345, :BRL), Dinheiro.new!(12345, :BRL))
@@ -125,8 +125,8 @@ defmodule Dinheiro do
       iex> Dinheiro.compare!(Dinheiro.new!(12346, :BRL), Dinheiro.new!(12345, :BRL))
       1
   """
-  def compare!(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
-    case a.quantia - b.quantia do
+  def compare!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+    case a.amount - b.amount do
       result when result > 0 -> 1
       result when result < 0 -> -1
       result when result == 0 -> 0
@@ -134,7 +134,7 @@ defmodule Dinheiro do
   end
 
   def compare!(a, b) do
-    raise_moeda_must_be_the_same(a, b)
+    raise_currency_must_be_the_same(a, b)
   end
 
   @spec equals?(t, t) :: boolean
@@ -149,9 +149,9 @@ defmodule Dinheiro do
       iex> Dinheiro.equals?(Dinheiro.new!(12345, :BRL), Dinheiro.new!(12345, :USD))
       false
   """
-  def equals?(%Dinheiro{moeda: moeda, quantia: quantia}, %Dinheiro{
-        moeda: moeda,
-        quantia: quantia
+  def equals?(%Dinheiro{currency: currency, amount: amount}, %Dinheiro{
+        currency: currency,
+        amount: amount
       }),
       do: true
 
@@ -164,25 +164,25 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.sum!(Dinheiro.new!(1, :BRL), Dinheiro.new!(1, :BRL))
-      %Dinheiro{quantia: 200, moeda: :BRL}
+      %Dinheiro{amount: 200, currency: :BRL}
       iex> Dinheiro.sum!(Dinheiro.new!(1, :BRL), 2)
-      %Dinheiro{quantia: 300, moeda: :BRL}
+      %Dinheiro{amount: 300, currency: :BRL}
       iex> Dinheiro.sum!(Dinheiro.new!(1, :BRL), 2.5)
-      %Dinheiro{quantia: 350, moeda: :BRL}
+      %Dinheiro{amount: 350, currency: :BRL}
       iex> Dinheiro.sum!(Dinheiro.new!(2, :BRL), -1)
-      %Dinheiro{quantia: 100, moeda: :BRL}
+      %Dinheiro{amount: 100, currency: :BRL}
 
   """
-  def sum!(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
-    %Dinheiro{quantia: a.quantia + b.quantia, moeda: m}
+  def sum!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+    %Dinheiro{amount: a.amount + b.amount, currency: m}
   end
 
-  def sum!(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
+  def sum!(%Dinheiro{currency: m} = a, b) when is_integer(b) or is_float(b) do
     sum!(a, Dinheiro.new!(b, m))
   end
 
   def sum!(a, b) do
-    raise_moeda_must_be_the_same(a, b)
+    raise_currency_must_be_the_same(a, b)
   end
 
   @spec subtract!(t, t | integer | float) :: t
@@ -192,25 +192,25 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.subtract!(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL))
-      %Dinheiro{quantia: 100, moeda: :BRL}
+      %Dinheiro{amount: 100, currency: :BRL}
       iex> Dinheiro.subtract!(Dinheiro.new!(4, :BRL), 2)
-      %Dinheiro{quantia: 200, moeda: :BRL}
+      %Dinheiro{amount: 200, currency: :BRL}
       iex> Dinheiro.subtract!(Dinheiro.new!(5, :BRL), 2.5)
-      %Dinheiro{quantia: 250, moeda: :BRL}
+      %Dinheiro{amount: 250, currency: :BRL}
       iex> Dinheiro.subtract!(Dinheiro.new!(4, :BRL), -2)
-      %Dinheiro{quantia: 600, moeda: :BRL}
+      %Dinheiro{amount: 600, currency: :BRL}
 
   """
-  def subtract!(%Dinheiro{moeda: m} = a, %Dinheiro{moeda: m} = b) do
-    %Dinheiro{quantia: a.quantia - b.quantia, moeda: m}
+  def subtract!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+    %Dinheiro{amount: a.amount - b.amount, currency: m}
   end
 
-  def subtract!(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
+  def subtract!(%Dinheiro{currency: m} = a, b) when is_integer(b) or is_float(b) do
     subtract!(a, Dinheiro.new!(b, m))
   end
 
   def subtract!(a, b) do
-    raise_moeda_must_be_the_same(a, b)
+    raise_currency_must_be_the_same(a, b)
   end
 
   @spec multiply!(t, integer | float) :: t
@@ -220,14 +220,14 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.multiply!(Dinheiro.new!(2, :BRL), 2)
-      %Dinheiro{quantia: 400, moeda: :BRL}
+      %Dinheiro{amount: 400, currency: :BRL}
       iex> Dinheiro.multiply!(Dinheiro.new!(5, :BRL), 2.5)
-      %Dinheiro{quantia: 1250, moeda: :BRL}
+      %Dinheiro{amount: 1250, currency: :BRL}
       iex> Dinheiro.multiply!(Dinheiro.new!(4, :BRL), -2)
-      %Dinheiro{quantia: -800, moeda: :BRL}
+      %Dinheiro{amount: -800, currency: :BRL}
 
   """
-  def multiply!(%Dinheiro{moeda: m} = a, b) when is_integer(b) or is_float(b) do
+  def multiply!(%Dinheiro{currency: m} = a, b) when is_integer(b) or is_float(b) do
     float_value = to_float!(a)
     new!(float_value * b, m)
   end
@@ -238,18 +238,18 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.divide(Dinheiro.new!(100, :BRL), 2)
-      {:ok, [%Dinheiro{quantia: 5000, moeda: :BRL}, %Dinheiro{quantia: 5000, moeda: :BRL}]}
-      iex> Dinheiro.divide(%Dinheiro{quantia: 5050, moeda: :NONE}, 2)
+      {:ok, [%Dinheiro{amount: 5000, currency: :BRL}, %Dinheiro{amount: 5000, currency: :BRL}]}
+      iex> Dinheiro.divide(%Dinheiro{amount: 5050, currency: :NONE}, 2)
       {:error, "'NONE' does not represent an ISO 4217 code."}
 
   Divide a `Dinheiro` struct by an list of values that represents a division ratio.
 
   ## Example:
       iex> Dinheiro.divide(Dinheiro.new!(0.05, :BRL), [3, 7])
-      {:ok, [%Dinheiro{quantia: 2, moeda: :BRL}, %Dinheiro{quantia: 3, moeda: :BRL}]}
+      {:ok, [%Dinheiro{amount: 2, currency: :BRL}, %Dinheiro{amount: 3, currency: :BRL}]}
 
   """
-  def divide(%Dinheiro{moeda: _m} = a, b) when is_integer(b) or is_list(b) do
+  def divide(%Dinheiro{currency: _m} = a, b) when is_integer(b) or is_list(b) do
     {:ok, divide!(a, b)}
   rescue
     e -> {:error, e.message}
@@ -261,31 +261,31 @@ defmodule Dinheiro do
 
   ## Example:
       iex> Dinheiro.divide!(Dinheiro.new!(100, :BRL), 2)
-      [%Dinheiro{quantia: 5000, moeda: :BRL}, %Dinheiro{quantia: 5000, moeda: :BRL}]
+      [%Dinheiro{amount: 5000, currency: :BRL}, %Dinheiro{amount: 5000, currency: :BRL}]
       iex> Dinheiro.divide!(Dinheiro.new!(101, :BRL), 2)
-      [%Dinheiro{quantia: 5050, moeda: :BRL}, %Dinheiro{quantia: 5050, moeda: :BRL}]
+      [%Dinheiro{amount: 5050, currency: :BRL}, %Dinheiro{amount: 5050, currency: :BRL}]
 
   Divide a `Dinheiro` struct by an list of values that represents a division ratio.
 
   ## Example:
       iex> Dinheiro.divide!(Dinheiro.new!(0.05, :BRL), [3, 7])
-      [%Dinheiro{quantia: 2, moeda: :BRL}, %Dinheiro{quantia: 3, moeda: :BRL}]
+      [%Dinheiro{amount: 2, currency: :BRL}, %Dinheiro{amount: 3, currency: :BRL}]
 
   """
-  def divide!(%Dinheiro{moeda: m} = a, b) when is_integer(b) do
-    assert_if_moeda_is_valid(m)
+  def divide!(%Dinheiro{currency: m} = a, b) when is_integer(b) do
+    assert_if_currency_is_valid(m)
     assert_if_ratios_are_valid([b])
-    division = div(a.quantia, b)
-    remainder = rem(a.quantia, b)
+    division = div(a.amount, b)
+    remainder = rem(a.amount, b)
     to_alocate(division, remainder, m, b)
   end
 
-  def divide!(%Dinheiro{moeda: m} = a, b) when is_list(b) do
-    assert_if_moeda_is_valid(m)
+  def divide!(%Dinheiro{currency: m} = a, b) when is_list(b) do
+    assert_if_currency_is_valid(m)
     assert_if_ratios_are_valid(b)
     ratio = sum_values(b)
-    division = calculate_ratio(b, ratio, a.quantia)
-    remainder = a.quantia - sum_values(division)
+    division = calculate_ratio(b, ratio, a.amount)
+    remainder = a.amount - sum_values(division)
     to_alocate(division, remainder, m)
   end
 
@@ -294,13 +294,13 @@ defmodule Dinheiro do
     |> Enum.map(&div(value * &1, ratio))
   end
 
-  defp to_alocate([head | tail], remainder, moeda) do
+  defp to_alocate([head | tail], remainder, currency) do
     if head do
       dinheiro =
         if remainder > 0 do
-          do_new(head + 1, moeda)
+          do_new(head + 1, currency)
         else
-          do_new(head, moeda)
+          do_new(head, currency)
         end
 
       rem =
@@ -311,7 +311,7 @@ defmodule Dinheiro do
         end
 
       if tail != [] do
-        [dinheiro | to_alocate(tail, rem, moeda)]
+        [dinheiro | to_alocate(tail, rem, currency)]
       else
         [dinheiro]
       end
@@ -320,7 +320,7 @@ defmodule Dinheiro do
     end
   end
 
-  defp to_alocate(division, remainder, moeda, position) do
+  defp to_alocate(division, remainder, currency, position) do
     some =
       if remainder > 0 do
         1
@@ -333,9 +333,9 @@ defmodule Dinheiro do
 
       dinheiro =
         value
-        |> do_new(moeda)
+        |> do_new(currency)
 
-      [dinheiro | to_alocate(division, remainder - 1, moeda, position - 1)]
+      [dinheiro | to_alocate(division, remainder - 1, currency, position - 1)]
     else
       []
     end
@@ -349,13 +349,13 @@ defmodule Dinheiro do
   Return a float value from a `Dinheiro` structs.
 
   ## Example:
-      iex> Dinheiro.to_float(%Dinheiro{quantia: 200, moeda: :BRL})
+      iex> Dinheiro.to_float(%Dinheiro{amount: 200, currency: :BRL})
       {:ok, 2.0}
-      iex> Dinheiro.to_float(%Dinheiro{quantia: 200, moeda: :NONE})
+      iex> Dinheiro.to_float(%Dinheiro{amount: 200, currency: :NONE})
       {:error, "'NONE' does not represent an ISO 4217 code."}
 
   """
-  def to_float(%Dinheiro{moeda: _m} = from) do
+  def to_float(%Dinheiro{currency: _m} = from) do
     {:ok, to_float!(from)}
   rescue
     e -> {:error, e.message}
@@ -366,7 +366,7 @@ defmodule Dinheiro do
   Return a float value from a `Dinheiro` structs.
 
   ## Example:
-      iex> Dinheiro.to_float!(%Dinheiro{quantia: 200, moeda: :BRL})
+      iex> Dinheiro.to_float!(%Dinheiro{amount: 200, currency: :BRL})
       2.0
       iex> Dinheiro.to_float!(Dinheiro.new!(50.5, :BRL))
       50.5
@@ -374,10 +374,10 @@ defmodule Dinheiro do
       -4.0
 
   """
-  def to_float!(%Dinheiro{moeda: m} = from) do
-    moeda = Moeda.find!(m)
+  def to_float!(%Dinheiro{currency: m} = from) do
+    currency = Moeda.find!(m)
     factor = Moeda.get_factor!(m)
-    Float.round(from.quantia / factor, moeda.expoente)
+    Float.round(from.amount / factor, currency.exponent)
   end
 
   @spec to_string(t, Keywords.t()) :: {:ok, String.t()} | {:error, String.t()}
@@ -385,12 +385,12 @@ defmodule Dinheiro do
   Return a formated string from a `Dinheiro` struct.
 
   ## Example:
-      iex> Dinheiro.to_string(%Dinheiro{quantia: 200, moeda: :BRL})
+      iex> Dinheiro.to_string(%Dinheiro{amount: 200, currency: :BRL})
       {:ok, "R$ 2,00"}
-      iex> Dinheiro.to_string(%Dinheiro{quantia: 200, moeda: :NONE})
+      iex> Dinheiro.to_string(%Dinheiro{amount: 200, currency: :NONE})
       {:error, "'NONE' does not represent an ISO 4217 code."}
   """
-  def to_string(%Dinheiro{moeda: _m} = from, opts \\ []) do
+  def to_string(%Dinheiro{currency: _m} = from, opts \\ []) do
     {:ok, to_string!(from, opts)}
   rescue
     e -> {:error, e.message}
@@ -401,7 +401,7 @@ defmodule Dinheiro do
   Return a formated string from a `Dinheiro` struct.
 
   ## Example:
-      iex> Dinheiro.to_string!(%Dinheiro{quantia: 200, moeda: :BRL})
+      iex> Dinheiro.to_string!(%Dinheiro{amount: 200, currency: :BRL})
       "R$ 2,00"
       iex> Dinheiro.to_string!(Dinheiro.new!(50.5, :BRL))
       "R$ 50,50"
@@ -458,16 +458,16 @@ defmodule Dinheiro do
       "R$ 12.345.678,90"
       iex> Dinheiro.to_string!(Dinheiro.new!(12_345_678.9, :USD))
       "$ 12.345.678,90"
-      iex> Dinheiro.to_string!(%Dinheiro{quantia: 200, moeda: :XBT})
+      iex> Dinheiro.to_string!(%Dinheiro{amount: 200, currency: :XBT})
       ** (ArgumentError) 'XBT' does not represent an ISO 4217 code.
-      iex> real = %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
-      %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
-      iex> dollar = %Moeda{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 840, expoente: 3}
-      %Moeda{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 840, expoente: 3}
-      iex> bitcoin = %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8}
-      %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8}
-      iex> moedas = %{ BRL: real, USD: dollar, XBT: bitcoin }
-      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
+      iex> real = %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}
+      %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}
+      iex> dollar = %Moeda{name: "Moeda do EUA", symbol: 'US$', iso_code: "USD", country_code: 840, exponent: 3}
+      %Moeda{name: "Moeda do EUA", symbol: 'US$', iso_code: "USD", country_code: 840, exponent: 3}
+      iex> bitcoin = %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8}
+      %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8}
+      iex> currencies = %{ BRL: real, USD: dollar, XBT: bitcoin }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Dinheiro.to_string!(Dinheiro.new!(12_345_678.9, :BRL))
       "BR$ 12.345.678,9000"
       iex> Dinheiro.to_string!(Dinheiro.new!(12_345_678.9, :usd))
@@ -476,14 +476,14 @@ defmodule Dinheiro do
       "฿ 12.345.678,90000000"
 
   """
-  def to_string!(%Dinheiro{moeda: m} = from, opts \\ []) do
+  def to_string!(%Dinheiro{currency: m} = from, opts \\ []) do
     value = to_float!(from)
     Moeda.to_string!(m, value, opts)
   end
 
-  defp raise_moeda_must_be_the_same(a, b) do
+  defp raise_currency_must_be_the_same(a, b) do
     raise ArgumentError,
-      message: "Moeda of #{a.moeda} must be the same as #{b.moeda}"
+      message: "Moeda of #{a.currency} must be the same as #{b.currency}"
   end
 
   defp assert_if_value_is_positive(value) when is_integer(value) do
@@ -505,5 +505,5 @@ defmodule Dinheiro do
     if tail != [], do: assert_if_ratios_are_valid(tail)
   end
 
-  defp assert_if_moeda_is_valid(m), do: Moeda.find!(m)
+  defp assert_if_currency_is_valid(m), do: Moeda.find!(m)
 end

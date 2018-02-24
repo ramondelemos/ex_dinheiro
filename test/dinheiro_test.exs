@@ -19,13 +19,13 @@ defmodule DinheiroTest do
     Application.put_env(:ex_dinheiro, :default_currency, :BRL)
 
     assert Dinheiro.new(12345) ==
-             {:ok, %Dinheiro{quantia: 1_234_500, moeda: :BRL}}
+             {:ok, %Dinheiro{amount: 1_234_500, currency: :BRL}}
   end
 
   test "new!/1 with default value set" do
     Application.put_env(:ex_dinheiro, :default_currency, :BRL)
 
-    assert Dinheiro.new!(12345) == %Dinheiro{quantia: 1_234_500, moeda: :BRL}
+    assert Dinheiro.new!(12345) == %Dinheiro{amount: 1_234_500, currency: :BRL}
   end
 
   test "new!/1 with an invalid default value set" do
@@ -53,7 +53,7 @@ defmodule DinheiroTest do
   test "new!/1 with float value" do
     Application.put_env(:ex_dinheiro, :default_currency, :BRL)
 
-    assert Dinheiro.new!(123.45) == %Dinheiro{quantia: 12345, moeda: :BRL}
+    assert Dinheiro.new!(123.45) == %Dinheiro{amount: 12345, currency: :BRL}
   end
 
   test "new!/1 with an invalid value" do
@@ -65,7 +65,10 @@ defmodule DinheiroTest do
   end
 
   test "new!/2 with a float value" do
-    assert Dinheiro.new!(123.45, :BRL) == %Dinheiro{quantia: 12345, moeda: :BRL}
+    assert Dinheiro.new!(123.45, :BRL) == %Dinheiro{
+             amount: 12345,
+             currency: :BRL
+           }
   end
 
   test "new!/2 with an invalid value" do
@@ -92,8 +95,8 @@ defmodule DinheiroTest do
 
     assert_raise ArgumentError, fn ->
       Dinheiro.compare!(Dinheiro.new!(123.45, :BRL), %Dinheiro{
-        quantia: 12345,
-        moeda: :USD
+        amount: 12345,
+        currency: :USD
       }) == 0
     end
   end
@@ -118,23 +121,23 @@ defmodule DinheiroTest do
   test "sum!(2" do
     assert Dinheiro.sum!(Dinheiro.new!(12345, :BRL), Dinheiro.new!(12345, :BRL)) ==
              %Dinheiro{
-               quantia: 2_469_000,
-               moeda: :BRL
+               amount: 2_469_000,
+               currency: :BRL
              }
 
     assert Dinheiro.sum!(Dinheiro.new!(1, :BRL), 1) == %Dinheiro{
-             quantia: 200,
-             moeda: :BRL
+             amount: 200,
+             currency: :BRL
            }
 
     assert Dinheiro.sum!(Dinheiro.new!(1, :BRL), 1.2) == %Dinheiro{
-             quantia: 220,
-             moeda: :BRL
+             amount: 220,
+             currency: :BRL
            }
 
     assert Dinheiro.sum!(Dinheiro.new!(-1, :BRL), 1.2) == %Dinheiro{
-             quantia: 20,
-             moeda: :BRL
+             amount: 20,
+             currency: :BRL
            }
 
     assert_raise ArgumentError, fn ->
@@ -145,23 +148,23 @@ defmodule DinheiroTest do
   test "subtract!(2" do
     assert Dinheiro.subtract!(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL)) ==
              %Dinheiro{
-               quantia: 100,
-               moeda: :BRL
+               amount: 100,
+               currency: :BRL
              }
 
     assert Dinheiro.subtract!(Dinheiro.new!(3, :BRL), 1) == %Dinheiro{
-             quantia: 200,
-             moeda: :BRL
+             amount: 200,
+             currency: :BRL
            }
 
     assert Dinheiro.subtract!(Dinheiro.new!(4, :BRL), 1.2) == %Dinheiro{
-             quantia: 280,
-             moeda: :BRL
+             amount: 280,
+             currency: :BRL
            }
 
     assert Dinheiro.subtract!(Dinheiro.new!(1, :BRL), -1) == %Dinheiro{
-             quantia: 200,
-             moeda: :BRL
+             amount: 200,
+             currency: :BRL
            }
 
     assert_raise ArgumentError, fn ->
@@ -171,18 +174,18 @@ defmodule DinheiroTest do
 
   test "multiply!(2" do
     assert Dinheiro.multiply!(Dinheiro.new!(3, :BRL), 2) == %Dinheiro{
-             quantia: 600,
-             moeda: :BRL
+             amount: 600,
+             currency: :BRL
            }
 
     assert Dinheiro.multiply!(Dinheiro.new!(4, :BRL), 1.5) == %Dinheiro{
-             quantia: 600,
-             moeda: :BRL
+             amount: 600,
+             currency: :BRL
            }
 
     assert Dinheiro.multiply!(Dinheiro.new!(1, :BRL), -1) == %Dinheiro{
-             quantia: -100,
-             moeda: :BRL
+             amount: -100,
+             currency: :BRL
            }
 
     assert_raise FunctionClauseError, fn ->
@@ -190,17 +193,17 @@ defmodule DinheiroTest do
     end
 
     assert_raise FunctionClauseError, fn ->
-      Dinheiro.multiply!(%{quantia: 600, moeda: :BRL}, 2)
+      Dinheiro.multiply!(%{amount: 600, currency: :BRL}, 2)
     end
   end
 
   test "to_float!(1" do
-    assert Dinheiro.to_float!(%Dinheiro{quantia: 600, moeda: :BRL}) == 6.0
-    assert Dinheiro.to_float!(%Dinheiro{quantia: 625, moeda: :BRL}) == 6.25
-    assert Dinheiro.to_float!(%Dinheiro{quantia: -625, moeda: :BRL}) == -6.25
+    assert Dinheiro.to_float!(%Dinheiro{amount: 600, currency: :BRL}) == 6.0
+    assert Dinheiro.to_float!(%Dinheiro{amount: 625, currency: :BRL}) == 6.25
+    assert Dinheiro.to_float!(%Dinheiro{amount: -625, currency: :BRL}) == -6.25
 
     assert_raise FunctionClauseError, fn ->
-      Dinheiro.to_float!(%{quantia: 600, moeda: :BRL})
+      Dinheiro.to_float!(%{amount: 600, currency: :BRL})
     end
 
     assert_raise FunctionClauseError, fn ->
@@ -208,15 +211,15 @@ defmodule DinheiroTest do
     end
 
     assert_raise ArgumentError, fn ->
-      Dinheiro.to_float!(%Dinheiro{quantia: 600, moeda: :NONE})
+      Dinheiro.to_float!(%Dinheiro{amount: 600, currency: :NONE})
     end
   end
 
   test "to_float/2" do
-    assert Dinheiro.to_float(%Dinheiro{quantia: 10_000, moeda: :BRL}) ==
+    assert Dinheiro.to_float(%Dinheiro{amount: 10_000, currency: :BRL}) ==
              {:ok, 100.00}
 
-    assert Dinheiro.to_float(%Dinheiro{quantia: 600, moeda: :NONE}) ==
+    assert Dinheiro.to_float(%Dinheiro{amount: 600, currency: :NONE}) ==
              {:error, "'NONE' does not represent an ISO 4217 code."}
   end
 
@@ -224,63 +227,63 @@ defmodule DinheiroTest do
     assert Dinheiro.divide(Dinheiro.new!(0.02, :BRL), 3) ==
              {:ok,
               [
-                %Dinheiro{quantia: 1, moeda: :BRL},
-                %Dinheiro{quantia: 1, moeda: :BRL},
-                %Dinheiro{quantia: 0, moeda: :BRL}
+                %Dinheiro{amount: 1, currency: :BRL},
+                %Dinheiro{amount: 1, currency: :BRL},
+                %Dinheiro{amount: 0, currency: :BRL}
               ]}
 
-    assert Dinheiro.divide(%Dinheiro{quantia: 600, moeda: :NONE}, 3) ==
+    assert Dinheiro.divide(%Dinheiro{amount: 600, currency: :NONE}, 3) ==
              {:error, "'NONE' does not represent an ISO 4217 code."}
   end
 
   test "divide!/2" do
     assert Dinheiro.divide!(Dinheiro.new!(0.02, :BRL), 3) == [
-             %Dinheiro{quantia: 1, moeda: :BRL},
-             %Dinheiro{quantia: 1, moeda: :BRL},
-             %Dinheiro{quantia: 0, moeda: :BRL}
+             %Dinheiro{amount: 1, currency: :BRL},
+             %Dinheiro{amount: 1, currency: :BRL},
+             %Dinheiro{amount: 0, currency: :BRL}
            ]
 
-    assert Dinheiro.divide!(%Dinheiro{quantia: 600, moeda: :BRL}, 2) == [
-             %Dinheiro{quantia: 300, moeda: :BRL},
-             %Dinheiro{quantia: 300, moeda: :BRL}
+    assert Dinheiro.divide!(%Dinheiro{amount: 600, currency: :BRL}, 2) == [
+             %Dinheiro{amount: 300, currency: :BRL},
+             %Dinheiro{amount: 300, currency: :BRL}
            ]
 
-    assert Dinheiro.divide!(%Dinheiro{quantia: 625, moeda: :BRL}, 2) == [
-             %Dinheiro{quantia: 313, moeda: :BRL},
-             %Dinheiro{quantia: 312, moeda: :BRL}
+    assert Dinheiro.divide!(%Dinheiro{amount: 625, currency: :BRL}, 2) == [
+             %Dinheiro{amount: 313, currency: :BRL},
+             %Dinheiro{amount: 312, currency: :BRL}
            ]
 
     assert Dinheiro.divide!(Dinheiro.new!(0.05, :BRL), [3, 7]) == [
-             %Dinheiro{quantia: 2, moeda: :BRL},
-             %Dinheiro{quantia: 3, moeda: :BRL}
+             %Dinheiro{amount: 2, currency: :BRL},
+             %Dinheiro{amount: 3, currency: :BRL}
            ]
 
     assert_raise ArgumentError, fn ->
-      Dinheiro.divide!(%Dinheiro{quantia: 600, moeda: :BRL}, 0)
+      Dinheiro.divide!(%Dinheiro{amount: 600, currency: :BRL}, 0)
     end
 
     assert_raise ArgumentError, fn ->
-      Dinheiro.divide!(%Dinheiro{quantia: 600, moeda: :BRL}, -1)
+      Dinheiro.divide!(%Dinheiro{amount: 600, currency: :BRL}, -1)
     end
 
     assert_raise ArgumentError, fn ->
-      Dinheiro.divide!(%Dinheiro{quantia: 600, moeda: :BRL}, [-1])
+      Dinheiro.divide!(%Dinheiro{amount: 600, currency: :BRL}, [-1])
     end
 
     assert_raise ArgumentError, fn ->
-      Dinheiro.divide!(%Dinheiro{quantia: 600, moeda: :BRL}, [""])
+      Dinheiro.divide!(%Dinheiro{amount: 600, currency: :BRL}, [""])
     end
 
     assert_raise ArgumentError, fn ->
-      Dinheiro.divide!(%Dinheiro{quantia: 600, moeda: :BRL}, [1.0])
+      Dinheiro.divide!(%Dinheiro{amount: 600, currency: :BRL}, [1.0])
     end
 
     assert_raise FunctionClauseError, fn ->
-      Dinheiro.divide!(%Dinheiro{quantia: 600, moeda: :BRL}, 1.0)
+      Dinheiro.divide!(%Dinheiro{amount: 600, currency: :BRL}, 1.0)
     end
 
     assert_raise FunctionClauseError, fn ->
-      Dinheiro.divide!(%{quantia: 600, moeda: :BRL}, 2)
+      Dinheiro.divide!(%{amount: 600, currency: :BRL}, 2)
     end
   end
 
@@ -301,15 +304,15 @@ defmodule DinheiroTest do
            ) == "$ 12,345,678.90"
 
     assert_raise ArgumentError, fn ->
-      Dinheiro.to_string!(%Dinheiro{quantia: 600, moeda: :NONE})
+      Dinheiro.to_string!(%Dinheiro{amount: 600, currency: :NONE})
     end
   end
 
   test "to_string/2" do
-    assert Dinheiro.to_string(%Dinheiro{quantia: 10_000, moeda: :BRL}) ==
+    assert Dinheiro.to_string(%Dinheiro{amount: 10_000, currency: :BRL}) ==
              {:ok, "R$ 100,00"}
 
-    assert Dinheiro.to_string(%Dinheiro{quantia: 600, moeda: :NONE}) ==
+    assert Dinheiro.to_string(%Dinheiro{amount: 600, currency: :NONE}) ==
              {:error, "'NONE' does not represent an ISO 4217 code."}
   end
 end

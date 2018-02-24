@@ -1,1164 +1,1164 @@
 defmodule Moeda.Moedas do
   @moduledoc false
-  @moedas %{
+  @currencies %{
     AED: %Moeda{
-      nome: "UAE Dirham",
-      simbolo: [],
-      codigo: "AED",
-      codigo_iso: 784,
-      expoente: 2
+      name: "UAE Dirham",
+      symbol: [],
+      iso_code: "AED",
+      country_code: 784,
+      exponent: 2
     },
     AFN: %Moeda{
-      nome: "Afghani",
-      simbolo: [1547],
-      codigo: "AFN",
-      codigo_iso: 971,
-      expoente: 2
+      name: "Afghani",
+      symbol: [1547],
+      iso_code: "AFN",
+      country_code: 971,
+      exponent: 2
     },
     ALL: %Moeda{
-      nome: "Lek",
-      simbolo: [76, 101, 107],
-      codigo: "ALL",
-      codigo_iso: 008,
-      expoente: 2
+      name: "Lek",
+      symbol: [76, 101, 107],
+      iso_code: "ALL",
+      country_code: 008,
+      exponent: 2
     },
     AMD: %Moeda{
-      nome: "Armenian Dram",
-      simbolo: [],
-      codigo: "AMD",
-      codigo_iso: 051,
-      expoente: 2
+      name: "Armenian Dram",
+      symbol: [],
+      iso_code: "AMD",
+      country_code: 051,
+      exponent: 2
     },
     ANG: %Moeda{
-      nome: "Netherlands Antillean Guilder",
-      simbolo: [402],
-      codigo: "ANG",
-      codigo_iso: 532,
-      expoente: 2
+      name: "Netherlands Antillean Guilder",
+      symbol: [402],
+      iso_code: "ANG",
+      country_code: 532,
+      exponent: 2
     },
     AOA: %Moeda{
-      nome: "Kwanza",
-      simbolo: [],
-      codigo: "AOA",
-      codigo_iso: 973,
-      expoente: 2
+      name: "Kwanza",
+      symbol: [],
+      iso_code: "AOA",
+      country_code: 973,
+      exponent: 2
     },
     ARS: %Moeda{
-      nome: "Argentine Peso",
-      simbolo: [36],
-      codigo: "ARS",
-      codigo_iso: 032,
-      expoente: 2
+      name: "Argentine Peso",
+      symbol: [36],
+      iso_code: "ARS",
+      country_code: 032,
+      exponent: 2
     },
     AUD: %Moeda{
-      nome: "Australian Dollar",
-      simbolo: [36],
-      codigo: "AUD",
-      codigo_iso: 036,
-      expoente: 2
+      name: "Australian Dollar",
+      symbol: [36],
+      iso_code: "AUD",
+      country_code: 036,
+      exponent: 2
     },
     AWG: %Moeda{
-      nome: "Aruban Florin",
-      simbolo: [402],
-      codigo: "AWG",
-      codigo_iso: 533,
-      expoente: 2
+      name: "Aruban Florin",
+      symbol: [402],
+      iso_code: "AWG",
+      country_code: 533,
+      exponent: 2
     },
     AZN: %Moeda{
-      nome: "Azerbaijan Manat",
-      simbolo: [8380],
-      codigo: "AZN",
-      codigo_iso: 944,
-      expoente: 2
+      name: "Azerbaijan Manat",
+      symbol: [8380],
+      iso_code: "AZN",
+      country_code: 944,
+      exponent: 2
     },
     BAM: %Moeda{
-      nome: "Convertible Mark",
-      simbolo: [75, 77],
-      codigo: "BAM",
-      codigo_iso: 977,
-      expoente: 2
+      name: "Convertible Mark",
+      symbol: [75, 77],
+      iso_code: "BAM",
+      country_code: 977,
+      exponent: 2
     },
     BBD: %Moeda{
-      nome: "Barbados Dollar",
-      simbolo: [36],
-      codigo: "BBD",
-      codigo_iso: 052,
-      expoente: 2
+      name: "Barbados Dollar",
+      symbol: [36],
+      iso_code: "BBD",
+      country_code: 052,
+      exponent: 2
     },
     BDT: %Moeda{
-      nome: "Taka",
-      simbolo: [],
-      codigo: "BDT",
-      codigo_iso: 050,
-      expoente: 2
+      name: "Taka",
+      symbol: [],
+      iso_code: "BDT",
+      country_code: 050,
+      exponent: 2
     },
     BGN: %Moeda{
-      nome: "Bulgarian Lev",
-      simbolo: [1083, 1074],
-      codigo: "BGN",
-      codigo_iso: 975,
-      expoente: 2
+      name: "Bulgarian Lev",
+      symbol: [1083, 1074],
+      iso_code: "BGN",
+      country_code: 975,
+      exponent: 2
     },
     BHD: %Moeda{
-      nome: "Bahraini Dinar",
-      simbolo: [],
-      codigo: "BHD",
-      codigo_iso: 048,
-      expoente: 3
+      name: "Bahraini Dinar",
+      symbol: [],
+      iso_code: "BHD",
+      country_code: 048,
+      exponent: 3
     },
     BIF: %Moeda{
-      nome: "Burundi Franc",
-      simbolo: [],
-      codigo: "BIF",
-      codigo_iso: 108,
-      expoente: 0
+      name: "Burundi Franc",
+      symbol: [],
+      iso_code: "BIF",
+      country_code: 108,
+      exponent: 0
     },
     BMD: %Moeda{
-      nome: "Bermudian Dollar",
-      simbolo: [36],
-      codigo: "BMD",
-      codigo_iso: 060,
-      expoente: 2
+      name: "Bermudian Dollar",
+      symbol: [36],
+      iso_code: "BMD",
+      country_code: 060,
+      exponent: 2
     },
     BND: %Moeda{
-      nome: "Brunei Dollar",
-      simbolo: [36],
-      codigo: "BND",
-      codigo_iso: 096,
-      expoente: 2
+      name: "Brunei Dollar",
+      symbol: [36],
+      iso_code: "BND",
+      country_code: 096,
+      exponent: 2
     },
     BOB: %Moeda{
-      nome: "Boliviano",
-      simbolo: [36, 98],
-      codigo: "BOB",
-      codigo_iso: 068,
-      expoente: 2
+      name: "Boliviano",
+      symbol: [36, 98],
+      iso_code: "BOB",
+      country_code: 068,
+      exponent: 2
     },
     BOV: %Moeda{
-      nome: "Mvdol",
-      simbolo: [],
-      codigo: "BOV",
-      codigo_iso: 984,
-      expoente: 2
+      name: "Mvdol",
+      symbol: [],
+      iso_code: "BOV",
+      country_code: 984,
+      exponent: 2
     },
     BRL: %Moeda{
-      nome: "Brazilian Real",
-      simbolo: [82, 36],
-      codigo: "BRL",
-      codigo_iso: 986,
-      expoente: 2
+      name: "Brazilian Real",
+      symbol: [82, 36],
+      iso_code: "BRL",
+      country_code: 986,
+      exponent: 2
     },
     BSD: %Moeda{
-      nome: "Bahamian Dollar",
-      simbolo: [36],
-      codigo: "BSD",
-      codigo_iso: 044,
-      expoente: 2
+      name: "Bahamian Dollar",
+      symbol: [36],
+      iso_code: "BSD",
+      country_code: 044,
+      exponent: 2
     },
     BTN: %Moeda{
-      nome: "Ngultrum",
-      simbolo: [],
-      codigo: "BTN",
-      codigo_iso: 064,
-      expoente: 2
+      name: "Ngultrum",
+      symbol: [],
+      iso_code: "BTN",
+      country_code: 064,
+      exponent: 2
     },
     BWP: %Moeda{
-      nome: "Pula",
-      simbolo: [80],
-      codigo: "BWP",
-      codigo_iso: 072,
-      expoente: 2
+      name: "Pula",
+      symbol: [80],
+      iso_code: "BWP",
+      country_code: 072,
+      exponent: 2
     },
     BYN: %Moeda{
-      nome: "Belarusian Ruble",
-      simbolo: [66, 114],
-      codigo: "BYN",
-      codigo_iso: 933,
-      expoente: 2
+      name: "Belarusian Ruble",
+      symbol: [66, 114],
+      iso_code: "BYN",
+      country_code: 933,
+      exponent: 2
     },
     BZD: %Moeda{
-      nome: "Belize Dollar",
-      simbolo: [66, 90, 36],
-      codigo: "BZD",
-      codigo_iso: 084,
-      expoente: 2
+      name: "Belize Dollar",
+      symbol: [66, 90, 36],
+      iso_code: "BZD",
+      country_code: 084,
+      exponent: 2
     },
     CAD: %Moeda{
-      nome: "Canadian Dollar",
-      simbolo: [36],
-      codigo: "CAD",
-      codigo_iso: 124,
-      expoente: 2
+      name: "Canadian Dollar",
+      symbol: [36],
+      iso_code: "CAD",
+      country_code: 124,
+      exponent: 2
     },
     CDF: %Moeda{
-      nome: "Congolese Franc",
-      simbolo: [],
-      codigo: "CDF",
-      codigo_iso: 976,
-      expoente: 2
+      name: "Congolese Franc",
+      symbol: [],
+      iso_code: "CDF",
+      country_code: 976,
+      exponent: 2
     },
     CHE: %Moeda{
-      nome: "WIR Euro",
-      simbolo: [],
-      codigo: "CHE",
-      codigo_iso: 947,
-      expoente: 2
+      name: "WIR Euro",
+      symbol: [],
+      iso_code: "CHE",
+      country_code: 947,
+      exponent: 2
     },
     CHF: %Moeda{
-      nome: "Swiss Franc",
-      simbolo: [67, 72, 70],
-      codigo: "CHF",
-      codigo_iso: 756,
-      expoente: 2
+      name: "Swiss Franc",
+      symbol: [67, 72, 70],
+      iso_code: "CHF",
+      country_code: 756,
+      exponent: 2
     },
     CHW: %Moeda{
-      nome: "WIR Franc",
-      simbolo: [],
-      codigo: "CHW",
-      codigo_iso: 948,
-      expoente: 2
+      name: "WIR Franc",
+      symbol: [],
+      iso_code: "CHW",
+      country_code: 948,
+      exponent: 2
     },
     CLF: %Moeda{
-      nome: "Unidad de Fomento",
-      simbolo: [],
-      codigo: "CLF",
-      codigo_iso: 990,
-      expoente: 4
+      name: "Unidad de Fomento",
+      symbol: [],
+      iso_code: "CLF",
+      country_code: 990,
+      exponent: 4
     },
     CLP: %Moeda{
-      nome: "Chilean Peso",
-      simbolo: [36],
-      codigo: "CLP",
-      codigo_iso: 152,
-      expoente: 0
+      name: "Chilean Peso",
+      symbol: [36],
+      iso_code: "CLP",
+      country_code: 152,
+      exponent: 0
     },
     CNY: %Moeda{
-      nome: "Yuan Renminbi",
-      simbolo: [165],
-      codigo: "CNY",
-      codigo_iso: 156,
-      expoente: 2
+      name: "Yuan Renminbi",
+      symbol: [165],
+      iso_code: "CNY",
+      country_code: 156,
+      exponent: 2
     },
     COP: %Moeda{
-      nome: "Colombian Peso",
-      simbolo: [36],
-      codigo: "COP",
-      codigo_iso: 170,
-      expoente: 2
+      name: "Colombian Peso",
+      symbol: [36],
+      iso_code: "COP",
+      country_code: 170,
+      exponent: 2
     },
     COU: %Moeda{
-      nome: "Unidad de Valor Real",
-      simbolo: [],
-      codigo: "COU",
-      codigo_iso: 970,
-      expoente: 2
+      name: "Unidad de Valor Real",
+      symbol: [],
+      iso_code: "COU",
+      country_code: 970,
+      exponent: 2
     },
     CRC: %Moeda{
-      nome: "Costa Rican Colon",
-      simbolo: [8353],
-      codigo: "CRC",
-      codigo_iso: 188,
-      expoente: 2
+      name: "Costa Rican Colon",
+      symbol: [8353],
+      iso_code: "CRC",
+      country_code: 188,
+      exponent: 2
     },
     CUC: %Moeda{
-      nome: "Peso Convertible",
-      simbolo: [],
-      codigo: "CUC",
-      codigo_iso: 931,
-      expoente: 2
+      name: "Peso Convertible",
+      symbol: [],
+      iso_code: "CUC",
+      country_code: 931,
+      exponent: 2
     },
     CUP: %Moeda{
-      nome: "Cuban Peso",
-      simbolo: [8369],
-      codigo: "CUP",
-      codigo_iso: 192,
-      expoente: 2
+      name: "Cuban Peso",
+      symbol: [8369],
+      iso_code: "CUP",
+      country_code: 192,
+      exponent: 2
     },
     CVE: %Moeda{
-      nome: "Cabo Verde Escudo",
-      simbolo: [],
-      codigo: "CVE",
-      codigo_iso: 132,
-      expoente: 2
+      name: "Cabo Verde Escudo",
+      symbol: [],
+      iso_code: "CVE",
+      country_code: 132,
+      exponent: 2
     },
     CZK: %Moeda{
-      nome: "Czech Koruna",
-      simbolo: [75, 269],
-      codigo: "CZK",
-      codigo_iso: 203,
-      expoente: 2
+      name: "Czech Koruna",
+      symbol: [75, 269],
+      iso_code: "CZK",
+      country_code: 203,
+      exponent: 2
     },
     DJF: %Moeda{
-      nome: "Djibouti Franc",
-      simbolo: [],
-      codigo: "DJF",
-      codigo_iso: 262,
-      expoente: 0
+      name: "Djibouti Franc",
+      symbol: [],
+      iso_code: "DJF",
+      country_code: 262,
+      exponent: 0
     },
     DKK: %Moeda{
-      nome: "Danish Krone",
-      simbolo: [107, 114],
-      codigo: "DKK",
-      codigo_iso: 208,
-      expoente: 2
+      name: "Danish Krone",
+      symbol: [107, 114],
+      iso_code: "DKK",
+      country_code: 208,
+      exponent: 2
     },
     DOP: %Moeda{
-      nome: "Dominican Peso",
-      simbolo: [82, 68, 36],
-      codigo: "DOP",
-      codigo_iso: 214,
-      expoente: 2
+      name: "Dominican Peso",
+      symbol: [82, 68, 36],
+      iso_code: "DOP",
+      country_code: 214,
+      exponent: 2
     },
     DZD: %Moeda{
-      nome: "Algerian Dinar",
-      simbolo: [],
-      codigo: "DZD",
-      codigo_iso: 012,
-      expoente: 2
+      name: "Algerian Dinar",
+      symbol: [],
+      iso_code: "DZD",
+      country_code: 012,
+      exponent: 2
     },
     EGP: %Moeda{
-      nome: "Egyptian Pound",
-      simbolo: [163],
-      codigo: "EGP",
-      codigo_iso: 818,
-      expoente: 2
+      name: "Egyptian Pound",
+      symbol: [163],
+      iso_code: "EGP",
+      country_code: 818,
+      exponent: 2
     },
     ERN: %Moeda{
-      nome: "Nakfa",
-      simbolo: [],
-      codigo: "ERN",
-      codigo_iso: 232,
-      expoente: 2
+      name: "Nakfa",
+      symbol: [],
+      iso_code: "ERN",
+      country_code: 232,
+      exponent: 2
     },
     ETB: %Moeda{
-      nome: "Ethiopian Birr",
-      simbolo: [],
-      codigo: "ETB",
-      codigo_iso: 230,
-      expoente: 2
+      name: "Ethiopian Birr",
+      symbol: [],
+      iso_code: "ETB",
+      country_code: 230,
+      exponent: 2
     },
     EUR: %Moeda{
-      nome: "Euro",
-      simbolo: [8364],
-      codigo: "EUR",
-      codigo_iso: 978,
-      expoente: 2
+      name: "Euro",
+      symbol: [8364],
+      iso_code: "EUR",
+      country_code: 978,
+      exponent: 2
     },
     FJD: %Moeda{
-      nome: "Fiji Dollar",
-      simbolo: [36],
-      codigo: "FJD",
-      codigo_iso: 242,
-      expoente: 2
+      name: "Fiji Dollar",
+      symbol: [36],
+      iso_code: "FJD",
+      country_code: 242,
+      exponent: 2
     },
     FKP: %Moeda{
-      nome: "Falkland Islands Pound",
-      simbolo: [163],
-      codigo: "FKP",
-      codigo_iso: 238,
-      expoente: 2
+      name: "Falkland Islands Pound",
+      symbol: [163],
+      iso_code: "FKP",
+      country_code: 238,
+      exponent: 2
     },
     GBP: %Moeda{
-      nome: "Pound Sterling",
-      simbolo: [163],
-      codigo: "GBP",
-      codigo_iso: 826,
-      expoente: 2
+      name: "Pound Sterling",
+      symbol: [163],
+      iso_code: "GBP",
+      country_code: 826,
+      exponent: 2
     },
     GEL: %Moeda{
-      nome: "Lari",
-      simbolo: [],
-      codigo: "GEL",
-      codigo_iso: 981,
-      expoente: 2
+      name: "Lari",
+      symbol: [],
+      iso_code: "GEL",
+      country_code: 981,
+      exponent: 2
     },
     GHS: %Moeda{
-      nome: "Ghana Cedi",
-      simbolo: [162],
-      codigo: "GHS",
-      codigo_iso: 936,
-      expoente: 2
+      name: "Ghana Cedi",
+      symbol: [162],
+      iso_code: "GHS",
+      country_code: 936,
+      exponent: 2
     },
     GIP: %Moeda{
-      nome: "Gibraltar Pound",
-      simbolo: [163],
-      codigo: "GIP",
-      codigo_iso: 292,
-      expoente: 2
+      name: "Gibraltar Pound",
+      symbol: [163],
+      iso_code: "GIP",
+      country_code: 292,
+      exponent: 2
     },
     GMD: %Moeda{
-      nome: "Dalasi",
-      simbolo: [],
-      codigo: "GMD",
-      codigo_iso: 270,
-      expoente: 2
+      name: "Dalasi",
+      symbol: [],
+      iso_code: "GMD",
+      country_code: 270,
+      exponent: 2
     },
     GNF: %Moeda{
-      nome: "Guinean Franc",
-      simbolo: [],
-      codigo: "GNF",
-      codigo_iso: 324,
-      expoente: 0
+      name: "Guinean Franc",
+      symbol: [],
+      iso_code: "GNF",
+      country_code: 324,
+      exponent: 0
     },
     GTQ: %Moeda{
-      nome: "Quetzal",
-      simbolo: [81],
-      codigo: "GTQ",
-      codigo_iso: 320,
-      expoente: 2
+      name: "Quetzal",
+      symbol: [81],
+      iso_code: "GTQ",
+      country_code: 320,
+      exponent: 2
     },
     GYD: %Moeda{
-      nome: "Guyana Dollar",
-      simbolo: [36],
-      codigo: "GYD",
-      codigo_iso: 328,
-      expoente: 2
+      name: "Guyana Dollar",
+      symbol: [36],
+      iso_code: "GYD",
+      country_code: 328,
+      exponent: 2
     },
     HKD: %Moeda{
-      nome: "Hong Kong Dollar",
-      simbolo: [36],
-      codigo: "HKD",
-      codigo_iso: 344,
-      expoente: 2
+      name: "Hong Kong Dollar",
+      symbol: [36],
+      iso_code: "HKD",
+      country_code: 344,
+      exponent: 2
     },
     HNL: %Moeda{
-      nome: "Lempira",
-      simbolo: [76],
-      codigo: "HNL",
-      codigo_iso: 340,
-      expoente: 2
+      name: "Lempira",
+      symbol: [76],
+      iso_code: "HNL",
+      country_code: 340,
+      exponent: 2
     },
     HRK: %Moeda{
-      nome: "Kuna",
-      simbolo: [107, 11],
-      codigo: "HRK",
-      codigo_iso: 191,
-      expoente: 2
+      name: "Kuna",
+      symbol: [107, 11],
+      iso_code: "HRK",
+      country_code: 191,
+      exponent: 2
     },
     HTG: %Moeda{
-      nome: "Gourde",
-      simbolo: [],
-      codigo: "HTG",
-      codigo_iso: 332,
-      expoente: 2
+      name: "Gourde",
+      symbol: [],
+      iso_code: "HTG",
+      country_code: 332,
+      exponent: 2
     },
     HUF: %Moeda{
-      nome: "Forint",
-      simbolo: [70, 116],
-      codigo: "HUF",
-      codigo_iso: 348,
-      expoente: 2
+      name: "Forint",
+      symbol: [70, 116],
+      iso_code: "HUF",
+      country_code: 348,
+      exponent: 2
     },
     IDR: %Moeda{
-      nome: "Rupiah",
-      simbolo: [82, 112],
-      codigo: "IDR",
-      codigo_iso: 360,
-      expoente: 2
+      name: "Rupiah",
+      symbol: [82, 112],
+      iso_code: "IDR",
+      country_code: 360,
+      exponent: 2
     },
     ILS: %Moeda{
-      nome: "New Israeli Sheqel",
-      simbolo: [8362],
-      codigo: "ILS",
-      codigo_iso: 376,
-      expoente: 2
+      name: "New Israeli Sheqel",
+      symbol: [8362],
+      iso_code: "ILS",
+      country_code: 376,
+      exponent: 2
     },
     INR: %Moeda{
-      nome: "Indian Rupee",
-      simbolo: [],
-      codigo: "INR",
-      codigo_iso: 356,
-      expoente: 2
+      name: "Indian Rupee",
+      symbol: [],
+      iso_code: "INR",
+      country_code: 356,
+      exponent: 2
     },
     IQD: %Moeda{
-      nome: "Iraqi Dinar",
-      simbolo: [],
-      codigo: "IQD",
-      codigo_iso: 368,
-      expoente: 3
+      name: "Iraqi Dinar",
+      symbol: [],
+      iso_code: "IQD",
+      country_code: 368,
+      exponent: 3
     },
     IRR: %Moeda{
-      nome: "Iranian Rial",
-      simbolo: [65020],
-      codigo: "IRR",
-      codigo_iso: 364,
-      expoente: 2
+      name: "Iranian Rial",
+      symbol: [65020],
+      iso_code: "IRR",
+      country_code: 364,
+      exponent: 2
     },
     ISK: %Moeda{
-      nome: "Iceland Krona",
-      simbolo: [107, 114],
-      codigo: "ISK",
-      codigo_iso: 352,
-      expoente: 0
+      name: "Iceland Krona",
+      symbol: [107, 114],
+      iso_code: "ISK",
+      country_code: 352,
+      exponent: 0
     },
     JMD: %Moeda{
-      nome: "Jamaican Dollar",
-      simbolo: [74, 36],
-      codigo: "JMD",
-      codigo_iso: 388,
-      expoente: 2
+      name: "Jamaican Dollar",
+      symbol: [74, 36],
+      iso_code: "JMD",
+      country_code: 388,
+      exponent: 2
     },
     JOD: %Moeda{
-      nome: "Jordanian Dinar",
-      simbolo: [],
-      codigo: "JOD",
-      codigo_iso: 400,
-      expoente: 3
+      name: "Jordanian Dinar",
+      symbol: [],
+      iso_code: "JOD",
+      country_code: 400,
+      exponent: 3
     },
     JPY: %Moeda{
-      nome: "Yen",
-      simbolo: [165],
-      codigo: "JPY",
-      codigo_iso: 392,
-      expoente: 0
+      name: "Yen",
+      symbol: [165],
+      iso_code: "JPY",
+      country_code: 392,
+      exponent: 0
     },
     KES: %Moeda{
-      nome: "Kenyan Shilling",
-      simbolo: [],
-      codigo: "KES",
-      codigo_iso: 404,
-      expoente: 2
+      name: "Kenyan Shilling",
+      symbol: [],
+      iso_code: "KES",
+      country_code: 404,
+      exponent: 2
     },
     KGS: %Moeda{
-      nome: "Som",
-      simbolo: [1083, 1074],
-      codigo: "KGS",
-      codigo_iso: 417,
-      expoente: 2
+      name: "Som",
+      symbol: [1083, 1074],
+      iso_code: "KGS",
+      country_code: 417,
+      exponent: 2
     },
     KHR: %Moeda{
-      nome: "Riel",
-      simbolo: [6107],
-      codigo: "KHR",
-      codigo_iso: 116,
-      expoente: 2
+      name: "Riel",
+      symbol: [6107],
+      iso_code: "KHR",
+      country_code: 116,
+      exponent: 2
     },
     KMF: %Moeda{
-      nome: "Comorian Franc ",
-      simbolo: [],
-      codigo: "KMF",
-      codigo_iso: 174,
-      expoente: 0
+      name: "Comorian Franc ",
+      symbol: [],
+      iso_code: "KMF",
+      country_code: 174,
+      exponent: 0
     },
     KPW: %Moeda{
-      nome: "North Korean Won",
-      simbolo: [8361],
-      codigo: "KPW",
-      codigo_iso: 408,
-      expoente: 2
+      name: "North Korean Won",
+      symbol: [8361],
+      iso_code: "KPW",
+      country_code: 408,
+      exponent: 2
     },
     KRW: %Moeda{
-      nome: "Won",
-      simbolo: [8361],
-      codigo: "KRW",
-      codigo_iso: 410,
-      expoente: 0
+      name: "Won",
+      symbol: [8361],
+      iso_code: "KRW",
+      country_code: 410,
+      exponent: 0
     },
     KWD: %Moeda{
-      nome: "Kuwaiti Dinar",
-      simbolo: [],
-      codigo: "KWD",
-      codigo_iso: 414,
-      expoente: 3
+      name: "Kuwaiti Dinar",
+      symbol: [],
+      iso_code: "KWD",
+      country_code: 414,
+      exponent: 3
     },
     KYD: %Moeda{
-      nome: "Cayman Islands Dollar",
-      simbolo: [36],
-      codigo: "KYD",
-      codigo_iso: 136,
-      expoente: 2
+      name: "Cayman Islands Dollar",
+      symbol: [36],
+      iso_code: "KYD",
+      country_code: 136,
+      exponent: 2
     },
     KZT: %Moeda{
-      nome: "Tenge",
-      simbolo: [1083, 1074],
-      codigo: "KZT",
-      codigo_iso: 398,
-      expoente: 2
+      name: "Tenge",
+      symbol: [1083, 1074],
+      iso_code: "KZT",
+      country_code: 398,
+      exponent: 2
     },
     LAK: %Moeda{
-      nome: "Lao Kip",
-      simbolo: [8365],
-      codigo: "LAK",
-      codigo_iso: 418,
-      expoente: 2
+      name: "Lao Kip",
+      symbol: [8365],
+      iso_code: "LAK",
+      country_code: 418,
+      exponent: 2
     },
     LBP: %Moeda{
-      nome: "Lebanese Pound",
-      simbolo: [163],
-      codigo: "LBP",
-      codigo_iso: 422,
-      expoente: 2
+      name: "Lebanese Pound",
+      symbol: [163],
+      iso_code: "LBP",
+      country_code: 422,
+      exponent: 2
     },
     LKR: %Moeda{
-      nome: "Sri Lanka Rupee",
-      simbolo: [8360],
-      codigo: "LKR",
-      codigo_iso: 144,
-      expoente: 2
+      name: "Sri Lanka Rupee",
+      symbol: [8360],
+      iso_code: "LKR",
+      country_code: 144,
+      exponent: 2
     },
     LRD: %Moeda{
-      nome: "Liberian Dollar",
-      simbolo: [36],
-      codigo: "LRD",
-      codigo_iso: 430,
-      expoente: 2
+      name: "Liberian Dollar",
+      symbol: [36],
+      iso_code: "LRD",
+      country_code: 430,
+      exponent: 2
     },
     LSL: %Moeda{
-      nome: "Loti",
-      simbolo: [],
-      codigo: "LSL",
-      codigo_iso: 426,
-      expoente: 2
+      name: "Loti",
+      symbol: [],
+      iso_code: "LSL",
+      country_code: 426,
+      exponent: 2
     },
     LYD: %Moeda{
-      nome: "Libyan Dinar",
-      simbolo: [],
-      codigo: "LYD",
-      codigo_iso: 434,
-      expoente: 3
+      name: "Libyan Dinar",
+      symbol: [],
+      iso_code: "LYD",
+      country_code: 434,
+      exponent: 3
     },
     MAD: %Moeda{
-      nome: "Moroccan Dirham",
-      simbolo: [],
-      codigo: "MAD",
-      codigo_iso: 504,
-      expoente: 2
+      name: "Moroccan Dirham",
+      symbol: [],
+      iso_code: "MAD",
+      country_code: 504,
+      exponent: 2
     },
     MDL: %Moeda{
-      nome: "Moldovan Leu",
-      simbolo: [],
-      codigo: "MDL",
-      codigo_iso: 498,
-      expoente: 2
+      name: "Moldovan Leu",
+      symbol: [],
+      iso_code: "MDL",
+      country_code: 498,
+      exponent: 2
     },
     MGA: %Moeda{
-      nome: "Malagasy Ariary",
-      simbolo: [],
-      codigo: "MGA",
-      codigo_iso: 969,
-      expoente: 2
+      name: "Malagasy Ariary",
+      symbol: [],
+      iso_code: "MGA",
+      country_code: 969,
+      exponent: 2
     },
     MKD: %Moeda{
-      nome: "Denar",
-      simbolo: [1076, 1077, 1085],
-      codigo: "MKD",
-      codigo_iso: 807,
-      expoente: 2
+      name: "Denar",
+      symbol: [1076, 1077, 1085],
+      iso_code: "MKD",
+      country_code: 807,
+      exponent: 2
     },
     MMK: %Moeda{
-      nome: "Kyat",
-      simbolo: [],
-      codigo: "MMK",
-      codigo_iso: 104,
-      expoente: 2
+      name: "Kyat",
+      symbol: [],
+      iso_code: "MMK",
+      country_code: 104,
+      exponent: 2
     },
     MNT: %Moeda{
-      nome: "Tugrik",
-      simbolo: [8366],
-      codigo: "MNT",
-      codigo_iso: 496,
-      expoente: 2
+      name: "Tugrik",
+      symbol: [8366],
+      iso_code: "MNT",
+      country_code: 496,
+      exponent: 2
     },
     MOP: %Moeda{
-      nome: "Pataca",
-      simbolo: [],
-      codigo: "MOP",
-      codigo_iso: 446,
-      expoente: 2
+      name: "Pataca",
+      symbol: [],
+      iso_code: "MOP",
+      country_code: 446,
+      exponent: 2
     },
     MRU: %Moeda{
-      nome: "Ouguiya",
-      simbolo: [],
-      codigo: "MRU",
-      codigo_iso: 929,
-      expoente: 2
+      name: "Ouguiya",
+      symbol: [],
+      iso_code: "MRU",
+      country_code: 929,
+      exponent: 2
     },
     MUR: %Moeda{
-      nome: "Mauritius Rupee",
-      simbolo: [8360],
-      codigo: "MUR",
-      codigo_iso: 480,
-      expoente: 2
+      name: "Mauritius Rupee",
+      symbol: [8360],
+      iso_code: "MUR",
+      country_code: 480,
+      exponent: 2
     },
     MVR: %Moeda{
-      nome: "Rufiyaa",
-      simbolo: [],
-      codigo: "MVR",
-      codigo_iso: 462,
-      expoente: 2
+      name: "Rufiyaa",
+      symbol: [],
+      iso_code: "MVR",
+      country_code: 462,
+      exponent: 2
     },
     MWK: %Moeda{
-      nome: "Malawi Kwacha",
-      simbolo: [],
-      codigo: "MWK",
-      codigo_iso: 454,
-      expoente: 2
+      name: "Malawi Kwacha",
+      symbol: [],
+      iso_code: "MWK",
+      country_code: 454,
+      exponent: 2
     },
     MXN: %Moeda{
-      nome: "Mexican Peso",
-      simbolo: [36],
-      codigo: "MXN",
-      codigo_iso: 484,
-      expoente: 2
+      name: "Mexican Peso",
+      symbol: [36],
+      iso_code: "MXN",
+      country_code: 484,
+      exponent: 2
     },
     MXV: %Moeda{
-      nome: "Mexican Unidad de Inversion (UDI)",
-      simbolo: [],
-      codigo: "MXV",
-      codigo_iso: 979,
-      expoente: 2
+      name: "Mexican Unidad de Inversion (UDI)",
+      symbol: [],
+      iso_code: "MXV",
+      country_code: 979,
+      exponent: 2
     },
     MYR: %Moeda{
-      nome: "Malaysian Ringgit",
-      simbolo: [82, 77],
-      codigo: "MYR",
-      codigo_iso: 458,
-      expoente: 2
+      name: "Malaysian Ringgit",
+      symbol: [82, 77],
+      iso_code: "MYR",
+      country_code: 458,
+      exponent: 2
     },
     MZN: %Moeda{
-      nome: "Mozambique Metical",
-      simbolo: [77, 84],
-      codigo: "MZN",
-      codigo_iso: 943,
-      expoente: 2
+      name: "Mozambique Metical",
+      symbol: [77, 84],
+      iso_code: "MZN",
+      country_code: 943,
+      exponent: 2
     },
     NAD: %Moeda{
-      nome: "Namibia Dollar",
-      simbolo: [36],
-      codigo: "NAD",
-      codigo_iso: 516,
-      expoente: 2
+      name: "Namibia Dollar",
+      symbol: [36],
+      iso_code: "NAD",
+      country_code: 516,
+      exponent: 2
     },
     NGN: %Moeda{
-      nome: "Naira",
-      simbolo: [8358],
-      codigo: "NGN",
-      codigo_iso: 566,
-      expoente: 2
+      name: "Naira",
+      symbol: [8358],
+      iso_code: "NGN",
+      country_code: 566,
+      exponent: 2
     },
     NIO: %Moeda{
-      nome: "Cordoba Oro",
-      simbolo: [67, 36],
-      codigo: "NIO",
-      codigo_iso: 558,
-      expoente: 2
+      name: "Cordoba Oro",
+      symbol: [67, 36],
+      iso_code: "NIO",
+      country_code: 558,
+      exponent: 2
     },
     NOK: %Moeda{
-      nome: "Norwegian Krone",
-      simbolo: [107, 114],
-      codigo: "NOK",
-      codigo_iso: 578,
-      expoente: 2
+      name: "Norwegian Krone",
+      symbol: [107, 114],
+      iso_code: "NOK",
+      country_code: 578,
+      exponent: 2
     },
     NPR: %Moeda{
-      nome: "Nepalese Rupee",
-      simbolo: [8360],
-      codigo: "NPR",
-      codigo_iso: 524,
-      expoente: 2
+      name: "Nepalese Rupee",
+      symbol: [8360],
+      iso_code: "NPR",
+      country_code: 524,
+      exponent: 2
     },
     NZD: %Moeda{
-      nome: "New Zealand Dollar",
-      simbolo: [36],
-      codigo: "NZD",
-      codigo_iso: 554,
-      expoente: 2
+      name: "New Zealand Dollar",
+      symbol: [36],
+      iso_code: "NZD",
+      country_code: 554,
+      exponent: 2
     },
     OMR: %Moeda{
-      nome: "Rial Omani",
-      simbolo: [65020],
-      codigo: "OMR",
-      codigo_iso: 512,
-      expoente: 3
+      name: "Rial Omani",
+      symbol: [65020],
+      iso_code: "OMR",
+      country_code: 512,
+      exponent: 3
     },
     PAB: %Moeda{
-      nome: "Balboa",
-      simbolo: [66, 47, 46],
-      codigo: "PAB",
-      codigo_iso: 590,
-      expoente: 2
+      name: "Balboa",
+      symbol: [66, 47, 46],
+      iso_code: "PAB",
+      country_code: 590,
+      exponent: 2
     },
     PEN: %Moeda{
-      nome: "Sol",
-      simbolo: [83, 47, 46],
-      codigo: "PEN",
-      codigo_iso: 604,
-      expoente: 2
+      name: "Sol",
+      symbol: [83, 47, 46],
+      iso_code: "PEN",
+      country_code: 604,
+      exponent: 2
     },
     PGK: %Moeda{
-      nome: "Kina",
-      simbolo: [],
-      codigo: "PGK",
-      codigo_iso: 598,
-      expoente: 2
+      name: "Kina",
+      symbol: [],
+      iso_code: "PGK",
+      country_code: 598,
+      exponent: 2
     },
     PHP: %Moeda{
-      nome: "Philippine Piso",
-      simbolo: [8369],
-      codigo: "PHP",
-      codigo_iso: 608,
-      expoente: 2
+      name: "Philippine Piso",
+      symbol: [8369],
+      iso_code: "PHP",
+      country_code: 608,
+      exponent: 2
     },
     PKR: %Moeda{
-      nome: "Pakistan Rupee",
-      simbolo: [8360],
-      codigo: "PKR",
-      codigo_iso: 586,
-      expoente: 2
+      name: "Pakistan Rupee",
+      symbol: [8360],
+      iso_code: "PKR",
+      country_code: 586,
+      exponent: 2
     },
     PLN: %Moeda{
-      nome: "Zloty",
-      simbolo: [122, 322],
-      codigo: "PLN",
-      codigo_iso: 985,
-      expoente: 2
+      name: "Zloty",
+      symbol: [122, 322],
+      iso_code: "PLN",
+      country_code: 985,
+      exponent: 2
     },
     PYG: %Moeda{
-      nome: "Guarani",
-      simbolo: [71, 115],
-      codigo: "PYG",
-      codigo_iso: 600,
-      expoente: 0
+      name: "Guarani",
+      symbol: [71, 115],
+      iso_code: "PYG",
+      country_code: 600,
+      exponent: 0
     },
     QAR: %Moeda{
-      nome: "Qatari Rial",
-      simbolo: [65020],
-      codigo: "QAR",
-      codigo_iso: 634,
-      expoente: 2
+      name: "Qatari Rial",
+      symbol: [65020],
+      iso_code: "QAR",
+      country_code: 634,
+      exponent: 2
     },
     RON: %Moeda{
-      nome: "Romanian Leu",
-      simbolo: [108, 101, 105],
-      codigo: "RON",
-      codigo_iso: 946,
-      expoente: 2
+      name: "Romanian Leu",
+      symbol: [108, 101, 105],
+      iso_code: "RON",
+      country_code: 946,
+      exponent: 2
     },
     RSD: %Moeda{
-      nome: "Serbian Dinar",
-      simbolo: [1044, 1080, 1085, 46],
-      codigo: "RSD",
-      codigo_iso: 941,
-      expoente: 2
+      name: "Serbian Dinar",
+      symbol: [1044, 1080, 1085, 46],
+      iso_code: "RSD",
+      country_code: 941,
+      exponent: 2
     },
     RUB: %Moeda{
-      nome: "Russian Ruble",
-      simbolo: [8381],
-      codigo: "RUB",
-      codigo_iso: 643,
-      expoente: 2
+      name: "Russian Ruble",
+      symbol: [8381],
+      iso_code: "RUB",
+      country_code: 643,
+      exponent: 2
     },
     RWF: %Moeda{
-      nome: "Rwanda Franc",
-      simbolo: [],
-      codigo: "RWF",
-      codigo_iso: 646,
-      expoente: 0
+      name: "Rwanda Franc",
+      symbol: [],
+      iso_code: "RWF",
+      country_code: 646,
+      exponent: 0
     },
     SAR: %Moeda{
-      nome: "Saudi Riyal",
-      simbolo: [65020],
-      codigo: "SAR",
-      codigo_iso: 682,
-      expoente: 2
+      name: "Saudi Riyal",
+      symbol: [65020],
+      iso_code: "SAR",
+      country_code: 682,
+      exponent: 2
     },
     SBD: %Moeda{
-      nome: "Solomon Islands Dollar",
-      simbolo: [36],
-      codigo: "SBD",
-      codigo_iso: 090,
-      expoente: 2
+      name: "Solomon Islands Dollar",
+      symbol: [36],
+      iso_code: "SBD",
+      country_code: 090,
+      exponent: 2
     },
     SCR: %Moeda{
-      nome: "Seychelles Rupee",
-      simbolo: [8360],
-      codigo: "SCR",
-      codigo_iso: 690,
-      expoente: 2
+      name: "Seychelles Rupee",
+      symbol: [8360],
+      iso_code: "SCR",
+      country_code: 690,
+      exponent: 2
     },
     SDG: %Moeda{
-      nome: "Sudanese Pound",
-      simbolo: [],
-      codigo: "SDG",
-      codigo_iso: 938,
-      expoente: 2
+      name: "Sudanese Pound",
+      symbol: [],
+      iso_code: "SDG",
+      country_code: 938,
+      exponent: 2
     },
     SEK: %Moeda{
-      nome: "Swedish Krona",
-      simbolo: [107, 114],
-      codigo: "SEK",
-      codigo_iso: 752,
-      expoente: 2
+      name: "Swedish Krona",
+      symbol: [107, 114],
+      iso_code: "SEK",
+      country_code: 752,
+      exponent: 2
     },
     SGD: %Moeda{
-      nome: "Singapore Dollar",
-      simbolo: [36],
-      codigo: "SGD",
-      codigo_iso: 702,
-      expoente: 2
+      name: "Singapore Dollar",
+      symbol: [36],
+      iso_code: "SGD",
+      country_code: 702,
+      exponent: 2
     },
     SHP: %Moeda{
-      nome: "Saint Helena Pound",
-      simbolo: [163],
-      codigo: "SHP",
-      codigo_iso: 654,
-      expoente: 2
+      name: "Saint Helena Pound",
+      symbol: [163],
+      iso_code: "SHP",
+      country_code: 654,
+      exponent: 2
     },
     SLL: %Moeda{
-      nome: "Leone",
-      simbolo: [],
-      codigo: "SLL",
-      codigo_iso: 694,
-      expoente: 2
+      name: "Leone",
+      symbol: [],
+      iso_code: "SLL",
+      country_code: 694,
+      exponent: 2
     },
     SOS: %Moeda{
-      nome: "Somali Shilling",
-      simbolo: [83],
-      codigo: "SOS",
-      codigo_iso: 706,
-      expoente: 2
+      name: "Somali Shilling",
+      symbol: [83],
+      iso_code: "SOS",
+      country_code: 706,
+      exponent: 2
     },
     SRD: %Moeda{
-      nome: "Surinam Dollar",
-      simbolo: [36],
-      codigo: "SRD",
-      codigo_iso: 968,
-      expoente: 2
+      name: "Surinam Dollar",
+      symbol: [36],
+      iso_code: "SRD",
+      country_code: 968,
+      exponent: 2
     },
     SSP: %Moeda{
-      nome: "South Sudanese Pound",
-      simbolo: [],
-      codigo: "SSP",
-      codigo_iso: 728,
-      expoente: 2
+      name: "South Sudanese Pound",
+      symbol: [],
+      iso_code: "SSP",
+      country_code: 728,
+      exponent: 2
     },
     STN: %Moeda{
-      nome: "Dobra",
-      simbolo: [],
-      codigo: "STN",
-      codigo_iso: 930,
-      expoente: 2
+      name: "Dobra",
+      symbol: [],
+      iso_code: "STN",
+      country_code: 930,
+      exponent: 2
     },
     SVC: %Moeda{
-      nome: "El Salvador Colon",
-      simbolo: [36],
-      codigo: "SVC",
-      codigo_iso: 222,
-      expoente: 2
+      name: "El Salvador Colon",
+      symbol: [36],
+      iso_code: "SVC",
+      country_code: 222,
+      exponent: 2
     },
     SYP: %Moeda{
-      nome: "Syrian Pound",
-      simbolo: [163],
-      codigo: "SYP",
-      codigo_iso: 760,
-      expoente: 2
+      name: "Syrian Pound",
+      symbol: [163],
+      iso_code: "SYP",
+      country_code: 760,
+      exponent: 2
     },
     SZL: %Moeda{
-      nome: "Lilangeni",
-      simbolo: [],
-      codigo: "SZL",
-      codigo_iso: 748,
-      expoente: 2
+      name: "Lilangeni",
+      symbol: [],
+      iso_code: "SZL",
+      country_code: 748,
+      exponent: 2
     },
     THB: %Moeda{
-      nome: "Baht",
-      simbolo: [3647],
-      codigo: "THB",
-      codigo_iso: 764,
-      expoente: 2
+      name: "Baht",
+      symbol: [3647],
+      iso_code: "THB",
+      country_code: 764,
+      exponent: 2
     },
     TJS: %Moeda{
-      nome: "Somoni",
-      simbolo: [],
-      codigo: "TJS",
-      codigo_iso: 972,
-      expoente: 2
+      name: "Somoni",
+      symbol: [],
+      iso_code: "TJS",
+      country_code: 972,
+      exponent: 2
     },
     TMT: %Moeda{
-      nome: "Turkmenistan New Manat",
-      simbolo: [],
-      codigo: "TMT",
-      codigo_iso: 934,
-      expoente: 2
+      name: "Turkmenistan New Manat",
+      symbol: [],
+      iso_code: "TMT",
+      country_code: 934,
+      exponent: 2
     },
     TND: %Moeda{
-      nome: "Tunisian Dinar",
-      simbolo: [],
-      codigo: "TND",
-      codigo_iso: 788,
-      expoente: 3
+      name: "Tunisian Dinar",
+      symbol: [],
+      iso_code: "TND",
+      country_code: 788,
+      exponent: 3
     },
     TOP: %Moeda{
-      nome: "Pa’anga",
-      simbolo: [],
-      codigo: "TOP",
-      codigo_iso: 776,
-      expoente: 2
+      name: "Pa’anga",
+      symbol: [],
+      iso_code: "TOP",
+      country_code: 776,
+      exponent: 2
     },
     TRY: %Moeda{
-      nome: "Turkish Lira",
-      simbolo: [],
-      codigo: "TRY",
-      codigo_iso: 949,
-      expoente: 2
+      name: "Turkish Lira",
+      symbol: [],
+      iso_code: "TRY",
+      country_code: 949,
+      exponent: 2
     },
     TTD: %Moeda{
-      nome: "Trinidad and Tobago Dollar",
-      simbolo: [84, 84, 36],
-      codigo: "TTD",
-      codigo_iso: 780,
-      expoente: 2
+      name: "Trinidad and Tobago Dollar",
+      symbol: [84, 84, 36],
+      iso_code: "TTD",
+      country_code: 780,
+      exponent: 2
     },
     TWD: %Moeda{
-      nome: "New Taiwan Dollar",
-      simbolo: [78, 84, 36],
-      codigo: "TWD",
-      codigo_iso: 901,
-      expoente: 2
+      name: "New Taiwan Dollar",
+      symbol: [78, 84, 36],
+      iso_code: "TWD",
+      country_code: 901,
+      exponent: 2
     },
     TZS: %Moeda{
-      nome: "Tanzanian Shilling",
-      simbolo: [],
-      codigo: "TZS",
-      codigo_iso: 834,
-      expoente: 2
+      name: "Tanzanian Shilling",
+      symbol: [],
+      iso_code: "TZS",
+      country_code: 834,
+      exponent: 2
     },
     UAH: %Moeda{
-      nome: "Hryvnia",
-      simbolo: [8372],
-      codigo: "UAH",
-      codigo_iso: 980,
-      expoente: 2
+      name: "Hryvnia",
+      symbol: [8372],
+      iso_code: "UAH",
+      country_code: 980,
+      exponent: 2
     },
     UGX: %Moeda{
-      nome: "Uganda Shilling",
-      simbolo: [],
-      codigo: "UGX",
-      codigo_iso: 800,
-      expoente: 0
+      name: "Uganda Shilling",
+      symbol: [],
+      iso_code: "UGX",
+      country_code: 800,
+      exponent: 0
     },
     USD: %Moeda{
-      nome: "US Dollar",
-      simbolo: [36],
-      codigo: "USD",
-      codigo_iso: 840,
-      expoente: 2
+      name: "US Dollar",
+      symbol: [36],
+      iso_code: "USD",
+      country_code: 840,
+      exponent: 2
     },
     USN: %Moeda{
-      nome: "US Dollar (Next day)",
-      simbolo: [],
-      codigo: "USN",
-      codigo_iso: 997,
-      expoente: 2
+      name: "US Dollar (Next day)",
+      symbol: [],
+      iso_code: "USN",
+      country_code: 997,
+      exponent: 2
     },
     UYI: %Moeda{
-      nome: "Uruguay Peso en Unidades Indexadas (URUIURUI)",
-      simbolo: [],
-      codigo: "UYI",
-      codigo_iso: 940,
-      expoente: 0
+      name: "Uruguay Peso en Unidades Indexadas (URUIURUI)",
+      symbol: [],
+      iso_code: "UYI",
+      country_code: 940,
+      exponent: 0
     },
     UYU: %Moeda{
-      nome: "Peso Uruguayo",
-      simbolo: [36, 85],
-      codigo: "UYU",
-      codigo_iso: 858,
-      expoente: 2
+      name: "Peso Uruguayo",
+      symbol: [36, 85],
+      iso_code: "UYU",
+      country_code: 858,
+      exponent: 2
     },
     UZS: %Moeda{
-      nome: "Uzbekistan Sum",
-      simbolo: [1083, 1074],
-      codigo: "UZS",
-      codigo_iso: 860,
-      expoente: 2
+      name: "Uzbekistan Sum",
+      symbol: [1083, 1074],
+      iso_code: "UZS",
+      country_code: 860,
+      exponent: 2
     },
     VEF: %Moeda{
-      nome: "Bolívar",
-      simbolo: [66, 115],
-      codigo: "VEF",
-      codigo_iso: 937,
-      expoente: 2
+      name: "Bolívar",
+      symbol: [66, 115],
+      iso_code: "VEF",
+      country_code: 937,
+      exponent: 2
     },
     VND: %Moeda{
-      nome: "Dong",
-      simbolo: [8363],
-      codigo: "VND",
-      codigo_iso: 704,
-      expoente: 0
+      name: "Dong",
+      symbol: [8363],
+      iso_code: "VND",
+      country_code: 704,
+      exponent: 0
     },
     VUV: %Moeda{
-      nome: "Vatu",
-      simbolo: [],
-      codigo: "VUV",
-      codigo_iso: 548,
-      expoente: 0
+      name: "Vatu",
+      symbol: [],
+      iso_code: "VUV",
+      country_code: 548,
+      exponent: 0
     },
     WST: %Moeda{
-      nome: "Tala",
-      simbolo: [],
-      codigo: "WST",
-      codigo_iso: 882,
-      expoente: 2
+      name: "Tala",
+      symbol: [],
+      iso_code: "WST",
+      country_code: 882,
+      exponent: 2
     },
     XAF: %Moeda{
-      nome: "CFA Franc BEAC",
-      simbolo: [],
-      codigo: "XAF",
-      codigo_iso: 950,
-      expoente: 0
+      name: "CFA Franc BEAC",
+      symbol: [],
+      iso_code: "XAF",
+      country_code: 950,
+      exponent: 0
     },
     XCD: %Moeda{
-      nome: "East Caribbean Dollar",
-      simbolo: [36],
-      codigo: "XCD",
-      codigo_iso: 951,
-      expoente: 2
+      name: "East Caribbean Dollar",
+      symbol: [36],
+      iso_code: "XCD",
+      country_code: 951,
+      exponent: 2
     },
     XOF: %Moeda{
-      nome: "CFA Franc BCEAO",
-      simbolo: [],
-      codigo: "XOF",
-      codigo_iso: 952,
-      expoente: 0
+      name: "CFA Franc BCEAO",
+      symbol: [],
+      iso_code: "XOF",
+      country_code: 952,
+      exponent: 0
     },
     XPF: %Moeda{
-      nome: "CFP Franc",
-      simbolo: [],
-      codigo: "XPF",
-      codigo_iso: 953,
-      expoente: 0
+      name: "CFP Franc",
+      symbol: [],
+      iso_code: "XPF",
+      country_code: 953,
+      exponent: 0
     },
     YER: %Moeda{
-      nome: "Yemeni Rial",
-      simbolo: [65020],
-      codigo: "YER",
-      codigo_iso: 886,
-      expoente: 2
+      name: "Yemeni Rial",
+      symbol: [65020],
+      iso_code: "YER",
+      country_code: 886,
+      exponent: 2
     },
     ZAR: %Moeda{
-      nome: "Rand",
-      simbolo: [82],
-      codigo: "ZAR",
-      codigo_iso: 710,
-      expoente: 2
+      name: "Rand",
+      symbol: [82],
+      iso_code: "ZAR",
+      country_code: 710,
+      exponent: 2
     },
     ZMW: %Moeda{
-      nome: "Zambian Kwacha",
-      simbolo: [],
-      codigo: "ZMW",
-      codigo_iso: 967,
-      expoente: 2
+      name: "Zambian Kwacha",
+      symbol: [],
+      iso_code: "ZMW",
+      country_code: 967,
+      exponent: 2
     },
     ZWL: %Moeda{
-      nome: "Zimbabwe Dollar",
-      simbolo: [],
-      codigo: "ZWL",
-      codigo_iso: 932,
-      expoente: 2
+      name: "Zimbabwe Dollar",
+      symbol: [],
+      iso_code: "ZWL",
+      country_code: 932,
+      exponent: 2
     }
   }
 
-  def get_moedas do
-    @moedas
+  def get_currencies do
+    @currencies
   end
 end
