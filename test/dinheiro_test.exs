@@ -82,7 +82,7 @@ defmodule DinheiroTest do
              Dinheiro.new!(123.45, :BRL),
              Dinheiro.new!(123.45, :BRL)
            ) == {:ok, 0}
-          
+
     assert Dinheiro.compare(
              Dinheiro.new!(123.45, :USD),
              Dinheiro.new!(123.45, :BRL)
@@ -184,7 +184,18 @@ defmodule DinheiroTest do
     end
   end
 
-  test "multiply!(2" do
+  test "multiply/2" do
+    assert Dinheiro.multiply(Dinheiro.new!(3, :BRL), 2) ==
+             {:ok,
+              %Dinheiro{
+                amount: 600,
+                currency: :BRL
+              }}
+
+    assert Dinheiro.multiply(2, 2) == {:error, ""}
+  end
+
+  test "multiply!/2" do
     assert Dinheiro.multiply!(Dinheiro.new!(3, :BRL), 2) == %Dinheiro{
              amount: 600,
              currency: :BRL

@@ -112,7 +112,7 @@ defmodule Dinheiro do
     %Dinheiro{amount: amount, currency: currency}
   end
 
-@spec compare(t, t) :: {:ok, integer} | {:error, String.t()}
+  @spec compare(t, t) :: {:ok, integer} | {:error, String.t()}
   @doc """
   Compares two `Dinheiro` structs with each other.
   They must each be of the same currency and then their value are compared.
@@ -232,6 +232,21 @@ defmodule Dinheiro do
 
   def subtract!(a, b) do
     raise_currency_must_be_the_same(a, b)
+  end
+
+  @spec multiply(t, integer | float) :: {:ok, t} | {:error, String.t()}
+  @doc """
+  Return a new `Dinheiro` structs with value multiplied by other value.
+  The first parameter must be a struct of `Dinheiro`.
+
+  ## Example:
+      iex> Dinheiro.multiply(Dinheiro.new!(2, :BRL), 2)
+      {:ok, %Dinheiro{amount: 400, currency: :BRL}}
+      iex> Dinheiro.multiply(2, 2)
+      {:error, ""}
+
+  """
+  def multiply(a, b) do
   end
 
   @spec multiply!(t, integer | float) :: t
