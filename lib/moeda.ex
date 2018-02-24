@@ -38,6 +38,16 @@ defmodule Moeda do
       ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
   """
   def find!(codigo) when is_atom(codigo) or is_binary(codigo) do
+    moeda = find(codigo)
+
+    unless moeda,
+      do:
+        raise(
+          ArgumentError,
+          message: "'#{codigo}' does not represent an ISO 4217 code."
+        )
+
+    moeda
   end
 
   @spec find(String.t() | atom) :: t | nil
