@@ -38,6 +38,20 @@ defmodule MoedaTest do
     Application.delete_env(:ex_dinheiro, :unofficial_currencies)
   end
 
+  test "find!/1" do
+    assert Moeda.find("BRL") == %Moeda{
+             nome: "Brazilian Real",
+             simbolo: 'R$',
+             codigo: "BRL",
+             codigo_iso: 986,
+             expoente: 2
+           }
+
+    assert_raise ArgumentError, fn ->
+      Moeda.find!(:NONE)
+    end
+  end
+
   test "find/1", context do
     assert Moeda.find("BRL") == %Moeda{
              nome: "Brazilian Real",

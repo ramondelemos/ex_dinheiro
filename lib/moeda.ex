@@ -25,8 +25,22 @@ defmodule Moeda do
           codigo_iso: integer,
           expoente: integer
         }
+  
+  @spec find!(String.t() | atom) :: t
+  @doc """
+  Return a map from an atom or string that represents an ISO 4217 code.
 
-  @spec find(String.t() | atom) :: map | nil
+  ## Examples
+
+      iex> Moeda.find!(:BRL)
+      %Moeda{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
+      iex> Moeda.find!(:NONE)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+  """
+  def find!(codigo) when is_atom(codigo) or is_binary(codigo) do
+  end
+
+  @spec find(String.t() | atom) :: t | nil
   @doc """
   Return a map from an atom or string that represents an ISO 4217 code.
 
