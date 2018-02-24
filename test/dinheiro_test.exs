@@ -212,6 +212,13 @@ defmodule DinheiroTest do
     end
   end
 
+  test "to_float/2" do
+    assert Dinheiro.to_float(%Dinheiro{quantia: 10_000, moeda: :BRL}) == {:ok, 100.00}
+
+    assert Dinheiro.to_float(%Dinheiro{quantia: 600, moeda: :NONE}) ==
+             {:error, "'NONE' does not represent an ISO 4217 code."}
+  end
+
   test "divide!(2" do
     assert Dinheiro.divide!(Dinheiro.new!(0.02, :BRL), 3) == [
              %Dinheiro{quantia: 1, moeda: :BRL},

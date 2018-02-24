@@ -321,6 +321,20 @@ defmodule Dinheiro do
   defp sum_values([]), do: 0
   defp sum_values([head | tail]), do: head + sum_values(tail)
 
+  @spec to_float(t) :: {:ok, float} | {:error, String.t()}
+  @doc """
+  Return a float value from a `Dinheiro` structs.
+
+  ## Example:
+      iex> Dinheiro.to_float(%Dinheiro{quantia: 200, moeda: :BRL})
+      {:ok, 2.0}
+      iex> Dinheiro.to_float(%Dinheiro{quantia: 200, moeda: :NONE})
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+
+  """
+  def to_float(%Dinheiro{moeda: _m} = from) do
+  end
+
   @spec to_float!(t) :: float
   @doc """
   Return a float value from a `Dinheiro` structs.
@@ -358,7 +372,7 @@ defmodule Dinheiro do
       iex> Dinheiro.to_string(%Dinheiro{quantia: 200, moeda: :NONE})
       {:error, "'NONE' does not represent an ISO 4217 code."}
   """
-  def to_string(%Dinheiro{moeda: m} = from, opts \\ []) do
+  def to_string(%Dinheiro{moeda: _m} = from, opts \\ []) do
     try do
       {:ok, to_string!(from, opts)}
     rescue
