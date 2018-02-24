@@ -59,7 +59,7 @@ defmodule DinheiroTest do
   test "new!/1 with an invalid value" do
     Application.put_env(:ex_dinheiro, :default_currency, :BRL)
 
-    assert_raise FunctionClauseError, fn ->
+    assert_raise ArgumentError, fn ->
       Dinheiro.new!("1234")
     end
   end
@@ -80,7 +80,7 @@ defmodule DinheiroTest do
   end
 
   test "new!/2 with an invalid value" do
-    assert_raise FunctionClauseError, fn ->
+    assert_raise ArgumentError, fn ->
       Dinheiro.new!("12345", :BRL)
     end
   end

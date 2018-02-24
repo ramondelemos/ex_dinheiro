@@ -24,6 +24,8 @@ defmodule Dinheiro do
         iex> Application.put_env(:ex_dinheiro, :default_currency, :BRL)
         iex> Dinheiro.new(12345)
         {:ok, %Dinheiro{amount: 1234500, currency: :BRL}}
+        iex> Dinheiro.new("1")
+        {:error, "value '1' must be integer or float."}
         iex> Application.delete_env(:ex_dinheiro, :default_currency)
         iex> Dinheiro.new(12345)
         {:error, "you must set a default value in your application config :ex_dinheiro, default_currency."}
@@ -59,13 +61,20 @@ defmodule Dinheiro do
     end
   end
 
-  @spec new(integer | float, atom | String.t()) :: {:ok, t} | {:error, String.t()}
+  def new!(amount) do
+    assert_if_integer_or_float(amount)
+  end
+
+  @spec new(integer | float, atom | String.t()) ::
+          {:ok, t} | {:error, String.t()}
   @doc """
   Create a new `Dinheiro` struct.
 
   ## Example:
       iex> Dinheiro.new(12345, :BRL)
       {:ok, %Dinheiro{amount: 1234500, currency: :BRL}}
+      iex> Dinheiro.new("1", :BRL)
+      {:error, "value '1' must be integer or float."}
       iex> Dinheiro.new(12345, :XBT)
       {:error, "'XBT' does not represent an ISO 4217 code."}
       iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
@@ -75,6 +84,9 @@ defmodule Dinheiro do
 
   """
   def new(amount, currency) do
+    {:ok, new!(amount, currency)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec new!(integer | float, atom | String.t()) :: t
@@ -124,6 +136,10 @@ defmodule Dinheiro do
       raise ArgumentError,
             "to use Dinheiro.new!/2 you must set a valid value to currency."
     end
+  end
+
+  def new!(amount, _c) do
+    assert_if_integer_or_float(amount)
   end
 
   defp do_new(amount, currency) when is_integer(amount) and is_atom(currency) do
@@ -618,7 +634,11 @@ defmodule Dinheiro do
 
   defp assert_if_integer_or_float(value) do
     unless is_integer(value) or is_float(value),
-      do: raise(ArgumentError, message: "value '#{value}' must be integer or float.")
+      do:
+        raise(
+          ArgumentError,
+          message: "value '#{value}' must be integer or float."
+        )
   end
 
   defp assert_if_integer(value) do
