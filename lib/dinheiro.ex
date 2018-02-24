@@ -93,7 +93,7 @@ defmodule Dinheiro do
     if v_moeda do
       factor =
         v_moeda.codigo
-        |> Moeda.get_factor()
+        |> Moeda.get_factor!()
 
       atom =
         v_moeda.codigo
@@ -382,7 +382,7 @@ defmodule Dinheiro do
   """
   def to_float!(%Dinheiro{moeda: m} = from) do
     moeda = Moeda.find!(m)
-    factor = Moeda.get_factor(m)
+    factor = Moeda.get_factor!(m)
     Float.round(from.quantia / factor, moeda.expoente)
   end
 

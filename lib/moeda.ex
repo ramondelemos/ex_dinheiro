@@ -121,7 +121,7 @@ defmodule Moeda do
   end
 
   defp wrap_up_moeda(moeda, codigo) do
-    if (moeda) do
+    if moeda do
       {:ok, moeda}
     else
       {:error, "'#{codigo}' does not represent an ISO 4217 code."}
@@ -156,37 +156,32 @@ defmodule Moeda do
     moeda.codigo |> String.upcase() |> String.to_atom()
   end
 
-  @spec get_factor(String.t() | atom) :: float | nil
+  @spec get_factor!(String.t() | atom) :: float
   @doc """
   Return a multiplication factor from an ISO 4217 code.
 
   ## Examples
 
-      iex> Moeda.get_factor(:BRL)
+      iex> Moeda.get_factor!(:BRL)
       100.0
-      iex> Moeda.get_factor("BRL")
+      iex> Moeda.get_factor!("BRL")
       100.0
-      iex> Moeda.get_factor("")
-      nil
+      iex> Moeda.get_factor!(:NONE)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   Its function ignore case sensitive.
 
   ## Examples
 
-      iex> Moeda.get_factor(:brl)
+      iex> Moeda.get_factor!(:brl)
       100.0
-      iex> Moeda.get_factor("brl")
+      iex> Moeda.get_factor!("brl")
       100.0
 
   """
-  def get_factor(codigo) do
+  def get_factor!(codigo) do
     moeda = find!(codigo)
-
-    if moeda do
-      :math.pow(10, moeda.expoente)
-    else
-      nil
-    end
+    :math.pow(10, moeda.expoente)
   end
 
   @spec to_string(String.t() | atom, float, Keywords.t()) ::

@@ -180,21 +180,25 @@ defmodule MoedaTest do
     assert Moeda.get_atom!(:usd) == :USD
   end
 
-  test "get_factor/1", context do
-    assert Moeda.get_factor("BRL") == 100.0
-    assert Moeda.get_factor("brl") == 100.0
-    assert Moeda.get_factor(:BRL) == 100.0
-    assert Moeda.get_factor(:brl) == 100.0
-    assert Moeda.get_factor("") == nil
-    assert Moeda.get_factor(:CLF) == 10_000.0
-    assert Moeda.get_factor(:PYG) == 1.0
-    assert Moeda.get_factor(:IQD) == 1_000.0
+  test "get_factor!/1", context do
+    assert Moeda.get_factor!("BRL") == 100.0
+    assert Moeda.get_factor!("brl") == 100.0
+    assert Moeda.get_factor!(:BRL) == 100.0
+    assert Moeda.get_factor!(:brl) == 100.0
+
+    assert_raise ArgumentError, fn ->
+      Moeda.get_factor!("")
+    end
+
+    assert Moeda.get_factor!(:CLF) == 10_000.0
+    assert Moeda.get_factor!(:PYG) == 1.0
+    assert Moeda.get_factor!(:IQD) == 1_000.0
 
     Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
 
-    assert Moeda.get_factor(:BRL) == 10_000.0
-    assert Moeda.get_factor("XBT") == 100_000_000.0
-    assert Moeda.get_factor(:usd) == 1_000.0
+    assert Moeda.get_factor!(:BRL) == 10_000.0
+    assert Moeda.get_factor!("XBT") == 100_000_000.0
+    assert Moeda.get_factor!(:usd) == 1_000.0
   end
 
   test "to_string/3" do
