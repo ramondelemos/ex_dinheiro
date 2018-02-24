@@ -158,53 +158,53 @@ defmodule MoedaTest do
     assert Moeda.get_factor(:usd) == 1_000.0
   end
 
-  test "to_string/3" do
-    assert Moeda.to_string(:BRL, 0.1) == "R$ 0,10"
-    assert Moeda.to_string("BRL", 1.0) == "R$ 1,00"
-    assert Moeda.to_string("brl", 10.0) == "R$ 10,00"
-    assert Moeda.to_string(:BRL, 100.0) == "R$ 100,00"
-    assert Moeda.to_string(:IRR, 200.0) == "﷼ 200,00"
-    assert Moeda.to_string(:UGX, 300.0) == "300"
-    assert Moeda.to_string(:MKD, 400.0) == "ден 400,00"
-    assert Moeda.to_string(:JPY, 500.1) == "¥ 500"
-    assert Moeda.to_string(:BRL, -1_000.0) == "R$ -1.000,00"
-    assert Moeda.to_string(:brl, 12_345_678.9) == "R$ 12.345.678,90"
+  test "to_string!/3" do
+    assert Moeda.to_string!(:BRL, 0.1) == "R$ 0,10"
+    assert Moeda.to_string!("BRL", 1.0) == "R$ 1,00"
+    assert Moeda.to_string!("brl", 10.0) == "R$ 10,00"
+    assert Moeda.to_string!(:BRL, 100.0) == "R$ 100,00"
+    assert Moeda.to_string!(:IRR, 200.0) == "﷼ 200,00"
+    assert Moeda.to_string!(:UGX, 300.0) == "300"
+    assert Moeda.to_string!(:MKD, 400.0) == "ден 400,00"
+    assert Moeda.to_string!(:JPY, 500.1) == "¥ 500"
+    assert Moeda.to_string!(:BRL, -1_000.0) == "R$ -1.000,00"
+    assert Moeda.to_string!(:brl, 12_345_678.9) == "R$ 12.345.678,90"
 
-    assert Moeda.to_string(
+    assert Moeda.to_string!(
              :USD,
              12_345_678.9,
              thousand_separator: ",",
              decimal_separator: "."
            ) == "$ 12,345,678.90"
 
-    assert Moeda.to_string(:BRL, 12_345_678.9, display_currency_symbol: false) ==
+    assert Moeda.to_string!(:BRL, 12_345_678.9, display_currency_symbol: false) ==
              "12.345.678,90"
 
-    assert Moeda.to_string(:BRL, 12_345_678.9, display_currency_code: true) ==
+    assert Moeda.to_string!(:BRL, 12_345_678.9, display_currency_code: true) ==
              "R$ 12.345.678,90 BRL"
 
     assert_raise ArgumentError, fn ->
-      Moeda.to_string(:BRL, 100)
+      Moeda.to_string!(:BRL, 100)
     end
 
     assert_raise ArgumentError, fn ->
-      Moeda.to_string(:NONE, 100.0)
+      Moeda.to_string!(:NONE, 100.0)
     end
 
     assert_raise ArgumentError, fn ->
-      Moeda.to_string("NONE", 100.0)
+      Moeda.to_string!("NONE", 100.0)
     end
   end
 
-  test "to_string/3 with changes in the system Mix config." do
-    assert Moeda.to_string(:BRL, 12_345_678.9) == "R$ 12.345.678,90"
+  test "to_string!/3 with changes in the system Mix config." do
+    assert Moeda.to_string!(:BRL, 12_345_678.9) == "R$ 12.345.678,90"
 
     Application.put_env(:ex_dinheiro, :thousand_separator, ",")
     Application.put_env(:ex_dinheiro, :decimal_separator, ".")
 
-    assert Moeda.to_string(:USD, 12_345_678.9) == "$ 12,345,678.90"
+    assert Moeda.to_string!(:USD, 12_345_678.9) == "$ 12,345,678.90"
 
-    assert Moeda.to_string(
+    assert Moeda.to_string!(
              :USD,
              12_345_678.9,
              thousand_separator: "_",
@@ -213,13 +213,13 @@ defmodule MoedaTest do
 
     Application.put_env(:ex_dinheiro, :display_currency_symbol, false)
 
-    assert Moeda.to_string(:USD, 12_345_678.9) == "12,345,678.90"
+    assert Moeda.to_string!(:USD, 12_345_678.9) == "12,345,678.90"
 
     Application.put_env(:ex_dinheiro, :display_currency_code, true)
 
-    assert Moeda.to_string(:USD, 12_345_678.9) == "12,345,678.90 USD"
+    assert Moeda.to_string!(:USD, 12_345_678.9) == "12,345,678.90 USD"
 
-    assert Moeda.to_string(
+    assert Moeda.to_string!(
              :BRL,
              12_345_678.9,
              thousand_separator: "_",
@@ -229,14 +229,14 @@ defmodule MoedaTest do
            ) == "R$ 12_345_678*90"
   end
 
-  test "to_string/3 with new currencies in the system Mix config.", context do
+  test "to_string!/3 with new currencies in the system Mix config.", context do
     Application.put_env(:ex_dinheiro, :unofficial_currencies, context[:moedas])
-    assert Moeda.to_string(:BRL, 12_345_678.9) == "BR$ 12.345.678,9000"
-    assert Moeda.to_string(:usd, 12_345_678.9) == "US$ 12.345.678,900"
-    assert Moeda.to_string("XBT", 12_345_678.9) == "฿ 12.345.678,90000000"
+    assert Moeda.to_string!(:BRL, 12_345_678.9) == "BR$ 12.345.678,9000"
+    assert Moeda.to_string!(:usd, 12_345_678.9) == "US$ 12.345.678,900"
+    assert Moeda.to_string!("XBT", 12_345_678.9) == "฿ 12.345.678,90000000"
   end
 
-  test "Bloqueio para subir versão!" do
+  test "Não vai subir ninguém!" do
     assert false
   end
 end

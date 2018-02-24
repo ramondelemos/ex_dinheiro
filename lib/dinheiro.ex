@@ -410,7 +410,7 @@ defmodule Dinheiro do
   """
   def to_string(%Dinheiro{moeda: m} = from, opts \\ []) do
     value = to_float(from)
-    Moeda.to_string(m, value, opts)
+    Moeda.to_string!(m, value, opts)
   end
 
   defp raise_moeda_must_be_the_same(a, b) do
