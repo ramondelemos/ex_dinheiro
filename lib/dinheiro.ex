@@ -234,6 +234,26 @@ defmodule Dinheiro do
     new!(float_value * b, m)
   end
 
+  @spec divide(t, integer | [integer]) :: {:ok, [t]} | {:error, String.t()}
+  @doc """
+  Divide a `Dinheiro` struct by a positive integer value
+
+  ## Example:
+      iex> Dinheiro.divide(Dinheiro.new!(100, :BRL), 2)
+      {:ok, [%Dinheiro{quantia: 5000, moeda: :BRL}, %Dinheiro{quantia: 5000, moeda: :BRL}]}
+      iex> Dinheiro.divide(%Dinheiro{quantia: 5050, moeda: :NONE}, 2)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+
+  Divide a `Dinheiro` struct by an list of values that represents a division ratio.
+
+  ## Example:
+      iex> Dinheiro.divide(Dinheiro.new!(0.05, :BRL), [3, 7])
+      {:ok, [%Dinheiro{quantia: 2, moeda: :BRL}, %Dinheiro{quantia: 3, moeda: :BRL}]}
+
+  """
+  def divide(%Dinheiro{moeda: _m} = a, b) when is_integer(b) or is_list(b) do
+  end
+
   @spec divide!(t, integer | [integer]) :: [t]
   @doc """
   Divide a `Dinheiro` struct by a positive integer value
@@ -252,6 +272,7 @@ defmodule Dinheiro do
 
   """
   def divide!(%Dinheiro{moeda: m} = a, b) when is_integer(b) do
+    assert_if_moeda_is_valid(m)
     assert_if_ratios_are_valid([b])
     division = div(a.quantia, b)
     remainder = rem(a.quantia, b)
@@ -259,6 +280,7 @@ defmodule Dinheiro do
   end
 
   def divide!(%Dinheiro{moeda: m} = a, b) when is_list(b) do
+    assert_if_moeda_is_valid(m)
     assert_if_ratios_are_valid(b)
     ratio = sum_values(b)
     division = calculate_ratio(b, ratio, a.quantia)
@@ -493,4 +515,6 @@ defmodule Dinheiro do
     assert_if_greater_than_zero(head)
     if tail != [], do: assert_if_ratios_are_valid(tail)
   end
+
+  defp assert_if_moeda_is_valid(m), do: Moeda.find!(m)
 end
