@@ -184,6 +184,21 @@ defmodule Moeda do
     :math.pow(10, moeda.expoente)
   end
 
+  @spec get_factor(String.t() | atom) :: {:ok, float} | {:error, String.t()}
+  @doc """
+  Return a multiplication factor from an ISO 4217 code.
+
+  ## Examples
+
+      iex> Moeda.get_factor(:BRL)
+      {:ok, 100.0}
+      iex> Moeda.get_factor(:NONE)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+
+  """
+  def get_factor(codigo) do
+  end
+
   @spec to_string(String.t() | atom, float, Keywords.t()) ::
           {:ok, String.t()} | {:error, String.t()}
   @doc """

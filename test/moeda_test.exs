@@ -180,6 +180,11 @@ defmodule MoedaTest do
     assert Moeda.get_atom!(:usd) == :USD
   end
 
+  test "get_factor/1" do
+    assert Moeda.get_factor("BRL") == {:ok, 100.0}
+    assert Moeda.get_factor(:NONE) == {:error, "'NONE' does not represent an ISO 4217 code."}
+  end
+
   test "get_factor!/1", context do
     assert Moeda.get_factor!("BRL") == 100.0
     assert Moeda.get_factor!("brl") == 100.0
