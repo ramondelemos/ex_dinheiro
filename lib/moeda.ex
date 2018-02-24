@@ -169,6 +169,9 @@ defmodule Moeda do
 
   """
   def get_atom(codigo) do
+    {:ok, get_atom!(codigo)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec get_factor!(String.t() | atom) :: float
@@ -212,6 +215,9 @@ defmodule Moeda do
 
   """
   def get_factor(codigo) do
+    {:ok, get_factor!(codigo)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec to_string(String.t() | atom, float, Keywords.t()) ::
@@ -227,11 +233,9 @@ defmodule Moeda do
       {:error, "'NONE' does not represent an ISO 4217 code."}
   """
   def to_string(moeda, valor, opts \\ []) do
-    try do
-      {:ok, to_string!(moeda, valor, opts)}
-    rescue
-      e -> {:error, e.message}
-    end
+    {:ok, to_string!(moeda, valor, opts)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec to_string!(String.t() | atom, float, Keywords.t()) :: String.t()

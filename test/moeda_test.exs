@@ -159,9 +159,11 @@ defmodule MoedaTest do
               }}
   end
 
-  test "get_atom/1", context do
+  test "get_atom/1" do
     assert Moeda.get_atom("BRL") == {:ok, :BRL}
-    assert Moeda.get_atom("NONE") == {:error, "'NONE' does not represent an ISO 4217 code."}
+
+    assert Moeda.get_atom("NONE") ==
+             {:error, "'NONE' does not represent an ISO 4217 code."}
   end
 
   test "get_atom!/1", context do
@@ -187,7 +189,9 @@ defmodule MoedaTest do
 
   test "get_factor/1" do
     assert Moeda.get_factor("BRL") == {:ok, 100.0}
-    assert Moeda.get_factor(:NONE) == {:error, "'NONE' does not represent an ISO 4217 code."}
+
+    assert Moeda.get_factor(:NONE) ==
+             {:error, "'NONE' does not represent an ISO 4217 code."}
   end
 
   test "get_factor!/1", context do

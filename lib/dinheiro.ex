@@ -30,11 +30,9 @@ defmodule Dinheiro do
 
   """
   def new(quantia) do
-    try do
-      {:ok, new!(quantia)}
-    rescue
-      e -> {:error, e.message}
-    end
+    {:ok, new!(quantia)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec new!(integer | float) :: t
@@ -252,11 +250,9 @@ defmodule Dinheiro do
 
   """
   def divide(%Dinheiro{moeda: _m} = a, b) when is_integer(b) or is_list(b) do
-    try do
-      {:ok, divide!(a, b)}
-    rescue
-      e -> {:error, e.message}
-    end
+    {:ok, divide!(a, b)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec divide!(t, integer | [integer]) :: [t]
@@ -360,11 +356,9 @@ defmodule Dinheiro do
 
   """
   def to_float(%Dinheiro{moeda: _m} = from) do
-    try do
-      {:ok, to_float!(from)}
-    rescue
-      e -> {:error, e.message}
-    end
+    {:ok, to_float!(from)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec to_float!(t) :: float
@@ -397,11 +391,9 @@ defmodule Dinheiro do
       {:error, "'NONE' does not represent an ISO 4217 code."}
   """
   def to_string(%Dinheiro{moeda: _m} = from, opts \\ []) do
-    try do
-      {:ok, to_string!(from, opts)}
-    rescue
-      e -> {:error, e.message}
-    end
+    {:ok, to_string!(from, opts)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec to_string!(t, Keywords.t()) :: String.t()
