@@ -192,7 +192,7 @@ defmodule DinheiroTest do
                 currency: :BRL
               }}
 
-    assert Dinheiro.multiply(2, 2) == {:error, ""}
+    assert Dinheiro.multiply(2, 2) == {:error, "the first param must be a Dinheiro struct."}
   end
 
   test "multiply!/2" do
@@ -211,11 +211,11 @@ defmodule DinheiroTest do
              currency: :BRL
            }
 
-    assert_raise FunctionClauseError, fn ->
+    assert_raise ArgumentError, fn ->
       Dinheiro.multiply!(2, 2)
     end
 
-    assert_raise FunctionClauseError, fn ->
+    assert_raise ArgumentError, fn ->
       Dinheiro.multiply!(%{amount: 600, currency: :BRL}, 2)
     end
   end

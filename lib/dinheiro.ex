@@ -243,10 +243,13 @@ defmodule Dinheiro do
       iex> Dinheiro.multiply(Dinheiro.new!(2, :BRL), 2)
       {:ok, %Dinheiro{amount: 400, currency: :BRL}}
       iex> Dinheiro.multiply(2, 2)
-      {:error, ""}
+      {:error, "the first param must be a Dinheiro struct."}
 
   """
   def multiply(a, b) do
+    {:ok, multiply!(a, b)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec multiply!(t, integer | float) :: t
@@ -263,9 +266,10 @@ defmodule Dinheiro do
       %Dinheiro{amount: -800, currency: :BRL}
 
   """
-  def multiply!(%Dinheiro{currency: m} = a, b) when is_integer(b) or is_float(b) do
+  def multiply!(a, b) when is_integer(b) or is_float(b) do
+    assert_if_is_dinheiro(a)
     float_value = to_float!(a)
-    new!(float_value * b, m)
+    new!(float_value * b, a.currency)
   end
 
   @spec divide(t, integer | [integer]) :: {:ok, [t]} | {:error, String.t()}
@@ -542,4 +546,15 @@ defmodule Dinheiro do
   end
 
   defp assert_if_currency_is_valid(m), do: Moeda.find!(m)
+
+  defp assert_if_is_dinheiro(value) do
+    case is_dinheiro(value) do
+      {:true, _} -> true
+      {:false, _} -> raise(ArgumentError, message: "the first param must be a Dinheiro struct.")
+      _ -> {:error, "private is_dinheiro/1 return unexpected value.", value}
+    end
+  end
+
+  defp is_dinheiro(%Dinheiro{amount: a, currency: c} = d) when is_integer(a) and is_atom(c), do: {:true, d}
+  defp is_dinheiro(value), do: {:false, value}
 end
