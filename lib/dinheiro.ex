@@ -328,16 +328,16 @@ defmodule Dinheiro do
     Float.round(from.quantia / factor, moeda.expoente)
   end
 
-  @spec to_string(t, Keywords.t()) :: String.t()
+  @spec to_string!(t, Keywords.t()) :: String.t()
   @doc """
   Return a formated string from a `Dinheiro` struct.
 
   ## Example:
-      iex> Dinheiro.to_string(%Dinheiro{quantia: 200, moeda: :BRL})
+      iex> Dinheiro.to_string!(%Dinheiro{quantia: 200, moeda: :BRL})
       "R$ 2,00"
-      iex> Dinheiro.to_string(Dinheiro.new(50.5, :BRL))
+      iex> Dinheiro.to_string!(Dinheiro.new(50.5, :BRL))
       "R$ 50,50"
-      iex> Dinheiro.to_string(Dinheiro.new(-4, :BRL))
+      iex> Dinheiro.to_string!(Dinheiro.new(-4, :BRL))
       "R$ -4,00"
 
   Using options-style parameters you can change the behavior of the function.
@@ -349,13 +349,13 @@ defmodule Dinheiro do
 
   ## Exemples
 
-      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), thousand_separator: ",", decimal_separator: ".")
+      iex> Dinheiro.to_string!(Dinheiro.new(1000.5, :USD), thousand_separator: ",", decimal_separator: ".")
       "$ 1,000.50"
-      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), display_currency_symbol: false)
+      iex> Dinheiro.to_string!(Dinheiro.new(1000.5, :USD), display_currency_symbol: false)
       "1.000,50"
-      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), display_currency_code: true)
+      iex> Dinheiro.to_string!(Dinheiro.new(1000.5, :USD), display_currency_code: true)
       "$ 1.000,50 USD"
-      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD), display_currency_code: true, display_currency_symbol: false)
+      iex> Dinheiro.to_string!(Dinheiro.new(1000.5, :USD), display_currency_code: true, display_currency_symbol: false)
       "1.000,50 USD"
 
   The default values also can be set in the system Mix config.
@@ -363,13 +363,13 @@ defmodule Dinheiro do
   ## Example:
       iex> Application.put_env(:ex_dinheiro, :thousand_separator, ",")
       iex> Application.put_env(:ex_dinheiro, :decimal_separator, ".")
-      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD))
+      iex> Dinheiro.to_string!(Dinheiro.new(1000.5, :USD))
       "$ 1,000.50"
       iex> Application.put_env(:ex_dinheiro, :display_currency_symbol, false)
-      iex> Dinheiro.to_string(Dinheiro.new(5000.5, :USD))
+      iex> Dinheiro.to_string!(Dinheiro.new(5000.5, :USD))
       "5,000.50"
       iex> Application.put_env(:ex_dinheiro, :display_currency_code, true)
-      iex> Dinheiro.to_string(Dinheiro.new(10000.0, :USD))
+      iex> Dinheiro.to_string!(Dinheiro.new(10000.0, :USD))
       "10,000.00 USD"
 
   The options-style parameters override values in the system Mix config.
@@ -377,20 +377,20 @@ defmodule Dinheiro do
   ## Example:
       iex> Application.put_env(:ex_dinheiro, :thousand_separator, ",")
       iex> Application.put_env(:ex_dinheiro, :decimal_separator, ".")
-      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :USD))
+      iex> Dinheiro.to_string!(Dinheiro.new(1000.5, :USD))
       "$ 1,000.50"
-      iex> Dinheiro.to_string(Dinheiro.new(1000.5, :BRL), thousand_separator: ".", decimal_separator: ",")
+      iex> Dinheiro.to_string!(Dinheiro.new(1000.5, :BRL), thousand_separator: ".", decimal_separator: ",")
       "R$ 1.000,50"
 
   Is possible to override some official ISO currency code adding it in the system Mix config.
 
   ## Examples
 
-      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :BRL))
+      iex> Dinheiro.to_string!(Dinheiro.new(12_345_678.9, :BRL))
       "R$ 12.345.678,90"
-      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :USD))
+      iex> Dinheiro.to_string!(Dinheiro.new(12_345_678.9, :USD))
       "$ 12.345.678,90"
-      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :XBT))
+      iex> Dinheiro.to_string!(Dinheiro.new(12_345_678.9, :XBT))
       ** (ArgumentError) to use Dinheiro.new/2 you must set a valid value to moeda.
       iex> real = %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
       %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
@@ -400,15 +400,15 @@ defmodule Dinheiro do
       %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8}
       iex> moedas = %{ BRL: real, USD: dollar, XBT: bitcoin }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
-      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :BRL))
+      iex> Dinheiro.to_string!(Dinheiro.new(12_345_678.9, :BRL))
       "BR$ 12.345.678,9000"
-      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, :usd))
+      iex> Dinheiro.to_string!(Dinheiro.new(12_345_678.9, :usd))
       "US$ 12.345.678,900"
-      iex> Dinheiro.to_string(Dinheiro.new(12_345_678.9, "XBT"))
+      iex> Dinheiro.to_string!(Dinheiro.new(12_345_678.9, "XBT"))
       "฿ 12.345.678,90000000"
 
   """
-  def to_string(%Dinheiro{moeda: m} = from, opts \\ []) do
+  def to_string!(%Dinheiro{moeda: m} = from, opts \\ []) do
     value = to_float(from)
     Moeda.to_string!(m, value, opts)
   end
