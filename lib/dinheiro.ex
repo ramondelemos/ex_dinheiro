@@ -137,7 +137,7 @@ defmodule Dinheiro do
       }),
       do: true
 
-  def equals?(a, b), do: false
+  def equals?(_, _), do: false
 
   @spec sum!(t, t | integer | float) :: t
   @doc """
