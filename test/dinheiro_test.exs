@@ -283,4 +283,11 @@ defmodule DinheiroTest do
       Dinheiro.to_string!(%Dinheiro{quantia: 600, moeda: :NONE})
     end
   end
+
+  test "to_string/2" do
+    assert Dinheiro.to_string(%Dinheiro{quantia: 10_000, moeda: :BRL}) == {:ok, "R$ 100,00"}
+
+    assert Dinheiro.to_string(%Dinheiro{quantia: 600, moeda: :NONE}) ==
+             {:error, "'NONE' does not represent an ISO 4217 code."}
+  end
 end

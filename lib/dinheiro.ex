@@ -348,6 +348,19 @@ defmodule Dinheiro do
     Float.round(from.quantia / factor, moeda.expoente)
   end
 
+  @spec to_string(t, Keywords.t()) :: {:ok, String.t()} | {:error, String.t()}
+  @doc """
+  Return a formated string from a `Dinheiro` struct.
+
+  ## Example:
+      iex> Dinheiro.to_string(%Dinheiro{quantia: 200, moeda: :BRL})
+      {:ok, "R$ 2,00"}
+      iex> Dinheiro.to_string(%Dinheiro{quantia: 200, moeda: :NONE})
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+  """
+  def to_string(%Dinheiro{moeda: m} = from, opts \\ []) do
+  end
+
   @spec to_string!(t, Keywords.t()) :: String.t()
   @doc """
   Return a formated string from a `Dinheiro` struct.
