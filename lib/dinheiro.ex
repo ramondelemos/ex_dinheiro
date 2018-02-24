@@ -333,6 +333,11 @@ defmodule Dinheiro do
 
   """
   def to_float(%Dinheiro{moeda: _m} = from) do
+    try do
+      {:ok, to_float!(from)}
+    rescue
+      e -> {:error, e.message}
+    end
   end
 
   @spec to_float!(t) :: float
