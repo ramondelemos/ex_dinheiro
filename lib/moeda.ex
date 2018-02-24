@@ -38,16 +38,10 @@ defmodule Moeda do
       ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
   """
   def find!(codigo) when is_atom(codigo) or is_binary(codigo) do
-    moeda = find(codigo)
-
-    unless moeda,
-      do:
-        raise(
-          ArgumentError,
-          message: "'#{codigo}' does not represent an ISO 4217 code."
-        )
-
-    moeda
+    case find(codigo) do
+      {:ok, value} -> value
+      {:error, reason} -> raise ArgumentError, message: reason
+    end
   end
 
   @spec find(String.t() | atom) :: {:ok, t} | {:error, String.t()}
@@ -119,10 +113,18 @@ defmodule Moeda do
     currency = unofficial_currencies[codigo]
 
     if currency do
-      currency
+      wrap_up_moeda(currency, codigo)
     else
       currencies = Moedas.get_moedas()
-      currencies[codigo]
+      wrap_up_moeda(currencies[codigo], codigo)
+    end
+  end
+
+  defp wrap_up_moeda(moeda, codigo) do
+    if (moeda) do
+      {:ok, moeda}
+    else
+      {:error, "'#{codigo}' does not represent an ISO 4217 code."}
     end
   end
 
@@ -150,7 +152,7 @@ defmodule Moeda do
 
   """
   def get_atom(codigo) do
-    moeda = find(codigo)
+    moeda = find!(codigo)
 
     if moeda do
       moeda.codigo |> String.upcase() |> String.to_atom()
@@ -183,7 +185,7 @@ defmodule Moeda do
 
   """
   def get_factor(codigo) do
-    moeda = find(codigo)
+    moeda = find!(codigo)
 
     if moeda do
       :math.pow(10, moeda.expoente)
@@ -278,14 +280,7 @@ defmodule Moeda do
 
   """
   def to_string!(moeda, valor, opts \\ []) do
-    m = Moeda.find(moeda)
-
-    unless m,
-      do:
-        raise(
-          ArgumentError,
-          message: "'#{moeda}' does not represent an ISO 4217 code."
-        )
+    m = find!(moeda)
 
     unless is_float(valor),
       do: raise(ArgumentError, message: "Value '#{valor}' must be float.")

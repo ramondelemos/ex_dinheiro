@@ -39,7 +39,7 @@ defmodule MoedaTest do
   end
 
   test "find!/1" do
-    assert Moeda.find("BRL") == %Moeda{
+    assert Moeda.find!("BRL") == %Moeda{
              nome: "Brazilian Real",
              simbolo: 'R$',
              codigo: "BRL",

@@ -80,7 +80,7 @@ defmodule Dinheiro do
   ## Examples
 
       iex> Moeda.find(:XBT)
-      nil
+      {:error, "'XBT' does not represent an ISO 4217 code."}
       iex> moedas = %{ XBT: %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
       iex> Dinheiro.new!(123.45, :XBT)
@@ -88,7 +88,7 @@ defmodule Dinheiro do
 
   """
   def new!(quantia, moeda) when is_integer(quantia) or is_float(quantia) do
-    v_moeda = Moeda.find(moeda)
+    v_moeda = Moeda.find!(moeda)
 
     if v_moeda do
       factor =
@@ -381,15 +381,7 @@ defmodule Dinheiro do
 
   """
   def to_float!(%Dinheiro{moeda: m} = from) do
-    moeda = Moeda.find(m)
-
-    unless moeda,
-      do:
-        raise(
-          ArgumentError,
-          message: "'#{m}' does not represent an ISO 4217 code."
-        )
-
+    moeda = Moeda.find!(m)
     factor = Moeda.get_factor(m)
     Float.round(from.quantia / factor, moeda.expoente)
   end
@@ -474,8 +466,8 @@ defmodule Dinheiro do
       "R$ 12.345.678,90"
       iex> Dinheiro.to_string!(Dinheiro.new!(12_345_678.9, :USD))
       "$ 12.345.678,90"
-      iex> Dinheiro.to_string!(Dinheiro.new!(12_345_678.9, :XBT))
-      ** (ArgumentError) to use Dinheiro.new!/2 you must set a valid value to moeda.
+      iex> Dinheiro.to_string!(%Dinheiro{quantia: 200, moeda: :XBT})
+      ** (ArgumentError) 'XBT' does not represent an ISO 4217 code.
       iex> real = %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
       %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
       iex> dollar = %Moeda{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 840, expoente: 3}
