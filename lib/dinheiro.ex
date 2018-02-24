@@ -216,9 +216,18 @@ defmodule Dinheiro do
       {:ok, %Dinheiro{amount: 100, currency: :BRL}}
       iex> Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, 2)
       {:error, "'NONE' does not represent an ISO 4217 code."}
+      iex> Dinheiro.subtract(2, 2)
+      {:error, "the first param must be a Dinheiro struct."}
+      iex> Dinheiro.subtract(Dinheiro.new!(2, :BRL), "1")
+      {:error, "value '1' must be integer or float."}
+      iex> Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, %Dinheiro{amount: 100, currency: :NONE})
+      {:error, "'NONE' does not represent an ISO 4217 code."}
 
   """
   def subtract(a, b) do
+    {:ok, subtract!(a, b)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec subtract!(t, t | integer | float) :: t
@@ -238,6 +247,7 @@ defmodule Dinheiro do
 
   """
   def subtract!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+    assert_if_currency_is_valid(m)
     %Dinheiro{amount: a.amount - b.amount, currency: m}
   end
 
@@ -245,8 +255,14 @@ defmodule Dinheiro do
     subtract!(a, Dinheiro.new!(b, m))
   end
 
-  def subtract!(a, b) do
+  def subtract!(a, %Dinheiro{currency: _m} = b) do
+    assert_if_is_dinheiro(a)
     raise_currency_must_be_the_same(a, b)
+  end
+
+  def subtract!(a, b) do
+    assert_if_is_dinheiro(a)
+    assert_if_integer_or_float(b)
   end
 
   @spec multiply(t, integer | float) :: {:ok, t} | {:error, String.t()}
@@ -551,10 +567,18 @@ defmodule Dinheiro do
       do: raise(ArgumentError, message: "value must be greater than zero.")
   end
 
-  defp assert_if_ratios_are_valid([head | tail]) do
-    unless is_integer(head),
-      do: raise(ArgumentError, message: "value '#{head}' must be integer.")
+  defp assert_if_integer_or_float(value) do
+    unless is_integer(value) or is_float(value),
+      do: raise(ArgumentError, message: "value '#{value}' must be integer or float.")
+  end
 
+  defp assert_if_integer(value) do
+    unless is_integer(value),
+      do: raise(ArgumentError, message: "value '#{value}' must be integer.")
+  end
+
+  defp assert_if_ratios_are_valid([head | tail]) do
+    assert_if_integer(head)
     assert_if_value_is_positive(head)
     assert_if_greater_than_zero(head)
     if tail != [], do: assert_if_ratios_are_valid(tail)
