@@ -157,6 +157,18 @@ defmodule DinheiroTest do
     end
   end
 
+  test "subtract/2" do
+    assert Dinheiro.subtract(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL)) ==
+             {:ok,
+              %Dinheiro{
+                amount: 100,
+                currency: :BRL
+              }}
+
+    assert Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, 2) ==
+             {:error, "'NONE' does not represent an ISO 4217 code."}
+  end
+
   test "subtract!(2" do
     assert Dinheiro.subtract!(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL)) ==
              %Dinheiro{
@@ -192,7 +204,8 @@ defmodule DinheiroTest do
                 currency: :BRL
               }}
 
-    assert Dinheiro.multiply(2, 2) == {:error, "the first param must be a Dinheiro struct."}
+    assert Dinheiro.multiply(2, 2) ==
+             {:error, "the first param must be a Dinheiro struct."}
   end
 
   test "multiply!/2" do

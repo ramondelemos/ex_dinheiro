@@ -206,6 +206,21 @@ defmodule Dinheiro do
     raise_currency_must_be_the_same(a, b)
   end
 
+  @spec subtract(t, t | integer | float) :: {:ok, t} | {:error, String.t()}
+  @doc """
+  Return a new `Dinheiro` structs with subtract of two values.
+  The first parameter must be a struct of `Dinheiro`.
+
+  ## Example:
+      iex> Dinheiro.subtract(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL))
+      {:ok, %Dinheiro{amount: 100, currency: :BRL}}
+      iex> Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, 2)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+
+  """
+  def subtract(a, b) do
+  end
+
   @spec subtract!(t, t | integer | float) :: t
   @doc """
   Return a new `Dinheiro` structs with subtract of two values.
@@ -549,12 +564,23 @@ defmodule Dinheiro do
 
   defp assert_if_is_dinheiro(value) do
     case is_dinheiro(value) do
-      {:true, _} -> true
-      {:false, _} -> raise(ArgumentError, message: "the first param must be a Dinheiro struct.")
-      _ -> {:error, "private is_dinheiro/1 return unexpected value.", value}
+      {true, _} ->
+        true
+
+      {false, _} ->
+        raise(
+          ArgumentError,
+          message: "the first param must be a Dinheiro struct."
+        )
+
+      _ ->
+        {:error, "private is_dinheiro/1 return unexpected value.", value}
     end
   end
 
-  defp is_dinheiro(%Dinheiro{amount: a, currency: c} = d) when is_integer(a) and is_atom(c), do: {:true, d}
-  defp is_dinheiro(value), do: {:false, value}
+  defp is_dinheiro(%Dinheiro{amount: a, currency: c} = d)
+       when is_integer(a) and is_atom(c),
+       do: {true, d}
+
+  defp is_dinheiro(value), do: {false, value}
 end
