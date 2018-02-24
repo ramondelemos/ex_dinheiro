@@ -197,6 +197,9 @@ defmodule Dinheiro do
 
   """
   def sum(a, b) do
+    {:ok, sum!(a, b)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec sum!(t, t | integer | float) :: t
@@ -216,6 +219,7 @@ defmodule Dinheiro do
 
   """
   def sum!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+    assert_if_currency_is_valid(m)
     %Dinheiro{amount: a.amount + b.amount, currency: m}
   end
 
@@ -223,8 +227,14 @@ defmodule Dinheiro do
     sum!(a, Dinheiro.new!(b, m))
   end
 
-  def sum!(a, b) do
+  def sum!(a, %Dinheiro{currency: _m} = b) do
+    assert_if_is_dinheiro(a)
     raise_currency_must_be_the_same(a, b)
+  end
+
+  def sum!(a, b) do
+    assert_if_is_dinheiro(a)
+    assert_if_integer_or_float(b)
   end
 
   @spec subtract(t, t | integer | float) :: {:ok, t} | {:error, String.t()}
