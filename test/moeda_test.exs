@@ -159,6 +159,11 @@ defmodule MoedaTest do
               }}
   end
 
+  test "get_atom/1", context do
+    assert Moeda.get_atom("BRL") == {:ok, :BRL}
+    assert Moeda.get_atom("NONE") == {:error, "'NONE' does not represent an ISO 4217 code."}
+  end
+
   test "get_atom!/1", context do
     assert Moeda.get_atom!("BRL") == :BRL
     assert Moeda.get_atom!("brl") == :BRL

@@ -156,6 +156,21 @@ defmodule Moeda do
     moeda.codigo |> String.upcase() |> String.to_atom()
   end
 
+  @spec get_atom(String.t() | atom) :: {:ok, atom}
+  @doc """
+  Return an atom from a value that represents an ISO 4217 code.
+
+  ## Examples
+
+      iex> Moeda.get_atom(:BRL)
+      {:ok, :BRL}
+      iex> Moeda.get_atom(:NONE)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+
+  """
+  def get_atom(codigo) do
+  end
+
   @spec get_factor!(String.t() | atom) :: float
   @doc """
   Return a multiplication factor from an ISO 4217 code.
