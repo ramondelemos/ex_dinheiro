@@ -18,7 +18,7 @@ defmodule Moeda do
       :country_code as integer that represents the country code.
       :exponent as integer that represents the exponent of the currency.
   """
-  @type t :: %Moeda{
+  @type t :: %__MODULE__{
           name: String.t(),
           symbol: String.t(),
           iso_code: String.t(),
@@ -79,7 +79,7 @@ defmodule Moeda do
   end
 
   defp is_moeda(
-         %Moeda{name: n, symbol: s, iso_code: i, country_code: c, exponent: e} =
+         %__MODULE__{name: n, symbol: s, iso_code: i, country_code: c, exponent: e} =
            m
        )
        when is_binary(n) and is_list(s) and is_binary(i) and is_integer(c) and

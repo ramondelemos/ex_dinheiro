@@ -13,7 +13,7 @@ defmodule Dinheiro do
       :amount as integer that represents an amount.
       :currency as atom that represents an ISO 4217 code.
   """
-  @type t :: %Dinheiro{amount: integer, currency: atom}
+  @type t :: %__MODULE__{amount: integer, currency: atom}
 
   @spec new(integer | float) :: {:ok, t} | {:error, String.t()}
   @doc """
@@ -181,7 +181,7 @@ defmodule Dinheiro do
       iex> Dinheiro.compare!(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
       ** (ArgumentError) currency :BRL must be the same as :USD.
   """
-  def compare!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+  def compare!(%__MODULE__{currency: m} = a, %__MODULE__{currency: m} = b) do
     case a.amount - b.amount do
       result when result > 0 -> 1
       result when result < 0 -> -1
@@ -205,7 +205,7 @@ defmodule Dinheiro do
       iex> Dinheiro.equals?(Dinheiro.new!(12345, :BRL), Dinheiro.new!(12345, :USD))
       false
   """
-  def equals?(%Dinheiro{currency: currency, amount: amount}, %Dinheiro{
+  def equals?(%__MODULE__{currency: currency, amount: amount}, %__MODULE__{
         currency: currency,
         amount: amount
       }),
@@ -255,16 +255,16 @@ defmodule Dinheiro do
       ** (ArgumentError) value '1' must be integer or float.
 
   """
-  def sum!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+  def sum!(%__MODULE__{currency: m} = a, %__MODULE__{currency: m} = b) do
     raise_if_is_not_a_currency_valid(m)
     %Dinheiro{amount: a.amount + b.amount, currency: m}
   end
 
-  def sum!(%Dinheiro{currency: m} = a, b) when is_integer(b) or is_float(b) do
+  def sum!(%__MODULE__{currency: m} = a, b) when is_integer(b) or is_float(b) do
     sum!(a, Dinheiro.new!(b, m))
   end
 
-  def sum!(a, %Dinheiro{currency: _m} = b) do
+  def sum!(a, %__MODULE__{currency: _m} = b) do
     raise_if_is_not_dinheiro(a)
     raise_currency_must_be_the_same(a, b)
   end
@@ -316,16 +316,16 @@ defmodule Dinheiro do
       ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   """
-  def subtract!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
+  def subtract!(%__MODULE__{currency: m} = a, %__MODULE__{currency: m} = b) do
     raise_if_is_not_a_currency_valid(m)
     %Dinheiro{amount: a.amount - b.amount, currency: m}
   end
 
-  def subtract!(%Dinheiro{currency: m} = a, b) when is_integer(b) or is_float(b) do
+  def subtract!(%__MODULE__{currency: m} = a, b) when is_integer(b) or is_float(b) do
     subtract!(a, Dinheiro.new!(b, m))
   end
 
-  def subtract!(a, %Dinheiro{currency: _m} = b) do
+  def subtract!(a, %__MODULE__{currency: _m} = b) do
     raise_if_is_not_dinheiro(a)
     raise_currency_must_be_the_same(a, b)
   end
@@ -392,7 +392,7 @@ defmodule Dinheiro do
       {:ok, [%Dinheiro{amount: 2, currency: :BRL}, %Dinheiro{amount: 3, currency: :BRL}]}
 
   """
-  def divide(%Dinheiro{currency: _m} = a, b) when is_integer(b) or is_list(b) do
+  def divide(%__MODULE__{currency: _m} = a, b) when is_integer(b) or is_list(b) do
     {:ok, divide!(a, b)}
   rescue
     e -> {:error, e.message}
@@ -417,7 +417,7 @@ defmodule Dinheiro do
       [%Dinheiro{amount: 2, currency: :BRL}, %Dinheiro{amount: 3, currency: :BRL}]
 
   """
-  def divide!(%Dinheiro{currency: m} = a, b) when is_integer(b) do
+  def divide!(%__MODULE__{currency: m} = a, b) when is_integer(b) do
     raise_if_is_not_a_currency_valid(m)
     raise_if_not_ratios_are_valid([b])
     division = div(a.amount, b)
@@ -425,7 +425,7 @@ defmodule Dinheiro do
     to_alocate(division, remainder, m, b)
   end
 
-  def divide!(%Dinheiro{currency: m} = a, b) when is_list(b) do
+  def divide!(%__MODULE__{currency: m} = a, b) when is_list(b) do
     raise_if_is_not_a_currency_valid(m)
     raise_if_not_ratios_are_valid(b)
     ratio = sum_values(b)
@@ -500,7 +500,7 @@ defmodule Dinheiro do
       {:error, "'NONE' does not represent an ISO 4217 code."}
 
   """
-  def to_float(%Dinheiro{currency: _m} = from) do
+  def to_float(%__MODULE__{currency: _m} = from) do
     {:ok, to_float!(from)}
   rescue
     e -> {:error, e.message}
@@ -521,7 +521,7 @@ defmodule Dinheiro do
       ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   """
-  def to_float!(%Dinheiro{currency: m} = from) do
+  def to_float!(%__MODULE__{currency: m} = from) do
     currency = Moeda.find!(m)
     factor = Moeda.get_factor!(m)
     Float.round(from.amount / factor, currency.exponent)
@@ -537,7 +537,7 @@ defmodule Dinheiro do
       iex> Dinheiro.to_string(%Dinheiro{amount: 200, currency: :NONE})
       {:error, "'NONE' does not represent an ISO 4217 code."}
   """
-  def to_string(%Dinheiro{currency: _m} = from, opts \\ []) do
+  def to_string(%__MODULE__{currency: _m} = from, opts \\ []) do
     {:ok, to_string!(from, opts)}
   rescue
     e -> {:error, e.message}
@@ -625,7 +625,7 @@ defmodule Dinheiro do
       "฿ 12.345.678,90000000"
 
   """
-  def to_string!(%Dinheiro{currency: m} = from, opts \\ []) do
+  def to_string!(%__MODULE__{currency: m} = from, opts \\ []) do
     value = to_float!(from)
     Moeda.to_string!(m, value, opts)
   end
@@ -684,7 +684,7 @@ defmodule Dinheiro do
     end
   end
 
-  defp is_dinheiro(%Dinheiro{amount: a, currency: c} = d)
+  defp is_dinheiro(%__MODULE__{amount: a, currency: c} = d)
        when is_integer(a) and is_atom(c),
        do: {true, d}
 
