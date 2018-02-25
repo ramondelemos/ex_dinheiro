@@ -321,7 +321,8 @@ defmodule Dinheiro do
     %Dinheiro{amount: a.amount - b.amount, currency: m}
   end
 
-  def subtract!(%__MODULE__{currency: m} = a, b) when is_integer(b) or is_float(b) do
+  def subtract!(%__MODULE__{currency: m} = a, b)
+      when is_integer(b) or is_float(b) do
     subtract!(a, Dinheiro.new!(b, m))
   end
 

@@ -79,8 +79,13 @@ defmodule Moeda do
   end
 
   defp is_moeda(
-         %__MODULE__{name: n, symbol: s, iso_code: i, country_code: c, exponent: e} =
-           m
+         %__MODULE__{
+           name: n,
+           symbol: s,
+           iso_code: i,
+           country_code: c,
+           exponent: e
+         } = m
        )
        when is_binary(n) and is_list(s) and is_binary(i) and is_integer(c) and
               is_integer(e),
