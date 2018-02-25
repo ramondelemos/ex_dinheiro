@@ -122,24 +122,19 @@ defmodule Dinheiro do
   def new!(amount, currency) when is_integer(amount) or is_float(amount) do
     v_currency = Moeda.find!(currency)
 
-    if v_currency do
-      factor =
-        v_currency.iso_code
-        |> Moeda.get_factor!()
+    factor =
+      v_currency.iso_code
+      |> Moeda.get_factor!()
 
-      atom =
-        v_currency.iso_code
-        |> Moeda.get_atom!()
+    atom =
+      v_currency.iso_code
+      |> Moeda.get_atom!()
 
-      valor = amount * factor
+    valor = amount * factor
 
-      valor
-      |> round
-      |> do_new(atom)
-    else
-      raise ArgumentError,
-            "to use Dinheiro.new!/2 you must set a valid value to currency."
-    end
+    valor
+    |> round
+    |> do_new(atom)
   end
 
   def new!(amount, _c) do
@@ -270,12 +265,12 @@ defmodule Dinheiro do
   end
 
   def sum!(a, %Dinheiro{currency: _m} = b) do
-    raise_if_not_is_dinheiro(a)
+    raise_if_is_not_dinheiro(a)
     raise_currency_must_be_the_same(a, b)
   end
 
   def sum!(a, b) do
-    raise_if_not_is_dinheiro(a)
+    raise_if_is_not_dinheiro(a)
     raise_if_not_integer_or_float(b)
   end
 
@@ -331,12 +326,12 @@ defmodule Dinheiro do
   end
 
   def subtract!(a, %Dinheiro{currency: _m} = b) do
-    raise_if_not_is_dinheiro(a)
+    raise_if_is_not_dinheiro(a)
     raise_currency_must_be_the_same(a, b)
   end
 
   def subtract!(a, b) do
-    raise_if_not_is_dinheiro(a)
+    raise_if_is_not_dinheiro(a)
     raise_if_not_integer_or_float(b)
   end
 
@@ -375,7 +370,7 @@ defmodule Dinheiro do
 
   """
   def multiply!(a, b) when is_integer(b) or is_float(b) do
-    raise_if_not_is_dinheiro(a)
+    raise_if_is_not_dinheiro(a)
     float_value = to_float!(a)
     new!(float_value * b, a.currency)
   end
@@ -673,7 +668,7 @@ defmodule Dinheiro do
 
   defp raise_if_is_not_a_currency_valid(m), do: Moeda.find!(m)
 
-  defp raise_if_not_is_dinheiro(value) do
+  defp raise_if_is_not_dinheiro(value) do
     case is_dinheiro(value) do
       {true, _} ->
         true
