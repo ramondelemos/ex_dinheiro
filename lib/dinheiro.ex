@@ -64,7 +64,7 @@ defmodule Dinheiro do
   end
 
   def new!(amount) do
-    assert_if_integer_or_float(amount)
+    raise_if_not_integer_or_float(amount)
   end
 
   @spec new(integer | float, atom | String.t()) ::
@@ -143,7 +143,7 @@ defmodule Dinheiro do
   end
 
   def new!(amount, _c) do
-    assert_if_integer_or_float(amount)
+    raise_if_not_integer_or_float(amount)
   end
 
   defp do_new(amount, currency) when is_integer(amount) and is_atom(currency) do
@@ -261,7 +261,7 @@ defmodule Dinheiro do
 
   """
   def sum!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
-    assert_if_currency_is_valid(m)
+    raise_if_is_not_a_currency_valid(m)
     %Dinheiro{amount: a.amount + b.amount, currency: m}
   end
 
@@ -270,13 +270,13 @@ defmodule Dinheiro do
   end
 
   def sum!(a, %Dinheiro{currency: _m} = b) do
-    assert_if_is_dinheiro(a)
+    raise_if_not_is_dinheiro(a)
     raise_currency_must_be_the_same(a, b)
   end
 
   def sum!(a, b) do
-    assert_if_is_dinheiro(a)
-    assert_if_integer_or_float(b)
+    raise_if_not_is_dinheiro(a)
+    raise_if_not_integer_or_float(b)
   end
 
   @spec subtract(t, t | integer | float) :: {:ok, t} | {:error, String.t()}
@@ -322,7 +322,7 @@ defmodule Dinheiro do
 
   """
   def subtract!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
-    assert_if_currency_is_valid(m)
+    raise_if_is_not_a_currency_valid(m)
     %Dinheiro{amount: a.amount - b.amount, currency: m}
   end
 
@@ -331,13 +331,13 @@ defmodule Dinheiro do
   end
 
   def subtract!(a, %Dinheiro{currency: _m} = b) do
-    assert_if_is_dinheiro(a)
+    raise_if_not_is_dinheiro(a)
     raise_currency_must_be_the_same(a, b)
   end
 
   def subtract!(a, b) do
-    assert_if_is_dinheiro(a)
-    assert_if_integer_or_float(b)
+    raise_if_not_is_dinheiro(a)
+    raise_if_not_integer_or_float(b)
   end
 
   @spec multiply(t, integer | float) :: {:ok, t} | {:error, String.t()}
@@ -375,7 +375,7 @@ defmodule Dinheiro do
 
   """
   def multiply!(a, b) when is_integer(b) or is_float(b) do
-    assert_if_is_dinheiro(a)
+    raise_if_not_is_dinheiro(a)
     float_value = to_float!(a)
     new!(float_value * b, a.currency)
   end
@@ -423,16 +423,16 @@ defmodule Dinheiro do
 
   """
   def divide!(%Dinheiro{currency: m} = a, b) when is_integer(b) do
-    assert_if_currency_is_valid(m)
-    assert_if_ratios_are_valid([b])
+    raise_if_is_not_a_currency_valid(m)
+    raise_if_not_ratios_are_valid([b])
     division = div(a.amount, b)
     remainder = rem(a.amount, b)
     to_alocate(division, remainder, m, b)
   end
 
   def divide!(%Dinheiro{currency: m} = a, b) when is_list(b) do
-    assert_if_currency_is_valid(m)
-    assert_if_ratios_are_valid(b)
+    raise_if_is_not_a_currency_valid(m)
+    raise_if_not_ratios_are_valid(b)
     ratio = sum_values(b)
     division = calculate_ratio(b, ratio, a.amount)
     remainder = a.amount - sum_values(division)
@@ -640,17 +640,17 @@ defmodule Dinheiro do
       message: "currency :#{b.currency} must be the same as :#{a.currency}."
   end
 
-  defp assert_if_value_is_positive(value) when is_integer(value) do
+  defp raise_if_value_is_not_positive(value) when is_integer(value) do
     if value < 0,
       do: raise(ArgumentError, message: "value #{value} must be positive.")
   end
 
-  defp assert_if_greater_than_zero(value) when is_integer(value) do
+  defp raise_if_not_greater_than_zero(value) when is_integer(value) do
     if value == 0,
       do: raise(ArgumentError, message: "value must be greater than zero.")
   end
 
-  defp assert_if_integer_or_float(value) do
+  defp raise_if_not_integer_or_float(value) do
     unless is_integer(value) or is_float(value),
       do:
         raise(
@@ -659,21 +659,21 @@ defmodule Dinheiro do
         )
   end
 
-  defp assert_if_integer(value) do
+  defp raise_if_not_integer(value) do
     unless is_integer(value),
       do: raise(ArgumentError, message: "value '#{value}' must be integer.")
   end
 
-  defp assert_if_ratios_are_valid([head | tail]) do
-    assert_if_integer(head)
-    assert_if_value_is_positive(head)
-    assert_if_greater_than_zero(head)
-    if tail != [], do: assert_if_ratios_are_valid(tail)
+  defp raise_if_not_ratios_are_valid([head | tail]) do
+    raise_if_not_integer(head)
+    raise_if_value_is_not_positive(head)
+    raise_if_not_greater_than_zero(head)
+    if tail != [], do: raise_if_not_ratios_are_valid(tail)
   end
 
-  defp assert_if_currency_is_valid(m), do: Moeda.find!(m)
+  defp raise_if_is_not_a_currency_valid(m), do: Moeda.find!(m)
 
-  defp assert_if_is_dinheiro(value) do
+  defp raise_if_not_is_dinheiro(value) do
     case is_dinheiro(value) do
       {true, _} ->
         true
