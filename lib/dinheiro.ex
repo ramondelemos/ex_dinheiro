@@ -48,6 +48,8 @@ defmodule Dinheiro do
         %Dinheiro{amount: 1234500, currency: :BRL}
         iex> Dinheiro.new!(123.45)
         %Dinheiro{amount: 12345, currency: :BRL}
+        iex> Dinheiro.new!("1")
+        ** (ArgumentError) value '1' must be integer or float.
 
   """
   def new!(amount) when is_integer(amount) or is_float(amount) do
@@ -102,6 +104,8 @@ defmodule Dinheiro do
       %Dinheiro{amount: 12345, currency: :BRL}
       iex> Dinheiro.new!(123.45, "BRL")
       %Dinheiro{amount: 12345, currency: :BRL}
+      iex> Dinheiro.new!(12345, :NONE)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   Is possible to work with no official ISO currency code adding it in the system Mix config.
 
@@ -159,7 +163,7 @@ defmodule Dinheiro do
       iex> Dinheiro.compare(Dinheiro.new!(12346, :BRL), Dinheiro.new!(12345, :BRL))
       {:ok, 1}
       iex> Dinheiro.compare(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
-      {:error, "currency :USD must be the same as :BRL."}
+      {:error, "currency :BRL must be the same as :USD."}
   """
   def compare(a, b) do
     {:ok, compare!(a, b)}
@@ -179,6 +183,8 @@ defmodule Dinheiro do
       -1
       iex> Dinheiro.compare!(Dinheiro.new!(12346, :BRL), Dinheiro.new!(12345, :BRL))
       1
+      iex> Dinheiro.compare!(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
+      ** (ArgumentError) currency :BRL must be the same as :USD.
   """
   def compare!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
     case a.amount - b.amount do
@@ -250,6 +256,8 @@ defmodule Dinheiro do
       %Dinheiro{amount: 350, currency: :BRL}
       iex> Dinheiro.sum!(Dinheiro.new!(2, :BRL), -1)
       %Dinheiro{amount: 100, currency: :BRL}
+      iex> Dinheiro.sum!(Dinheiro.new!(2, :BRL), "1")
+      ** (ArgumentError) value '1' must be integer or float.
 
   """
   def sum!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
@@ -309,6 +317,8 @@ defmodule Dinheiro do
       %Dinheiro{amount: 250, currency: :BRL}
       iex> Dinheiro.subtract!(Dinheiro.new!(4, :BRL), -2)
       %Dinheiro{amount: 600, currency: :BRL}
+      iex> Dinheiro.subtract!(%Dinheiro{amount: 100, currency: :NONE}, %Dinheiro{amount: 100, currency: :NONE})
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   """
   def subtract!(%Dinheiro{currency: m} = a, %Dinheiro{currency: m} = b) do
@@ -360,6 +370,8 @@ defmodule Dinheiro do
       %Dinheiro{amount: 1250, currency: :BRL}
       iex> Dinheiro.multiply!(Dinheiro.new!(4, :BRL), -2)
       %Dinheiro{amount: -800, currency: :BRL}
+      iex> Dinheiro.multiply!(2, 2)
+      ** (ArgumentError) the first param must be a Dinheiro struct.
 
   """
   def multiply!(a, b) when is_integer(b) or is_float(b) do
@@ -400,6 +412,8 @@ defmodule Dinheiro do
       [%Dinheiro{amount: 5000, currency: :BRL}, %Dinheiro{amount: 5000, currency: :BRL}]
       iex> Dinheiro.divide!(Dinheiro.new!(101, :BRL), 2)
       [%Dinheiro{amount: 5050, currency: :BRL}, %Dinheiro{amount: 5050, currency: :BRL}]
+      iex> Dinheiro.divide!(%Dinheiro{amount: 5050, currency: :NONE}, 2)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   Divide a `Dinheiro` struct by an list of values that represents a division ratio.
 
@@ -508,6 +522,8 @@ defmodule Dinheiro do
       50.5
       iex> Dinheiro.to_float!(Dinheiro.new!(-4, :BRL))
       -4.0
+      iex> Dinheiro.to_float!(%Dinheiro{amount: 200, currency: :NONE})
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   """
   def to_float!(%Dinheiro{currency: m} = from) do
@@ -543,6 +559,8 @@ defmodule Dinheiro do
       "R$ 50,50"
       iex> Dinheiro.to_string!(Dinheiro.new!(-4, :BRL))
       "R$ -4,00"
+      iex> Dinheiro.to_string!(%Dinheiro{amount: 200, currency: :NONE})
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   Using options-style parameters you can change the behavior of the function.
 
@@ -619,7 +637,7 @@ defmodule Dinheiro do
 
   defp raise_currency_must_be_the_same(a, b) do
     raise ArgumentError,
-      message: "currency :#{a.currency} must be the same as :#{b.currency}."
+      message: "currency :#{b.currency} must be the same as :#{a.currency}."
   end
 
   defp assert_if_value_is_positive(value) when is_integer(value) do

@@ -11,7 +11,7 @@ defmodule Moeda do
   defstruct [:name, :symbol, :iso_code, :country_code, :exponent]
 
   @typedoc """
-      Type that represents `Moeda` struct with:
+      Type that represents Moeda struct with:
       :name as String.t that represents the name of the currency.
       :symbol as String.t that represents symbol of the currency.
       :iso_code as String.t that represents the ISO 4217 code.
@@ -250,6 +250,8 @@ defmodule Moeda do
       "R$ 1.000,50"
       iex> Moeda.to_string!(:BRL, -1.0)
       "R$ -1,00"
+      iex> Moeda.to_string!(:NONE, 1000.5)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   Its function ignore case sensitive.
 
