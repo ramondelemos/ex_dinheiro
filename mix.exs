@@ -1,7 +1,7 @@
 defmodule Dinheiro.MixProject do
   use Mix.Project
 
-  @version "0.1.6"
+  @version "0.1.7"
   @github_url "https://github.com/ramondelemos/ex_dinheiro"
 
   def project do

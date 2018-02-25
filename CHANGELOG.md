@@ -1,5 +1,47 @@
 ## Changelog
 
+### v0.1.7
+
+Update of the documentation and more test cases added.
+
+Refactoring to suit the Elixir conventions.
+
+Changed self-references to __MODULE__.
+
+Returns changed to `{:ok, result}` and `{:error, reason}` in `Dinheiro` module:
+ - compare/2
+ - divide/2
+ - multiply/2
+ - new/1
+ - new/2
+ - subtract/2
+ - sum/2
+ - to_float/1
+ - to_string/2
+
+Functions that returns the unwrapped `result` or raises an error in `Dinheiro` module.
+- compare!/2
+- divide!/2
+- multiply!/2
+- new!/1
+- new!/2
+- subtract!/2
+- sum!/2
+- to_float!/1
+- to_string!/2
+
+Returns changed to `{:ok, result}` and `{:error, reason}` in `Moeda` module:
+- find/1
+- get_atom/1
+- get_factor/1
+- to_string/3
+
+Functions that returns the unwrapped `result` or raises an error in `Moeda` module.
+- find!/1
+- get_atom!/1
+- get_factor!/1
+- to_string!/3
+
 ### v0.1.6
 
 Refector of the code:

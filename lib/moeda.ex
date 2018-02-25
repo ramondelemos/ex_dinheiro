@@ -8,186 +8,310 @@ defmodule Moeda do
 
   alias Moeda.Moedas
 
-  defstruct [:nome, :simbolo, :codigo, :codigo_iso, :expoente]
+  defstruct [:name, :symbol, :iso_code, :country_code, :exponent]
 
   @typedoc """
-      Type that represents `Moeda` struct with:
-      :nome as String.t that represents the name of the currency.
-      :simbolo as String.t that represents symbol of the currency.
-      :codigo as String.t that represents the ISO 4217 code.
-      :codigo_iso as integer that represents the country code.
-      :expoente as integer that represents the exponent of the currency.
+      Type that represents Moeda struct with:
+      :name as String.t that represents the name of the currency.
+      :symbol as String.t that represents symbol of the currency.
+      :iso_code as String.t that represents the ISO 4217 code.
+      :country_code as integer that represents the country code.
+      :exponent as integer that represents the exponent of the currency.
   """
-  @type t :: %Moeda{
-          nome: String.t(),
-          simbolo: String.t(),
-          codigo: String.t(),
-          codigo_iso: integer,
-          expoente: integer
+  @type t :: %__MODULE__{
+          name: String.t(),
+          symbol: String.t(),
+          iso_code: String.t(),
+          country_code: integer,
+          exponent: integer
         }
 
-  @spec find(String.t() | atom) :: map | nil
+  @spec find!(String.t() | atom) :: t
   @doc """
   Return a map from an atom or string that represents an ISO 4217 code.
 
   ## Examples
 
-      iex> Moeda.find(:BRL)
-      %Moeda{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
-      iex> Moeda.find("BRL")
-      %Moeda{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
-      iex> Moeda.find("")
-      nil
-
-  Its function ignore case sensitive.
-
-  ## Examples
-
-      iex> Moeda.find(:brl)
-      %Moeda{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
-      iex> Moeda.find("brl")
-      %Moeda{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
-
-  Is possible to work with no official ISO currency code adding it in the system Mix config.
-
-  ## Examples
-
-      iex> Moeda.find(:XBT)
-      nil
-      iex> moedas = %{ XBT: %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8} }
-      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
-      iex> Moeda.find("xbt")
-      %Moeda{nome: "Bitcoin", simbolo: '฿', codigo: "XBT", codigo_iso: 0, expoente: 8}
-
-  Is possible to override some official ISO currency code adding it in the system Mix config.
-
-  ## Examples
-
-      iex> Moeda.find(:BRL)
-      %Moeda{nome: "Brazilian Real", simbolo: 'R$', codigo: "BRL", codigo_iso: 986, expoente: 2}
-      iex> moedas = %{ BRL: %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}, USD: %Moeda{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 986, expoente: 3} }
-      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, moedas)
-      iex> Moeda.find(:BRL)
-      %Moeda{nome: "Moeda do Brasil", simbolo: 'BR$', codigo: "BRL", codigo_iso: 986, expoente: 4}
-      iex> Moeda.find(:USD)
-      %Moeda{nome: "Moeda do EUA", simbolo: 'US$', codigo: "USD", codigo_iso: 986, expoente: 3}
-
+      iex> Moeda.find!(:BRL)
+      %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}
+      iex> Moeda.find!(:NONE)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
   """
-  def find(codigo) when is_atom(codigo) do
-    codigo
+  def find!(iso_code) when is_atom(iso_code) do
+    iso_code
     |> Atom.to_string()
     |> String.upcase()
     |> String.to_atom()
     |> do_find
   end
 
-  def find(codigo) when is_binary(codigo) do
-    codigo
+  def find!(iso_code) when is_binary(iso_code) do
+    iso_code
     |> String.upcase()
     |> String.to_atom()
     |> do_find
   end
 
-  defp do_find(codigo) do
+  defp do_find(iso_code) do
     unofficial_currencies =
       Application.get_env(:ex_dinheiro, :unofficial_currencies, %{})
 
-    currency = unofficial_currencies[codigo]
+    currency = unofficial_currencies[iso_code]
 
-    if currency do
-      currency
-    else
-      currencies = Moedas.get_moedas()
-      currencies[codigo]
+    result =
+      if currency do
+        currency
+      else
+        currencies = Moedas.get_currencies()
+        currencies[iso_code]
+      end
+
+    unless result,
+      do:
+        raise(
+          ArgumentError,
+          message: "'#{iso_code}' does not represent an ISO 4217 code."
+        )
+
+    raise_if_is_not_moeda(result, iso_code)
+
+    result
+  end
+
+  defp is_moeda(
+         %__MODULE__{
+           name: n,
+           symbol: s,
+           iso_code: i,
+           country_code: c,
+           exponent: e
+         } = m
+       )
+       when is_binary(n) and is_list(s) and is_binary(i) and is_integer(c) and
+              is_integer(e),
+       do: {true, m}
+
+  defp is_moeda(value), do: {false, value}
+
+  defp raise_if_is_not_moeda(value, iso_code) do
+    case is_moeda(value) do
+      {true, _} ->
+        true
+
+      {false, _} ->
+        raise(
+          ArgumentError,
+          message: ":#{iso_code} must to be associated to a Moeda struct."
+        )
+
+      _ ->
+        {:error, "private is_moeda/1 return unexpected value.", value}
     end
   end
 
-  @spec get_atom(String.t() | atom) :: atom | nil
+  @spec find(String.t() | atom) :: {:ok, t} | {:error, String.t()}
+  @doc """
+  Return a map from an atom or string that represents an ISO 4217 code.
+
+  ## Examples
+
+      iex> Moeda.find(:BRL)
+      {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}}
+      iex> Moeda.find("BRL")
+      {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}}
+      iex> Moeda.find("NONE")
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+
+  Its function ignore case sensitive.
+
+  ## Examples
+
+      iex> Moeda.find(:brl)
+      {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}}
+      iex> Moeda.find("brl")
+      {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}}
+
+  Is possible to work with no official ISO currency code adding it in the system Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:XBT)
+      {:error, "'XBT' does not represent an ISO 4217 code."}
+      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
+      iex> Moeda.find("xbt")
+      {:ok, %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8}}
+
+  Is possible to override some official ISO currency code adding it in the system Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:BRL)
+      {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}}
+      iex> currencies = %{ BRL: %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}, USD: %Moeda{name: "Moeda do EUA", symbol: 'US$', iso_code: "USD", country_code: 986, exponent: 3} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
+      iex> Moeda.find(:BRL)
+      {:ok, %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}}
+      iex> Moeda.find(:USD)
+      {:ok, %Moeda{name: "Moeda do EUA", symbol: 'US$', iso_code: "USD", country_code: 986, exponent: 3}}
+      iex> Application.delete_env(:ex_dinheiro, :unofficial_currencies)
+      iex> Moeda.find(:BRL)
+      {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}}
+
+  Be careful setting new currencies to Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:XBT)
+      {:error, "'XBT' does not represent an ISO 4217 code."}
+      iex> currencies = %{ XBT: %{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
+      iex> Moeda.find(:XBT)
+      {:error, ":XBT must to be associated to a Moeda struct."}
+      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
+      iex> Moeda.find("xbt")
+      {:ok, %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8}}
+
+  """
+  def find(iso_code) when is_atom(iso_code) or is_binary(iso_code) do
+    {:ok, find!(iso_code)}
+  rescue
+    e -> {:error, e.message}
+  end
+
+  @spec get_atom!(String.t() | atom) :: atom
+  @doc """
+  Return an atom from a value that represents an ISO 4217 code.
+
+  ## Examples
+
+      iex> Moeda.get_atom!(:BRL)
+      :BRL
+      iex> Moeda.get_atom!("BRL")
+      :BRL
+      iex> Moeda.get_atom!(:NONE)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+
+  Its function ignore case sensitive.
+
+  ## Examples
+
+      iex> Moeda.get_atom!(:brl)
+      :BRL
+      iex> Moeda.get_atom!("brl")
+      :BRL
+
+  """
+  def get_atom!(iso_code) do
+    currency = find!(iso_code)
+    currency.iso_code |> String.upcase() |> String.to_atom()
+  end
+
+  @spec get_atom(String.t() | atom) :: {:ok, atom}
   @doc """
   Return an atom from a value that represents an ISO 4217 code.
 
   ## Examples
 
       iex> Moeda.get_atom(:BRL)
-      :BRL
-      iex> Moeda.get_atom("BRL")
-      :BRL
-      iex> Moeda.get_atom("")
-      nil
+      {:ok, :BRL}
+      iex> Moeda.get_atom(:NONE)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+
+  """
+  def get_atom(iso_code) do
+    {:ok, get_atom!(iso_code)}
+  rescue
+    e -> {:error, e.message}
+  end
+
+  @spec get_factor!(String.t() | atom) :: float
+  @doc """
+  Return a multiplication factor from an ISO 4217 code.
+
+  ## Examples
+
+      iex> Moeda.get_factor!(:BRL)
+      100.0
+      iex> Moeda.get_factor!("BRL")
+      100.0
+      iex> Moeda.get_factor!(:NONE)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   Its function ignore case sensitive.
 
   ## Examples
 
-      iex> Moeda.get_atom(:brl)
-      :BRL
-      iex> Moeda.get_atom("brl")
-      :BRL
+      iex> Moeda.get_factor!(:brl)
+      100.0
+      iex> Moeda.get_factor!("brl")
+      100.0
 
   """
-  def get_atom(codigo) do
-    moeda = find(codigo)
-
-    if moeda do
-      moeda.codigo |> String.upcase() |> String.to_atom()
-    else
-      nil
-    end
+  def get_factor!(iso_code) do
+    currency = find!(iso_code)
+    :math.pow(10, currency.exponent)
   end
 
-  @spec get_factor(String.t() | atom) :: float | nil
+  @spec get_factor(String.t() | atom) :: {:ok, float} | {:error, String.t()}
   @doc """
   Return a multiplication factor from an ISO 4217 code.
 
   ## Examples
 
       iex> Moeda.get_factor(:BRL)
-      100.0
-      iex> Moeda.get_factor("BRL")
-      100.0
-      iex> Moeda.get_factor("")
-      nil
-
-  Its function ignore case sensitive.
-
-  ## Examples
-
-      iex> Moeda.get_factor(:brl)
-      100.0
-      iex> Moeda.get_factor("brl")
-      100.0
+      {:ok, 100.0}
+      iex> Moeda.get_factor(:NONE)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
 
   """
-  def get_factor(codigo) do
-    moeda = find(codigo)
-
-    if moeda do
-      :math.pow(10, moeda.expoente)
-    else
-      nil
-    end
+  def get_factor(iso_code) do
+    {:ok, get_factor!(iso_code)}
+  rescue
+    e -> {:error, e.message}
   end
 
-  @spec to_string(String.t() | atom, float, Keywords.t()) :: String.t()
+  @spec to_string(String.t() | atom, float, Keywords.t()) ::
+          {:ok, String.t()} | {:error, String.t()}
   @doc """
   Return a formated string from a ISO 4217 code and a float value.
 
   ## Examples
 
       iex> Moeda.to_string(:BRL, 100.0)
+      {:ok, "R$ 100,00"}
+      iex> Moeda.to_string(:NONE, 1000.5)
+      {:error, "'NONE' does not represent an ISO 4217 code."}
+  """
+  def to_string(currency, valor, opts \\ []) do
+    {:ok, to_string!(currency, valor, opts)}
+  rescue
+    e -> {:error, e.message}
+  end
+
+  @spec to_string!(String.t() | atom, float, Keywords.t()) :: String.t()
+  @doc """
+  Return a formated string from a ISO 4217 code and a float value.
+
+  ## Examples
+
+      iex> Moeda.to_string!(:BRL, 100.0)
       "R$ 100,00"
-      iex> Moeda.to_string("BRL", 1000.5)
+      iex> Moeda.to_string!("BRL", 1000.5)
       "R$ 1.000,50"
-      iex> Moeda.to_string(:BRL, -1.0)
+      iex> Moeda.to_string!(:BRL, -1.0)
       "R$ -1,00"
+      iex> Moeda.to_string!(:NONE, 1000.5)
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
 
   Its function ignore case sensitive.
 
   ## Examples
 
-      iex> Moeda.to_string(:bRl, 100.0)
+      iex> Moeda.to_string!(:bRl, 100.0)
       "R$ 100,00"
-      iex> Moeda.to_string("BrL", 1000.5)
+      iex> Moeda.to_string!("BrL", 1000.5)
       "R$ 1.000,50"
 
   Using options-style parameters you can change the behavior of the function.
@@ -199,13 +323,13 @@ defmodule Moeda do
 
   ## Exemples
 
-      iex> Moeda.to_string(:USD, 1000.5, thousand_separator: ",", decimal_separator: ".")
+      iex> Moeda.to_string!(:USD, 1000.5, thousand_separator: ",", decimal_separator: ".")
       "$ 1,000.50"
-      iex> Moeda.to_string(:USD, 1000.5, display_currency_symbol: false)
+      iex> Moeda.to_string!(:USD, 1000.5, display_currency_symbol: false)
       "1.000,50"
-      iex> Moeda.to_string(:USD, 1000.5, display_currency_code: true)
+      iex> Moeda.to_string!(:USD, 1000.5, display_currency_code: true)
       "$ 1.000,50 USD"
-      iex> Moeda.to_string(:USD, 1000.5, display_currency_code: true, display_currency_symbol: false)
+      iex> Moeda.to_string!(:USD, 1000.5, display_currency_code: true, display_currency_symbol: false)
       "1.000,50 USD"
 
   The default values also can be set in the system Mix config.
@@ -213,13 +337,13 @@ defmodule Moeda do
   ## Example:
       iex> Application.put_env(:ex_dinheiro, :thousand_separator, ",")
       iex> Application.put_env(:ex_dinheiro, :decimal_separator, ".")
-      iex> Moeda.to_string(:USD, 1000.5)
+      iex> Moeda.to_string!(:USD, 1000.5)
       "$ 1,000.50"
       iex> Application.put_env(:ex_dinheiro, :display_currency_symbol, false)
-      iex> Moeda.to_string(:USD, 5000.5)
+      iex> Moeda.to_string!(:USD, 5000.5)
       "5,000.50"
       iex> Application.put_env(:ex_dinheiro, :display_currency_code, true)
-      iex> Moeda.to_string(:USD, 10000.0)
+      iex> Moeda.to_string!(:USD, 10000.0)
       "10,000.00 USD"
 
   The options-style parameters override values in the system Mix config.
@@ -227,21 +351,14 @@ defmodule Moeda do
   ## Example:
       iex> Application.put_env(:ex_dinheiro, :thousand_separator, ",")
       iex> Application.put_env(:ex_dinheiro, :decimal_separator, ".")
-      iex> Moeda.to_string(:USD, 1000.5)
+      iex> Moeda.to_string!(:USD, 1000.5)
       "$ 1,000.50"
-      iex> Moeda.to_string(:BRL, 1000.5, thousand_separator: ".", decimal_separator: ",")
+      iex> Moeda.to_string!(:BRL, 1000.5, thousand_separator: ".", decimal_separator: ",")
       "R$ 1.000,50"
 
   """
-  def to_string(moeda, valor, opts \\ []) do
-    m = Moeda.find(moeda)
-
-    unless m,
-      do:
-        raise(
-          ArgumentError,
-          message: "'#{moeda}' does not represent an ISO 4217 code."
-        )
+  def to_string!(currency, valor, opts \\ []) do
+    m = find!(currency)
 
     unless is_float(valor),
       do: raise(ArgumentError, message: "Value '#{valor}' must be float.")
@@ -251,7 +368,7 @@ defmodule Moeda do
 
     parts =
       valor
-      |> :erlang.float_to_binary(decimals: m.expoente)
+      |> :erlang.float_to_binary(decimals: m.exponent)
       |> String.split(".")
 
     thousands =
@@ -263,7 +380,7 @@ defmodule Moeda do
       |> String.reverse()
 
     decimals =
-      if m.expoente > 0 do
+      if m.exponent > 0 do
         Enum.join([decimal_separator, List.last(parts)])
       else
         ""
@@ -271,14 +388,14 @@ defmodule Moeda do
 
     currency_symbol =
       if display_currency_symbol do
-        m.simbolo
+        m.symbol
       else
         ""
       end
 
     currency_code =
       if display_currency_code do
-        m.codigo
+        m.iso_code
       else
         ""
       end
