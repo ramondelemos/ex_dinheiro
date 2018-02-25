@@ -37,10 +37,70 @@ defmodule Moeda do
       iex> Moeda.find!(:NONE)
       ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
   """
-  def find!(iso_code) when is_atom(iso_code) or is_binary(iso_code) do
-    case find(iso_code) do
-      {:ok, value} -> value
-      {:error, reason} -> raise ArgumentError, message: reason
+  def find!(iso_code) when is_atom(iso_code) do
+    iso_code
+    |> Atom.to_string()
+    |> String.upcase()
+    |> String.to_atom()
+    |> do_find
+  end
+
+  def find!(iso_code) when is_binary(iso_code) do
+    iso_code
+    |> String.upcase()
+    |> String.to_atom()
+    |> do_find
+  end
+
+  defp do_find(iso_code) do
+    unofficial_currencies =
+      Application.get_env(:ex_dinheiro, :unofficial_currencies, %{})
+
+    currency = unofficial_currencies[iso_code]
+
+    result =
+      if currency do
+        currency
+      else
+        currencies = Moedas.get_currencies()
+        currencies[iso_code]
+      end
+
+    unless result,
+      do:
+        raise(
+          ArgumentError,
+          message: "'#{iso_code}' does not represent an ISO 4217 code."
+        )
+
+    raise_if_is_not_moeda(result, iso_code)
+
+    result
+  end
+
+  defp is_moeda(
+         %Moeda{name: n, symbol: s, iso_code: i, country_code: c, exponent: e} =
+           m
+       )
+       when is_binary(n) and is_list(s) and is_binary(i) and is_integer(c) and
+              is_integer(e),
+       do: {true, m}
+
+  defp is_moeda(value), do: {false, value}
+
+  defp raise_if_is_not_moeda(value, iso_code) do
+    case is_moeda(value) do
+      {true, _} ->
+        true
+
+      {false, _} ->
+        raise(
+          ArgumentError,
+          message: ":#{iso_code} must to be associated to a Moeda struct."
+        )
+
+      _ ->
+        {:error, "private is_moeda/1 return unexpected value.", value}
     end
   end
 
@@ -89,43 +149,30 @@ defmodule Moeda do
       {:ok, %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}}
       iex> Moeda.find(:USD)
       {:ok, %Moeda{name: "Moeda do EUA", symbol: 'US$', iso_code: "USD", country_code: 986, exponent: 3}}
+      iex> Application.delete_env(:ex_dinheiro, :unofficial_currencies)
+      iex> Moeda.find(:BRL)
+      {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}}
+
+  Be careful setting new currencies to Mix config.
+
+  ## Examples
+
+      iex> Moeda.find(:XBT)
+      {:error, "'XBT' does not represent an ISO 4217 code."}
+      iex> currencies = %{ XBT: %{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
+      iex> Moeda.find(:XBT)
+      {:error, ":XBT must to be associated to a Moeda struct."}
+      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
+      iex> Moeda.find("xbt")
+      {:ok, %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8}}
 
   """
-  def find(iso_code) when is_atom(iso_code) do
-    iso_code
-    |> Atom.to_string()
-    |> String.upcase()
-    |> String.to_atom()
-    |> do_find
-  end
-
-  def find(iso_code) when is_binary(iso_code) do
-    iso_code
-    |> String.upcase()
-    |> String.to_atom()
-    |> do_find
-  end
-
-  defp do_find(iso_code) do
-    unofficial_currencies =
-      Application.get_env(:ex_dinheiro, :unofficial_currencies, %{})
-
-    currency = unofficial_currencies[iso_code]
-
-    if currency do
-      wrap_up_currency(currency, iso_code)
-    else
-      currencies = Moedas.get_currencies()
-      wrap_up_currency(currencies[iso_code], iso_code)
-    end
-  end
-
-  defp wrap_up_currency(currency, iso_code) do
-    if currency do
-      {:ok, currency}
-    else
-      {:error, "'#{iso_code}' does not represent an ISO 4217 code."}
-    end
+  def find(iso_code) when is_atom(iso_code) or is_binary(iso_code) do
+    {:ok, find!(iso_code)}
+  rescue
+    e -> {:error, e.message}
   end
 
   @spec get_atom!(String.t() | atom) :: atom
