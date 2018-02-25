@@ -103,9 +103,6 @@ defmodule Moeda do
           ArgumentError,
           message: ":#{iso_code} must to be associated to a Moeda struct."
         )
-
-      _ ->
-        {:error, "private is_moeda/1 return unexpected value.", value}
     end
   end
 

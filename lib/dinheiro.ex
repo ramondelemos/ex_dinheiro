@@ -679,9 +679,6 @@ defmodule Dinheiro do
           ArgumentError,
           message: "the first param must be a Dinheiro struct."
         )
-
-      _ ->
-        {:error, "private is_dinheiro/1 return unexpected value.", value}
     end
   end
 
