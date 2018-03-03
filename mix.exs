@@ -58,7 +58,7 @@ defmodule Dinheiro.MixProject do
       source_ref: "v#{@version}",
       source_url: @github_url,
       main: "Dinheiro",
-      extras: ["README.md"]
+      extras: ["README.md", "CHANGELOG.md"]
     ]
   end
 
