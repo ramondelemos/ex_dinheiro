@@ -364,13 +364,13 @@ defmodule DinheiroTest do
     end
   end
 
-  test "to_string/2" do
+  test "is_dinheiro/1" do
     assert Dinheiro.is_dinheiro?(%Dinheiro{amount: 200, currency: :BRL}) == true
     assert Dinheiro.is_dinheiro?(%{amount: 200, currency: :BRL}) == false
     assert Dinheiro.is_dinheiro?(200) == false
   end
 
-  test "is_dinheiro?/1" do
+  test "to_string?/1" do
     assert Dinheiro.to_string(%Dinheiro{amount: 10_000, currency: :BRL}) ==
              {:ok, "R$ 100,00"}
 
