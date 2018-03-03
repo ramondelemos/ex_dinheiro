@@ -670,11 +670,11 @@ defmodule Dinheiro do
   defp raise_if_is_not_a_currency_valid(m), do: Moeda.find!(m)
 
   defp raise_if_is_not_dinheiro(value) do
-    case is_dinheiro(value) do
-      {true, _} ->
+    case is_dinheiro?(value) do
+      true ->
         true
 
-      {false, _} ->
+      false ->
         raise(
           ArgumentError,
           message: "the first param must be a Dinheiro struct."
@@ -682,9 +682,13 @@ defmodule Dinheiro do
     end
   end
 
-  defp is_dinheiro(%__MODULE__{amount: a, currency: c} = d)
-       when is_integer(a) and is_atom(c),
-       do: {true, d}
+  defp is_dinheiro?(%__MODULE__{amount: a, currency: c})
+       when is_integer(a) and is_atom(c) do
+    case Moeda.get_atom(c) do
+      {:ok, _} -> true
+      {:error, _} -> false
+    end
+  end
 
-  defp is_dinheiro(value), do: {false, value}
+  defp is_dinheiro?(_value), do: false
 end
