@@ -69,8 +69,8 @@ defmodule Dinheiro.MixProject do
         &set_env_to_test/1,
         "format",
         "credo --strict",
-        "test",
-        "coveralls"
+        "coveralls",
+        "test"
       ],
       build_travis: [
         "build",
