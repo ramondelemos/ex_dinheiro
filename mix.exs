@@ -1,7 +1,7 @@
 defmodule Dinheiro.MixProject do
   use Mix.Project
 
-  @version "0.1.7"
+  @version "0.1.8"
   @github_url "https://github.com/ramondelemos/ex_dinheiro"
 
   def project do
@@ -16,7 +16,8 @@ defmodule Dinheiro.MixProject do
       package: package(),
       deps: deps(),
       docs: docs(),
-      test_coverage: [tool: ExCoveralls]
+      test_coverage: [tool: ExCoveralls],
+      aliases: aliases()
     ]
   end
 
@@ -57,7 +58,28 @@ defmodule Dinheiro.MixProject do
       source_ref: "v#{@version}",
       source_url: @github_url,
       main: "Dinheiro",
-      extras: ["README.md"]
+      extras: ["README.md", "CHANGELOG.md"]
     ]
+  end
+
+  defp aliases do
+    [
+      build: [
+        "docs",
+        &set_env_to_test/1,
+        "format",
+        "credo --strict",
+        "coveralls",
+        "test"
+      ],
+      build_travis: [
+        "build",
+        "coveralls.travis"
+      ]
+    ]
+  end
+
+  defp set_env_to_test(_) do
+    Mix.env(:test)
   end
 end

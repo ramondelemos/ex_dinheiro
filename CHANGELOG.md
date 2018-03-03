@@ -1,5 +1,15 @@
 ## Changelog
 
+### v0.1.8
+
+Implementation of the method is_dinheiro?/1.
+
+Implementation of `build` and `build_travis` tasks.
+
+Refactoring of `.travis.yml` to run `build_travis` task.
+
+Adding `CHANGELOG.md` on `:ex_dinheiro` documentation.
+
 ### v0.1.7
 
 Update of the documentation and more test cases added.

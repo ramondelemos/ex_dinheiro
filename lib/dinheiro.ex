@@ -631,6 +631,24 @@ defmodule Dinheiro do
     Moeda.to_string!(m, value, opts)
   end
 
+  @spec is_dinheiro?(any()) :: boolean()
+  @doc """
+  Return if value is a `Dinheiro` struct.
+
+  ## Example:
+      iex> Dinheiro.is_dinheiro?(%Dinheiro{amount: 200, currency: :BRL})
+      true
+      iex> Dinheiro.is_dinheiro?(%{amount: 200, currency: :BRL})
+      false
+      iex> Dinheiro.is_dinheiro?(200)
+      false
+  """
+  def is_dinheiro?(%__MODULE__{amount: a, currency: c})
+      when is_integer(a) and is_atom(c),
+      do: true
+
+  def is_dinheiro?(_value), do: false
+
   defp raise_currency_must_be_the_same(a, b) do
     raise ArgumentError,
       message: "currency :#{b.currency} must be the same as :#{a.currency}."
@@ -670,21 +688,15 @@ defmodule Dinheiro do
   defp raise_if_is_not_a_currency_valid(m), do: Moeda.find!(m)
 
   defp raise_if_is_not_dinheiro(value) do
-    case is_dinheiro(value) do
-      {true, _} ->
+    case is_dinheiro?(value) do
+      true ->
         true
 
-      {false, _} ->
+      false ->
         raise(
           ArgumentError,
           message: "the first param must be a Dinheiro struct."
         )
     end
   end
-
-  defp is_dinheiro(%__MODULE__{amount: a, currency: c} = d)
-       when is_integer(a) and is_atom(c),
-       do: {true, d}
-
-  defp is_dinheiro(value), do: {false, value}
 end
