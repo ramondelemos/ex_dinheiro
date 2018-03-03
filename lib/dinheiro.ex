@@ -25,10 +25,10 @@ defmodule Dinheiro do
         iex> Dinheiro.new(12345)
         {:ok, %Dinheiro{amount: 1234500, currency: :BRL}}
         iex> Dinheiro.new("1")
-        {:error, "value '1' must be integer or float."}
+        {:error, "value '1' must be integer or float"}
         iex> Application.delete_env(:ex_dinheiro, :default_currency)
         iex> Dinheiro.new(12345)
-        {:error, "you must set a default value in your application config :ex_dinheiro, default_currency."}
+        {:error, "you must set a default value in your application config :ex_dinheiro, default_currency"}
 
   """
   def new(amount) do
@@ -49,7 +49,7 @@ defmodule Dinheiro do
         iex> Dinheiro.new!(123.45)
         %Dinheiro{amount: 12345, currency: :BRL}
         iex> Dinheiro.new!("1")
-        ** (ArgumentError) value '1' must be integer or float.
+        ** (ArgumentError) value '1' must be integer or float
 
   """
   def new!(amount) when is_integer(amount) or is_float(amount) do
@@ -59,7 +59,7 @@ defmodule Dinheiro do
       new!(amount, currency)
     else
       raise ArgumentError,
-            "you must set a default value in your application config :ex_dinheiro, default_currency."
+            "you must set a default value in your application config :ex_dinheiro, default_currency"
     end
   end
 
@@ -76,9 +76,9 @@ defmodule Dinheiro do
       iex> Dinheiro.new(12345, :BRL)
       {:ok, %Dinheiro{amount: 1234500, currency: :BRL}}
       iex> Dinheiro.new("1", :BRL)
-      {:error, "value '1' must be integer or float."}
+      {:error, "value '1' must be integer or float"}
       iex> Dinheiro.new(12345, :XBT)
-      {:error, "'XBT' does not represent an ISO 4217 code."}
+      {:error, "'XBT' does not represent an ISO 4217 code"}
       iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Dinheiro.new(123.45, :XBT)
@@ -105,14 +105,14 @@ defmodule Dinheiro do
       iex> Dinheiro.new!(123.45, "BRL")
       %Dinheiro{amount: 12345, currency: :BRL}
       iex> Dinheiro.new!(12345, :NONE)
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   Is possible to work with no official ISO currency code adding it in the system Mix config.
 
   ## Examples
 
       iex> Moeda.find(:XBT)
-      {:error, "'XBT' does not represent an ISO 4217 code."}
+      {:error, "'XBT' does not represent an ISO 4217 code"}
       iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Dinheiro.new!(123.45, :XBT)
@@ -158,7 +158,7 @@ defmodule Dinheiro do
       iex> Dinheiro.compare(Dinheiro.new!(12346, :BRL), Dinheiro.new!(12345, :BRL))
       {:ok, 1}
       iex> Dinheiro.compare(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
-      {:error, "currency :BRL must be the same as :USD."}
+      {:error, "currency :BRL must be the same as :USD"}
   """
   def compare(a, b) do
     {:ok, compare!(a, b)}
@@ -179,7 +179,7 @@ defmodule Dinheiro do
       iex> Dinheiro.compare!(Dinheiro.new!(12346, :BRL), Dinheiro.new!(12345, :BRL))
       1
       iex> Dinheiro.compare!(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
-      ** (ArgumentError) currency :BRL must be the same as :USD.
+      ** (ArgumentError) currency :BRL must be the same as :USD
   """
   def compare!(%__MODULE__{currency: m} = a, %__MODULE__{currency: m} = b) do
     case a.amount - b.amount do
@@ -222,13 +222,13 @@ defmodule Dinheiro do
       iex> Dinheiro.sum(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL))
       {:ok, %Dinheiro{amount: 300, currency: :BRL}}
       iex> Dinheiro.sum(%Dinheiro{amount: 100, currency: :NONE}, 2)
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
       iex> Dinheiro.sum(2, 2)
-      {:error, "the first param must be a Dinheiro struct."}
+      {:error, "the first param must be a Dinheiro struct"}
       iex> Dinheiro.sum(Dinheiro.new!(2, :BRL), "1")
-      {:error, "value '1' must be integer or float."}
+      {:error, "value '1' must be integer or float"}
       iex> Dinheiro.sum(%Dinheiro{amount: 100, currency: :NONE}, %Dinheiro{amount: 100, currency: :NONE})
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
 
   """
   def sum(a, b) do
@@ -252,7 +252,7 @@ defmodule Dinheiro do
       iex> Dinheiro.sum!(Dinheiro.new!(2, :BRL), -1)
       %Dinheiro{amount: 100, currency: :BRL}
       iex> Dinheiro.sum!(Dinheiro.new!(2, :BRL), "1")
-      ** (ArgumentError) value '1' must be integer or float.
+      ** (ArgumentError) value '1' must be integer or float
 
   """
   def sum!(%__MODULE__{currency: m} = a, %__MODULE__{currency: m} = b) do
@@ -283,13 +283,13 @@ defmodule Dinheiro do
       iex> Dinheiro.subtract(Dinheiro.new!(2, :BRL), Dinheiro.new!(1, :BRL))
       {:ok, %Dinheiro{amount: 100, currency: :BRL}}
       iex> Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, 2)
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
       iex> Dinheiro.subtract(2, 2)
-      {:error, "the first param must be a Dinheiro struct."}
+      {:error, "the first param must be a Dinheiro struct"}
       iex> Dinheiro.subtract(Dinheiro.new!(2, :BRL), "1")
-      {:error, "value '1' must be integer or float."}
+      {:error, "value '1' must be integer or float"}
       iex> Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, %Dinheiro{amount: 100, currency: :NONE})
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
 
   """
   def subtract(a, b) do
@@ -313,7 +313,7 @@ defmodule Dinheiro do
       iex> Dinheiro.subtract!(Dinheiro.new!(4, :BRL), -2)
       %Dinheiro{amount: 600, currency: :BRL}
       iex> Dinheiro.subtract!(%Dinheiro{amount: 100, currency: :NONE}, %Dinheiro{amount: 100, currency: :NONE})
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   """
   def subtract!(%__MODULE__{currency: m} = a, %__MODULE__{currency: m} = b) do
@@ -345,7 +345,7 @@ defmodule Dinheiro do
       iex> Dinheiro.multiply(Dinheiro.new!(2, :BRL), 2)
       {:ok, %Dinheiro{amount: 400, currency: :BRL}}
       iex> Dinheiro.multiply(2, 2)
-      {:error, "the first param must be a Dinheiro struct."}
+      {:error, "the first param must be a Dinheiro struct"}
 
   """
   def multiply(a, b) do
@@ -367,7 +367,7 @@ defmodule Dinheiro do
       iex> Dinheiro.multiply!(Dinheiro.new!(4, :BRL), -2)
       %Dinheiro{amount: -800, currency: :BRL}
       iex> Dinheiro.multiply!(2, 2)
-      ** (ArgumentError) the first param must be a Dinheiro struct.
+      ** (ArgumentError) the first param must be a Dinheiro struct
 
   """
   def multiply!(a, b) when is_integer(b) or is_float(b) do
@@ -384,7 +384,7 @@ defmodule Dinheiro do
       iex> Dinheiro.divide(Dinheiro.new!(100, :BRL), 2)
       {:ok, [%Dinheiro{amount: 5000, currency: :BRL}, %Dinheiro{amount: 5000, currency: :BRL}]}
       iex> Dinheiro.divide(%Dinheiro{amount: 5050, currency: :NONE}, 2)
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
 
   Divide a `Dinheiro` struct by an list of values that represents a division ratio.
 
@@ -409,7 +409,7 @@ defmodule Dinheiro do
       iex> Dinheiro.divide!(Dinheiro.new!(101, :BRL), 2)
       [%Dinheiro{amount: 5050, currency: :BRL}, %Dinheiro{amount: 5050, currency: :BRL}]
       iex> Dinheiro.divide!(%Dinheiro{amount: 5050, currency: :NONE}, 2)
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   Divide a `Dinheiro` struct by an list of values that represents a division ratio.
 
@@ -498,7 +498,7 @@ defmodule Dinheiro do
       iex> Dinheiro.to_float(%Dinheiro{amount: 200, currency: :BRL})
       {:ok, 2.0}
       iex> Dinheiro.to_float(%Dinheiro{amount: 200, currency: :NONE})
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
 
   """
   def to_float(%__MODULE__{currency: _m} = from) do
@@ -519,7 +519,7 @@ defmodule Dinheiro do
       iex> Dinheiro.to_float!(Dinheiro.new!(-4, :BRL))
       -4.0
       iex> Dinheiro.to_float!(%Dinheiro{amount: 200, currency: :NONE})
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   """
   def to_float!(%__MODULE__{currency: m} = from) do
@@ -536,7 +536,7 @@ defmodule Dinheiro do
       iex> Dinheiro.to_string(%Dinheiro{amount: 200, currency: :BRL})
       {:ok, "R$ 2,00"}
       iex> Dinheiro.to_string(%Dinheiro{amount: 200, currency: :NONE})
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
   """
   def to_string(%__MODULE__{currency: _m} = from, opts \\ []) do
     {:ok, to_string!(from, opts)}
@@ -556,7 +556,7 @@ defmodule Dinheiro do
       iex> Dinheiro.to_string!(Dinheiro.new!(-4, :BRL))
       "R$ -4,00"
       iex> Dinheiro.to_string!(%Dinheiro{amount: 200, currency: :NONE})
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   Using options-style parameters you can change the behavior of the function.
 
@@ -609,7 +609,7 @@ defmodule Dinheiro do
       iex> Dinheiro.to_string!(Dinheiro.new!(12_345_678.9, :USD))
       "$ 12.345.678,90"
       iex> Dinheiro.to_string!(%Dinheiro{amount: 200, currency: :XBT})
-      ** (ArgumentError) 'XBT' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'XBT' does not represent an ISO 4217 code
       iex> real = %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}
       %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}
       iex> dollar = %Moeda{name: "Moeda do EUA", symbol: 'US$', iso_code: "USD", country_code: 840, exponent: 3}
@@ -651,17 +651,17 @@ defmodule Dinheiro do
 
   defp raise_currency_must_be_the_same(a, b) do
     raise ArgumentError,
-      message: "currency :#{b.currency} must be the same as :#{a.currency}."
+      message: "currency :#{b.currency} must be the same as :#{a.currency}"
   end
 
   defp raise_if_value_is_not_positive(value) when is_integer(value) do
     if value < 0,
-      do: raise(ArgumentError, message: "value #{value} must be positive.")
+      do: raise(ArgumentError, message: "value #{value} must be positive")
   end
 
   defp raise_if_not_greater_than_zero(value) when is_integer(value) do
     if value == 0,
-      do: raise(ArgumentError, message: "value must be greater than zero.")
+      do: raise(ArgumentError, message: "value must be greater than zero")
   end
 
   defp raise_if_not_integer_or_float(value) do
@@ -669,13 +669,13 @@ defmodule Dinheiro do
       do:
         raise(
           ArgumentError,
-          message: "value '#{value}' must be integer or float."
+          message: "value '#{value}' must be integer or float"
         )
   end
 
   defp raise_if_not_integer(value) do
     unless is_integer(value),
-      do: raise(ArgumentError, message: "value '#{value}' must be integer.")
+      do: raise(ArgumentError, message: "value '#{value}' must be integer")
   end
 
   defp raise_if_not_ratios_are_valid([head | tail]) do
@@ -695,7 +695,7 @@ defmodule Dinheiro do
       false ->
         raise(
           ArgumentError,
-          message: "the first param must be a Dinheiro struct."
+          message: "the first param must be a Dinheiro struct"
         )
     end
   end

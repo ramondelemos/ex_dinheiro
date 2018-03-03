@@ -124,7 +124,7 @@ defmodule MoedaTest do
               }}
 
     assert Moeda.find(:NONE) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
 
     Application.put_env(
       :ex_dinheiro,
@@ -167,7 +167,7 @@ defmodule MoedaTest do
     assert Moeda.get_atom("BRL") == {:ok, :BRL}
 
     assert Moeda.get_atom("NONE") ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
   test "get_atom!/1", context do
@@ -199,7 +199,7 @@ defmodule MoedaTest do
     assert Moeda.get_factor("BRL") == {:ok, 100.0}
 
     assert Moeda.get_factor(:NONE) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
   test "get_factor!/1", context do
@@ -231,7 +231,7 @@ defmodule MoedaTest do
     assert Moeda.to_string(:BRL, 100.0) == {:ok, "R$ 100,00"}
 
     assert Moeda.to_string(:NONE, 1000.5) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
   test "to_string!/3" do

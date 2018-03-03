@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.1.9
+
+Refactoring to raising exceptions with no trailing punctuation to suit the Elixir conventions.
+
 ### v0.1.8
 
 Implementation of the method is_dinheiro?/1.

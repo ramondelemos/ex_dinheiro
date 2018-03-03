@@ -35,7 +35,7 @@ defmodule Moeda do
       iex> Moeda.find!(:BRL)
       %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}
       iex> Moeda.find!(:NONE)
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
   """
   def find!(iso_code) when is_atom(iso_code) do
     iso_code
@@ -70,7 +70,7 @@ defmodule Moeda do
       do:
         raise(
           ArgumentError,
-          message: "'#{iso_code}' does not represent an ISO 4217 code."
+          message: "'#{iso_code}' does not represent an ISO 4217 code"
         )
 
     raise_if_is_not_moeda(result, iso_code)
@@ -101,7 +101,7 @@ defmodule Moeda do
       {false, _} ->
         raise(
           ArgumentError,
-          message: ":#{iso_code} must to be associated to a Moeda struct."
+          message: ":#{iso_code} must to be associated to a Moeda struct"
         )
     end
   end
@@ -117,7 +117,7 @@ defmodule Moeda do
       iex> Moeda.find("BRL")
       {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', iso_code: "BRL", country_code: 986, exponent: 2}}
       iex> Moeda.find("NONE")
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
 
   Its function ignore case sensitive.
 
@@ -133,7 +133,7 @@ defmodule Moeda do
   ## Examples
 
       iex> Moeda.find(:XBT)
-      {:error, "'XBT' does not represent an ISO 4217 code."}
+      {:error, "'XBT' does not represent an ISO 4217 code"}
       iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Moeda.find("xbt")
@@ -160,11 +160,11 @@ defmodule Moeda do
   ## Examples
 
       iex> Moeda.find(:XBT)
-      {:error, "'XBT' does not represent an ISO 4217 code."}
+      {:error, "'XBT' does not represent an ISO 4217 code"}
       iex> currencies = %{ XBT: %{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Moeda.find(:XBT)
-      {:error, ":XBT must to be associated to a Moeda struct."}
+      {:error, ":XBT must to be associated to a Moeda struct"}
       iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Moeda.find("xbt")
@@ -188,7 +188,7 @@ defmodule Moeda do
       iex> Moeda.get_atom!("BRL")
       :BRL
       iex> Moeda.get_atom!(:NONE)
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   Its function ignore case sensitive.
 
@@ -214,7 +214,7 @@ defmodule Moeda do
       iex> Moeda.get_atom(:BRL)
       {:ok, :BRL}
       iex> Moeda.get_atom(:NONE)
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
 
   """
   def get_atom(iso_code) do
@@ -234,7 +234,7 @@ defmodule Moeda do
       iex> Moeda.get_factor!("BRL")
       100.0
       iex> Moeda.get_factor!(:NONE)
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   Its function ignore case sensitive.
 
@@ -260,7 +260,7 @@ defmodule Moeda do
       iex> Moeda.get_factor(:BRL)
       {:ok, 100.0}
       iex> Moeda.get_factor(:NONE)
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
 
   """
   def get_factor(iso_code) do
@@ -279,7 +279,7 @@ defmodule Moeda do
       iex> Moeda.to_string(:BRL, 100.0)
       {:ok, "R$ 100,00"}
       iex> Moeda.to_string(:NONE, 1000.5)
-      {:error, "'NONE' does not represent an ISO 4217 code."}
+      {:error, "'NONE' does not represent an ISO 4217 code"}
   """
   def to_string(currency, valor, opts \\ []) do
     {:ok, to_string!(currency, valor, opts)}
@@ -300,7 +300,7 @@ defmodule Moeda do
       iex> Moeda.to_string!(:BRL, -1.0)
       "R$ -1,00"
       iex> Moeda.to_string!(:NONE, 1000.5)
-      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code.
+      ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
 
   Its function ignore case sensitive.
 
@@ -358,7 +358,7 @@ defmodule Moeda do
     m = find!(currency)
 
     unless is_float(valor),
-      do: raise(ArgumentError, message: "Value '#{valor}' must be float.")
+      do: raise(ArgumentError, message: "Value '#{valor}' must be float")
 
     {thousand_separator, decimal_separator, display_currency_symbol,
      display_currency_code} = get_config(opts)
