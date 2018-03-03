@@ -1,7 +1,7 @@
 defmodule Dinheiro.MixProject do
   use Mix.Project
 
-  @version "0.1.8"
+  @version "0.1.9"
   @github_url "https://github.com/ramondelemos/ex_dinheiro"
 
   def project do
@@ -65,6 +65,7 @@ defmodule Dinheiro.MixProject do
   defp aliases do
     [
       build: [
+        "clean",
         "docs",
         &set_env_to_test/1,
         "format",

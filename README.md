@@ -15,7 +15,7 @@ This package can be installed by adding `:ex_dinheiro` to your list of dependenc
 ```elixir
 def deps do
   [
-    {:ex_dinheiro, "~> 0.1.8"}
+    {:ex_dinheiro, "~> 0.1.9"}
   ]
 end
 ```

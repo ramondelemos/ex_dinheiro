@@ -14,7 +14,7 @@ defmodule DinheiroTest do
   test "new/1" do
     assert Dinheiro.new(12345) ==
              {:error,
-              "you must set a default value in your application config :ex_dinheiro, default_currency."}
+              "you must set a default value in your application config :ex_dinheiro, default_currency"}
 
     Application.put_env(:ex_dinheiro, :default_currency, :BRL)
 
@@ -66,7 +66,7 @@ defmodule DinheiroTest do
 
   test "new/2" do
     assert Dinheiro.new(12345, :NONE) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
 
     assert Dinheiro.new(12345, :BRL) ==
              {:ok, %Dinheiro{amount: 1_234_500, currency: :BRL}}
@@ -94,7 +94,7 @@ defmodule DinheiroTest do
     assert Dinheiro.compare(
              Dinheiro.new!(123.45, :USD),
              Dinheiro.new!(123.45, :BRL)
-           ) == {:error, "currency :BRL must be the same as :USD."}
+           ) == {:error, "currency :BRL must be the same as :USD"}
   end
 
   test "compare!/1" do
@@ -147,7 +147,7 @@ defmodule DinheiroTest do
               }}
 
     assert Dinheiro.sum(%Dinheiro{amount: 100, currency: :NONE}, 2) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
   test "sum!(2" do
@@ -186,7 +186,7 @@ defmodule DinheiroTest do
               }}
 
     assert Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, 2) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
   test "subtract!(2" do
@@ -225,7 +225,7 @@ defmodule DinheiroTest do
               }}
 
     assert Dinheiro.multiply(2, 2) ==
-             {:error, "the first param must be a Dinheiro struct."}
+             {:error, "the first param must be a Dinheiro struct"}
   end
 
   test "multiply!/2" do
@@ -276,7 +276,7 @@ defmodule DinheiroTest do
              {:ok, 100.00}
 
     assert Dinheiro.to_float(%Dinheiro{amount: 600, currency: :NONE}) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
   test "divide/2" do
@@ -289,7 +289,7 @@ defmodule DinheiroTest do
               ]}
 
     assert Dinheiro.divide(%Dinheiro{amount: 600, currency: :NONE}, 3) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 
   test "divide!/2" do
@@ -375,6 +375,6 @@ defmodule DinheiroTest do
              {:ok, "R$ 100,00"}
 
     assert Dinheiro.to_string(%Dinheiro{amount: 600, currency: :NONE}) ==
-             {:error, "'NONE' does not represent an ISO 4217 code."}
+             {:error, "'NONE' does not represent an ISO 4217 code"}
   end
 end
