@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.2.0
+
+Implementation of the methods sum/1 and sum!/1.
+
 ### v0.1.9
 
 Refactoring to raising exceptions with no trailing punctuation to suit the Elixir conventions.
