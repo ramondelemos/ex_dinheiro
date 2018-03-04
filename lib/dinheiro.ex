@@ -158,7 +158,7 @@ defmodule Dinheiro do
       iex> Dinheiro.compare(Dinheiro.new!(12346, :BRL), Dinheiro.new!(12345, :BRL))
       {:ok, 1}
       iex> Dinheiro.compare(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
-      {:error, "currency :BRL must be the same as :USD"}
+      {:error, "currency :BRL different of :USD"}
   """
   def compare(a, b) do
     {:ok, compare!(a, b)}
@@ -179,7 +179,7 @@ defmodule Dinheiro do
       iex> Dinheiro.compare!(Dinheiro.new!(12346, :BRL), Dinheiro.new!(12345, :BRL))
       1
       iex> Dinheiro.compare!(Dinheiro.new!(12346, :USD), Dinheiro.new!(12346, :BRL))
-      ** (ArgumentError) currency :BRL must be the same as :USD
+      ** (ArgumentError) currency :BRL different of :USD
   """
   def compare!(%__MODULE__{currency: m} = a, %__MODULE__{currency: m} = b) do
     case a.amount - b.amount do
@@ -224,7 +224,7 @@ defmodule Dinheiro do
       iex> Dinheiro.sum(%Dinheiro{amount: 100, currency: :NONE}, 2)
       {:error, "'NONE' does not represent an ISO 4217 code"}
       iex> Dinheiro.sum(2, 2)
-      {:error, "the first param must be a Dinheiro struct"}
+      {:error, "value must be a Dinheiro struct"}
       iex> Dinheiro.sum(Dinheiro.new!(2, :BRL), "1")
       {:error, "value '1' must be integer or float"}
       iex> Dinheiro.sum(%Dinheiro{amount: 100, currency: :NONE}, %Dinheiro{amount: 100, currency: :NONE})
@@ -274,6 +274,116 @@ defmodule Dinheiro do
     raise_if_not_integer_or_float(b)
   end
 
+  @spec sum([t()]) :: {:ok, t()} | {:error, String.t()}
+  @doc """
+  Return a new `Dinheiro` structs with sum of a list of `Dinheiro` structs.
+
+  ## Example:
+      iex> a = Dinheiro.new!(1, :BRL)
+      iex> b = Dinheiro.new!(1, :BRL)
+      iex> c = Dinheiro.new!(1, :BRL)
+      iex> d = Dinheiro.new!(1, :BRL)
+      iex> values = [a, b, c, d]
+      iex> Dinheiro.sum(values)
+      {:ok, %Dinheiro{amount: 400, currency: :BRL}}
+
+  The first item currency will be the result currency.
+
+  ## Example:
+      iex> a = Dinheiro.new!(1, :BRL)
+      iex> b = Dinheiro.new!(1, :USD)
+      iex> c = Dinheiro.new!(1, :USD)
+      iex> d = Dinheiro.new!(1, :USD)
+      iex> e = Dinheiro.new!(1, :USD)
+      iex> Dinheiro.sum([a, b, c, d, e])
+      {:error, "currency :USD different of :BRL"}
+      iex> Dinheiro.sum([b, a, c, d, e])
+      {:error, "currency :BRL different of :USD"}
+
+  """
+  def sum(values) do
+    {:ok, sum!(values)}
+  rescue
+    e -> {:error, e.message}
+  end
+
+  @spec sum!([t]) :: t
+  @doc """
+  Return a new `Dinheiro` structs with sum of a list of `Dinheiro` structs.
+
+  ## Example:
+      iex> a = Dinheiro.new!(1, :BRL)
+      iex> b = Dinheiro.new!(1, :BRL)
+      iex> c = Dinheiro.new!(1, :BRL)
+      iex> d = Dinheiro.new!(1, :BRL)
+      iex> values = [a, b, c, d]
+      iex> Dinheiro.sum!(values)
+      %Dinheiro{amount: 400, currency: :BRL}
+
+  The first item currency will be the result currency.
+
+  ## Example:
+      iex> a = Dinheiro.new!(1, :BRL)
+      iex> b = Dinheiro.new!(1, :USD)
+      iex> c = Dinheiro.new!(1, :USD)
+      iex> d = Dinheiro.new!(1, :USD)
+      iex> e = Dinheiro.new!(1, :USD)
+      iex> values = [a, b, c, d, e]
+      iex> Dinheiro.sum!(values)
+      ** (ArgumentError) currency :USD different of :BRL
+
+  """
+  def sum!(values) when is_list(values) do
+    unless Enum.count(values) > 0,
+      do:
+        raise(
+          ArgumentError,
+          message: "list can not be empty"
+        )
+
+    [head | tail] = values
+
+    raise_if_is_not_dinheiro(head)
+    raise_if_is_not_a_currency_valid(head.currency)
+
+    [head | tail]
+    |> Enum.map(fn i -> get_integer_value_async(head.currency, i) end)
+    |> Enum.map(&Task.await/1)
+    |> sum_async_returns!()
+    |> do_new(head.currency)
+  end
+
+  def sum!(_) do
+    raise(
+      ArgumentError,
+      message: "must be a list of Dinheiro struct"
+    )
+  end
+
+  defp get_integer_value(currency, money) do
+    raise_if_is_not_dinheiro(money)
+
+    unless currency == money.currency,
+      do: raise_currency_must_be_the_same(currency, money.currency)
+
+    {:ok, money.amount}
+  rescue
+    e -> {:error, e}
+  end
+
+  defp get_integer_value_async(currency, money) do
+    Task.async(fn -> get_integer_value(currency, money) end)
+  end
+
+  defp sum_async_returns!([]), do: 0
+
+  defp sum_async_returns!([head | tail]) do
+    case head do
+      {:ok, value} -> value + sum_async_returns!(tail)
+      {:error, reason} -> raise reason
+    end
+  end
+
   @spec subtract(t, t | integer | float) :: {:ok, t} | {:error, String.t()}
   @doc """
   Return a new `Dinheiro` structs with subtract of two values.
@@ -285,7 +395,7 @@ defmodule Dinheiro do
       iex> Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, 2)
       {:error, "'NONE' does not represent an ISO 4217 code"}
       iex> Dinheiro.subtract(2, 2)
-      {:error, "the first param must be a Dinheiro struct"}
+      {:error, "value must be a Dinheiro struct"}
       iex> Dinheiro.subtract(Dinheiro.new!(2, :BRL), "1")
       {:error, "value '1' must be integer or float"}
       iex> Dinheiro.subtract(%Dinheiro{amount: 100, currency: :NONE}, %Dinheiro{amount: 100, currency: :NONE})
@@ -345,7 +455,7 @@ defmodule Dinheiro do
       iex> Dinheiro.multiply(Dinheiro.new!(2, :BRL), 2)
       {:ok, %Dinheiro{amount: 400, currency: :BRL}}
       iex> Dinheiro.multiply(2, 2)
-      {:error, "the first param must be a Dinheiro struct"}
+      {:error, "value must be a Dinheiro struct"}
 
   """
   def multiply(a, b) do
@@ -367,7 +477,7 @@ defmodule Dinheiro do
       iex> Dinheiro.multiply!(Dinheiro.new!(4, :BRL), -2)
       %Dinheiro{amount: -800, currency: :BRL}
       iex> Dinheiro.multiply!(2, 2)
-      ** (ArgumentError) the first param must be a Dinheiro struct
+      ** (ArgumentError) value must be a Dinheiro struct
 
   """
   def multiply!(a, b) when is_integer(b) or is_float(b) do
@@ -649,9 +759,12 @@ defmodule Dinheiro do
 
   def is_dinheiro?(_value), do: false
 
+  defp raise_currency_must_be_the_same(a, b) when is_atom(a) and is_atom(b) do
+    raise ArgumentError, message: "currency :#{b} different of :#{a}"
+  end
+
   defp raise_currency_must_be_the_same(a, b) do
-    raise ArgumentError,
-      message: "currency :#{b.currency} must be the same as :#{a.currency}"
+    raise_currency_must_be_the_same(a.currency, b.currency)
   end
 
   defp raise_if_value_is_not_positive(value) when is_integer(value) do
@@ -695,7 +808,7 @@ defmodule Dinheiro do
       false ->
         raise(
           ArgumentError,
-          message: "the first param must be a Dinheiro struct"
+          message: "value must be a Dinheiro struct"
         )
     end
   end

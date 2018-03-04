@@ -2,6 +2,16 @@ defmodule DinheiroTest do
   use ExUnit.Case
   doctest Dinheiro
 
+  setup_all do
+    brl_value = Dinheiro.new!(1, :BRL)
+    usd_value = Dinheiro.new!(1, :USD)
+
+    brl_list_values =
+      Enum.map(1..20_000, fn i -> Dinheiro.new!(i - i + 1, :BRL) end)
+
+    {:ok, %{default_values: {brl_value, usd_value, brl_list_values}}}
+  end
+
   setup do
     Application.delete_env(:ex_dinheiro, :default_currency)
     Application.delete_env(:ex_dinheiro, :thousand_separator)
@@ -94,7 +104,7 @@ defmodule DinheiroTest do
     assert Dinheiro.compare(
              Dinheiro.new!(123.45, :USD),
              Dinheiro.new!(123.45, :BRL)
-           ) == {:error, "currency :BRL must be the same as :USD"}
+           ) == {:error, "currency :BRL different of :USD"}
   end
 
   test "compare!/1" do
@@ -225,7 +235,7 @@ defmodule DinheiroTest do
               }}
 
     assert Dinheiro.multiply(2, 2) ==
-             {:error, "the first param must be a Dinheiro struct"}
+             {:error, "value must be a Dinheiro struct"}
   end
 
   test "multiply!/2" do
@@ -376,5 +386,56 @@ defmodule DinheiroTest do
     assert Dinheiro.is_dinheiro?(%Dinheiro{amount: 200, currency: :BRL}) == true
     assert Dinheiro.is_dinheiro?(%{amount: 200, currency: :BRL}) == false
     assert Dinheiro.is_dinheiro?(200) == false
+  end
+
+  test "sum/1", context do
+    {brl_value, usd_value, brl_list_values} = context[:default_values]
+
+    assert Dinheiro.sum(brl_list_values) ==
+             {:ok, %Dinheiro{amount: 2_000_000, currency: :BRL}}
+
+    assert Dinheiro.sum([brl_value | brl_list_values]) ==
+             {:ok, %Dinheiro{amount: 2_000_100, currency: :BRL}}
+
+    assert Dinheiro.sum([usd_value | [brl_value]]) ==
+             {:error, "currency :BRL different of :USD"}
+
+    assert Dinheiro.sum([]) == {:error, "list can not be empty"}
+
+    assert Dinheiro.sum([%Dinheiro{amount: 0, currency: :NONE}]) ==
+             {:error, "'NONE' does not represent an ISO 4217 code"}
+
+    assert Dinheiro.sum([1]) == {:error, "value must be a Dinheiro struct"}
+    assert Dinheiro.sum(1) == {:error, "must be a list of Dinheiro struct"}
+  end
+
+  test "sum!/1", context do
+    {brl_value, usd_value, brl_list_values} = context[:default_values]
+
+    assert Dinheiro.sum!(brl_list_values) ==
+             %Dinheiro{amount: 2_000_000, currency: :BRL}
+
+    assert Dinheiro.sum!([brl_value | brl_list_values]) ==
+             %Dinheiro{amount: 2_000_100, currency: :BRL}
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.sum!([usd_value | [brl_value]])
+    end
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.sum!([])
+    end
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.sum!([%Dinheiro{amount: 0, currency: :NONE}])
+    end
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.sum!([1])
+    end
+
+    assert_raise ArgumentError, fn ->
+      Dinheiro.sum!(1)
+    end
   end
 end
