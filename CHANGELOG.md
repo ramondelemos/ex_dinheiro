@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.2.1
+
+Refactoring for better understanding and compliance to the ISO 4217 standard.
+
 ### v0.2.0
 
 Implementation of the methods sum/1 and sum!/1.
