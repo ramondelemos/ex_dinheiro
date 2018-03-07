@@ -6,8 +6,7 @@ defmodule DinheiroTest do
     brl_value = Dinheiro.new!(1, :BRL)
     usd_value = Dinheiro.new!(1, :USD)
 
-    brl_list_values =
-      Enum.map(1..20_000, fn i -> Dinheiro.new!(i - i + 1, :BRL) end)
+    brl_list_values = Enum.map(1..20_000, fn _ -> Dinheiro.new!(1, :BRL) end)
 
     {:ok, %{default_values: {brl_value, usd_value, brl_list_values}}}
   end

@@ -7,22 +7,22 @@ defmodule MoedaTest do
       XBT: %Moeda{
         name: "Bitcoin",
         symbol: '฿',
-        iso_code: "XBT",
-        country_code: 0,
+        alpha_code: "XBT",
+        num_code: 0,
         exponent: 8
       },
       BRL: %Moeda{
         name: "Moeda do Brasil",
         symbol: 'BR$',
-        iso_code: "BRL",
-        country_code: 986,
+        alpha_code: "BRL",
+        num_code: 986,
         exponent: 4
       },
       USD: %Moeda{
         name: "Moeda do EUA",
         symbol: 'US$',
-        iso_code: "USD",
-        country_code: 986,
+        alpha_code: "USD",
+        num_code: 986,
         exponent: 3
       }
     }
@@ -42,8 +42,8 @@ defmodule MoedaTest do
     assert Moeda.find!("BRL") == %Moeda{
              name: "Brazilian Real",
              symbol: 'R$',
-             iso_code: "BRL",
-             country_code: 986,
+             alpha_code: "BRL",
+             num_code: 986,
              exponent: 2
            }
 
@@ -58,8 +58,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Brazilian Real",
                 symbol: 'R$',
-                iso_code: "BRL",
-                country_code: 986,
+                alpha_code: "BRL",
+                num_code: 986,
                 exponent: 2
               }}
 
@@ -68,8 +68,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Brazilian Real",
                 symbol: 'R$',
-                iso_code: "BRL",
-                country_code: 986,
+                alpha_code: "BRL",
+                num_code: 986,
                 exponent: 2
               }}
 
@@ -78,8 +78,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Brazilian Real",
                 symbol: 'R$',
-                iso_code: "BRL",
-                country_code: 986,
+                alpha_code: "BRL",
+                num_code: 986,
                 exponent: 2
               }}
 
@@ -88,8 +88,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Brazilian Real",
                 symbol: 'R$',
-                iso_code: "BRL",
-                country_code: 986,
+                alpha_code: "BRL",
+                num_code: 986,
                 exponent: 2
               }}
 
@@ -98,8 +98,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Yuan Renminbi",
                 symbol: [165],
-                iso_code: "CNY",
-                country_code: 156,
+                alpha_code: "CNY",
+                num_code: 156,
                 exponent: 2
               }}
 
@@ -108,8 +108,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Swiss Franc",
                 symbol: [67, 72, 70],
-                iso_code: "CHF",
-                country_code: 756,
+                alpha_code: "CHF",
+                num_code: 756,
                 exponent: 2
               }}
 
@@ -118,8 +118,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "WIR Franc",
                 symbol: [],
-                iso_code: "CHW",
-                country_code: 948,
+                alpha_code: "CHW",
+                num_code: 948,
                 exponent: 2
               }}
 
@@ -137,8 +137,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Moeda do Brasil",
                 symbol: 'BR$',
-                iso_code: "BRL",
-                country_code: 986,
+                alpha_code: "BRL",
+                num_code: 986,
                 exponent: 4
               }}
 
@@ -147,8 +147,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Moeda do EUA",
                 symbol: 'US$',
-                iso_code: "USD",
-                country_code: 986,
+                alpha_code: "USD",
+                num_code: 986,
                 exponent: 3
               }}
 
@@ -157,8 +157,8 @@ defmodule MoedaTest do
               %Moeda{
                 name: "Bitcoin",
                 symbol: '฿',
-                iso_code: "XBT",
-                country_code: 0,
+                alpha_code: "XBT",
+                num_code: 0,
                 exponent: 8
               }}
   end
