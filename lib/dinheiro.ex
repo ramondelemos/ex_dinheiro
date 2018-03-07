@@ -79,7 +79,7 @@ defmodule Dinheiro do
       {:error, "value '1' must be integer or float"}
       iex> Dinheiro.new(12345, :XBT)
       {:error, "'XBT' does not represent an ISO 4217 code"}
-      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', alpha_code: "XBT", num_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Dinheiro.new(123.45, :XBT)
       {:ok, %Dinheiro{amount: 12345000000, currency: :XBT}}
@@ -113,7 +113,7 @@ defmodule Dinheiro do
 
       iex> Moeda.find(:XBT)
       {:error, "'XBT' does not represent an ISO 4217 code"}
-      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8} }
+      iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', alpha_code: "XBT", num_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Dinheiro.new!(123.45, :XBT)
       %Dinheiro{amount: 12345000000, currency: :XBT}
@@ -123,11 +123,11 @@ defmodule Dinheiro do
     v_currency = Moeda.find!(currency)
 
     factor =
-      v_currency.iso_code
+      v_currency.alpha_code
       |> Moeda.get_factor!()
 
     atom =
-      v_currency.iso_code
+      v_currency.alpha_code
       |> Moeda.get_atom!()
 
     valor = amount * factor
@@ -720,12 +720,12 @@ defmodule Dinheiro do
       "$ 12.345.678,90"
       iex> Dinheiro.to_string!(%Dinheiro{amount: 200, currency: :XBT})
       ** (ArgumentError) 'XBT' does not represent an ISO 4217 code
-      iex> real = %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}
-      %Moeda{name: "Moeda do Brasil", symbol: 'BR$', iso_code: "BRL", country_code: 986, exponent: 4}
-      iex> dollar = %Moeda{name: "Moeda do EUA", symbol: 'US$', iso_code: "USD", country_code: 840, exponent: 3}
-      %Moeda{name: "Moeda do EUA", symbol: 'US$', iso_code: "USD", country_code: 840, exponent: 3}
-      iex> bitcoin = %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8}
-      %Moeda{name: "Bitcoin", symbol: '฿', iso_code: "XBT", country_code: 0, exponent: 8}
+      iex> real = %Moeda{name: "Moeda do Brasil", symbol: 'BR$', alpha_code: "BRL", num_code: 986, exponent: 4}
+      %Moeda{name: "Moeda do Brasil", symbol: 'BR$', alpha_code: "BRL", num_code: 986, exponent: 4}
+      iex> dollar = %Moeda{name: "Moeda do EUA", symbol: 'US$', alpha_code: "USD", num_code: 840, exponent: 3}
+      %Moeda{name: "Moeda do EUA", symbol: 'US$', alpha_code: "USD", num_code: 840, exponent: 3}
+      iex> bitcoin = %Moeda{name: "Bitcoin", symbol: '฿', alpha_code: "XBT", num_code: 0, exponent: 8}
+      %Moeda{name: "Bitcoin", symbol: '฿', alpha_code: "XBT", num_code: 0, exponent: 8}
       iex> currencies = %{ BRL: real, USD: dollar, XBT: bitcoin }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Dinheiro.to_string!(Dinheiro.new!(12_345_678.9, :BRL))
