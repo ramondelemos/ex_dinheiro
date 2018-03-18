@@ -503,7 +503,8 @@ defmodule Dinheiro do
       {:ok, [%Dinheiro{amount: 2, currency: :BRL}, %Dinheiro{amount: 3, currency: :BRL}]}
 
   """
-  def divide(%__MODULE__{currency: _m} = a, b) when is_integer(b) or is_list(b) do
+  def divide(%__MODULE__{currency: _m} = a, b)
+      when is_integer(b) or is_list(b) do
     {:ok, divide!(a, b)}
   rescue
     e -> {:error, e.message}
