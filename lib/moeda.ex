@@ -34,9 +34,16 @@ defmodule Moeda do
 
       iex> Moeda.find!(:BRL)
       %Moeda{name: "Brazilian Real", symbol: 'R$', alpha_code: "BRL", num_code: 986, exponent: 2}
+      iex> Moeda.find!(986)
+      %Moeda{name: "Brazilian Real", symbol: 'R$', alpha_code: "BRL", num_code: 986, exponent: 2}
       iex> Moeda.find!(:NONE)
       ** (ArgumentError) 'NONE' does not represent an ISO 4217 code
   """
+  def find!(num_code) when is_integer(num_code) do
+    num_code
+    |> do_find
+  end
+
   def find!(alpha_code) when is_atom(alpha_code) do
     alpha_code
     |> Atom.to_string()
@@ -52,30 +59,64 @@ defmodule Moeda do
     |> do_find
   end
 
-  defp do_find(alpha_code) do
-    unofficial_currencies =
-      Application.get_env(:ex_dinheiro, :unofficial_currencies, %{})
+  defp do_find(alpha_code) when is_atom(alpha_code) do
+    unofficial_currencies = get_unofficial_currencies()
 
-    currency = unofficial_currencies[alpha_code]
+    currencies = Moedas.get_currencies()
+
+    alpha_code
+    |> do_find(unofficial_currencies, currencies)
+  end
+
+  defp do_find(num_code) when is_integer(num_code) do
+    unofficial_currencies =
+      get_unofficial_currencies()
+      |> Enum.map(fn {_key, currency} -> {currency.num_code, currency} end)
+      |> Map.new()
+
+    currencies = Moedas.get_currencies_by_num_code()
+
+    num_code
+    |> do_find(unofficial_currencies, currencies)
+  end
+
+  defp do_find(code, unofficial_currencies, currencies) do
+    currency = unofficial_currencies[code]
 
     result =
       if currency do
         currency
       else
-        currencies = Moedas.get_currencies()
-        currencies[alpha_code]
+        currencies
+        |> Map.get(code)
       end
 
     unless result,
       do:
         raise(
           ArgumentError,
-          message: "'#{alpha_code}' does not represent an ISO 4217 code"
+          message: "'#{code}' does not represent an ISO 4217 code"
         )
 
-    raise_if_is_not_moeda(result, alpha_code)
+    raise_if_is_not_moeda(result, code)
 
     result
+  end
+
+  defp get_unofficial_currencies do
+    :ex_dinheiro
+    |> Application.get_env(:unofficial_currencies, %{})
+    |> Enum.map(fn {key, currency} ->
+      {key, currency}
+    end)
+    |> Enum.filter(fn {key, currency} ->
+      with true <- is_atom(key), {true, _} <- is_moeda(currency) do
+        true
+      else
+        _ -> false
+      end
+    end)
+    |> Map.new()
   end
 
   defp is_moeda(
@@ -115,6 +156,8 @@ defmodule Moeda do
       iex> Moeda.find(:BRL)
       {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', alpha_code: "BRL", num_code: 986, exponent: 2}}
       iex> Moeda.find("BRL")
+      {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', alpha_code: "BRL", num_code: 986, exponent: 2}}
+      iex> Moeda.find(986)
       {:ok, %Moeda{name: "Brazilian Real", symbol: 'R$', alpha_code: "BRL", num_code: 986, exponent: 2}}
       iex> Moeda.find("NONE")
       {:error, "'NONE' does not represent an ISO 4217 code"}
@@ -164,14 +207,14 @@ defmodule Moeda do
       iex> currencies = %{ XBT: %{name: "Bitcoin", symbol: '฿', alpha_code: "XBT", num_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Moeda.find(:XBT)
-      {:error, ":XBT must to be associated to a Moeda struct"}
+      {:error, "'XBT' does not represent an ISO 4217 code"}
       iex> currencies = %{ XBT: %Moeda{name: "Bitcoin", symbol: '฿', alpha_code: "XBT", num_code: 0, exponent: 8} }
       iex> Application.put_env(:ex_dinheiro, :unofficial_currencies, currencies)
       iex> Moeda.find("xbt")
       {:ok, %Moeda{name: "Bitcoin", symbol: '฿', alpha_code: "XBT", num_code: 0, exponent: 8}}
 
   """
-  def find(alpha_code) when is_atom(alpha_code) or is_binary(alpha_code) do
+  def find(alpha_code) when is_atom(alpha_code) or is_binary(alpha_code) or is_integer(alpha_code) do
     {:ok, find!(alpha_code)}
   rescue
     e -> {:error, e.message}

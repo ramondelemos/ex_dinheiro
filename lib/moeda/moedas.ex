@@ -1158,7 +1158,17 @@ defmodule Moeda.Moedas do
     }
   }
 
+  @currencies_by_num_code @currencies
+                          |> Enum.map(fn {_key, currency} ->
+                            {currency.num_code, currency}
+                          end)
+                          |> Map.new()
+
   def get_currencies do
     @currencies
+  end
+
+  def get_currencies_by_num_code do
+    @currencies_by_num_code
   end
 end

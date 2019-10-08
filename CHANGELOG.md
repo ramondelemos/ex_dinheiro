@@ -1,5 +1,9 @@
 ## Changelog
 
+### v0.3.0
+
+Add find by num_code to Moeda module.
+
 ### v0.2.1
 
 Refactoring for better understanding and compliance to the ISO 4217 standard.
