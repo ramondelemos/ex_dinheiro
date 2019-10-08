@@ -93,6 +93,16 @@ defmodule MoedaTest do
                 exponent: 2
               }}
 
+    assert Moeda.find(986) ==
+             {:ok,
+              %Moeda{
+                name: "Brazilian Real",
+                symbol: 'R$',
+                alpha_code: "BRL",
+                num_code: 986,
+                exponent: 2
+              }}
+
     assert Moeda.find("CNY") ==
              {:ok,
               %Moeda{
