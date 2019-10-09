@@ -1,8 +1,8 @@
 language: elixir
 elixir:
-  - '1.6.0'
+  - '1.7.4'
 otp_release:
-  - '21.3.8'
+  - '21'
 before_install:
   - chmod +x travis_merge_script.sh
   - chmod +x publish.sh
