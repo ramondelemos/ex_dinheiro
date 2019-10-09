@@ -1,8 +1,8 @@
 language: elixir
 elixir:
-  - '1.6.0'
-otp_release:
-  - '20.2.2'
+  - '1.8'
+env:
+  - MIX_ENV=test
 before_install:
   - chmod +x travis_merge_script.sh
   - chmod +x publish.sh
