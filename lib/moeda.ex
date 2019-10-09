@@ -214,7 +214,9 @@ defmodule Moeda do
       {:ok, %Moeda{name: "Bitcoin", symbol: '฿', alpha_code: "XBT", num_code: 0, exponent: 8}}
 
   """
-  def find(alpha_code) when is_atom(alpha_code) or is_binary(alpha_code) or is_integer(alpha_code) do
+  def find(alpha_code)
+      when is_atom(alpha_code) or is_binary(alpha_code) or
+             is_integer(alpha_code) do
     {:ok, find!(alpha_code)}
   rescue
     e -> {:error, e.message}
